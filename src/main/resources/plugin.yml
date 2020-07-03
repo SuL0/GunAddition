@@ -1,0 +1,8 @@
+name: CrackShotAddition
+version: 2.7.3
+api-version: 1.15
+main: me.sul.crackshotaddition.Main
+author: SuL
+description: "CrackShot Addition"
+depend: [CrackShot]
+softdepend: [ServerCore]
