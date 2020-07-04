@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.sul.crackshotaddition.CrackShotAddition;
 
-public class CrackShotAPI {
+public class CrackShotAdditionAPI {
 	public static boolean checkIfItemIsGun(ItemStack is) { return CrackShotAddition.getCSUtility().getWeaponTitle(is) != null; }
 
 	public static String getWeaponTitle(ItemStack is) { return CrackShotAddition.getCSUtility().getWeaponTitle(is); }
@@ -17,9 +17,9 @@ public class CrackShotAPI {
 	public static int getWeaponAmmoAmount(Player player, String parent_node, ItemStack is) {
 		int currentAmmo = getWeaponAmmoAmount_CSP(is);
 		if (currentAmmo == -1) {
-			if (currentAmmo == -1) { // 경우 :  듀얼모드(|)가 있을 때.
-				currentAmmo = CrackShotAddition.getCSDirector().getAmmoBetweenBrackets(player, parent_node, is);
-			}
+			// 듀얼모드(|)가 있을 때
+			// SEE: Airstrike같이 한번 쓰고 없어지는 템은 null이 뜸. (총기 내구도 때문에 파괴돼도 그럴지도?)
+			currentAmmo = CrackShotAddition.getCSDirector().getAmmoBetweenBrackets(player, parent_node, is);
 		}
 		return currentAmmo;
 	}

@@ -3,7 +3,7 @@ package me.sul.crackshotaddition.weaponactionbar;
 import com.shampaggon.crackshot.events.WeaponReloadEvent;
 import me.sul.crackshotaddition.CrackShotAddition;
 import me.sul.crackshotaddition.events.WeaponHoldEvent;
-import me.sul.crackshotaddition.util.CrackShotAPI;
+import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,8 +23,8 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
         if (e.isWeaponSwap()) {
             indicateSwappingOrReloadingInActionbar(e.getPlayer(), EventType.Swapping, e.getWeaponItem(), e.getWeaponTitle(), e.getSwapDelay());
         } else {
-            int currentAmmo = CrackShotAPI.getWeaponAmmoAmount(e.getPlayer(), e.getWeaponTitle(), e.getWeaponItem());
-            int reloadAmt = CrackShotAPI.getWeaponReloadAmount(e.getPlayer(), e.getWeaponTitle(), e.getWeaponItem());
+            int currentAmmo = CrackShotAdditionAPI.getWeaponAmmoAmount(e.getPlayer(), e.getWeaponTitle(), e.getWeaponItem());
+            int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(e.getPlayer(), e.getWeaponTitle(), e.getWeaponItem());
             WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(e.getPlayer(), e.getWeaponTitle(), currentAmmo, reloadAmt);
         }
     }
@@ -44,9 +44,9 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
                 // swap 끝나면 ammo 액션바로 교체
                 if (leftTime <= 0) {
                     int ammo;
-                    int reloadAmt = CrackShotAPI.getWeaponReloadAmount(player, weaponTitle, weaponItem);
+                    int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(player, weaponTitle, weaponItem);
                     if (eventType.equals(EventType.Swapping)) {
-                        ammo = CrackShotAPI.getWeaponAmmoAmount(player, weaponTitle, weaponItem);
+                        ammo = CrackShotAdditionAPI.getWeaponAmmoAmount(player, weaponTitle, weaponItem);
                     } else {
                         ammo = reloadAmt;
                     }

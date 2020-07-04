@@ -2,7 +2,7 @@ package me.sul.crackshotaddition.weaponactionbar;
 
 import com.shampaggon.crackshot.events.WeaponShootEvent;
 import me.sul.crackshotaddition.CrackShotAddition;
-import me.sul.crackshotaddition.util.CrackShotAPI;
+import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,8 +25,8 @@ public class WeaponAmmoActionbar implements Listener {
     @EventHandler
     public void onShoot(WeaponShootEvent e) {
         ItemStack is = e.getPlayer().getInventory().getItemInMainHand();
-        int currentAmmo = CrackShotAPI.getWeaponAmmoAmount(e.getPlayer(), e.getWeaponTitle(), is);
-        int reloadAmt = CrackShotAPI.getWeaponReloadAmount(e.getPlayer(), e.getWeaponTitle(), is);
+        int currentAmmo = CrackShotAdditionAPI.getWeaponAmmoAmount(e.getPlayer(), e.getWeaponTitle(), is);
+        int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(e.getPlayer(), e.getWeaponTitle(), is);
 
         indicateAmmoInActionbar(e.getPlayer(), e.getWeaponTitle(), currentAmmo, reloadAmt);
     }

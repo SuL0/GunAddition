@@ -1,6 +1,6 @@
 package me.sul.crackshotaddition;
 
-import me.sul.crackshotaddition.util.CrackShotAPI;
+import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangeEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class WeaponSounds implements Listener {
 	HashMap<UUID, String> previousSwapSound = new HashMap<UUID, String>();
 
 	public static String getSwapSound(ItemStack item) {
-		if (CrackShotAPI.checkIfItemIsGun(item)) {
+		if (CrackShotAdditionAPI.checkIfItemIsGun(item)) {
 			if (item.getItemMeta().hasLore()) {
 				for (String lore: item.getItemMeta().getLore()) {
 					if (lore.contains("����")) {
