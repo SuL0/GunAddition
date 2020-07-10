@@ -1,7 +1,7 @@
 package me.sul.crackshotaddition;
 
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
-import me.sul.crackshotaddition.events.ProjectileBlockBreakEffectEvent;
+import me.sul.crackshotaddition.events.CrackShotProjectileBlockBreakEffectEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +22,7 @@ public class WeaponBlockBreakEffect implements Listener {
 	public void onWeaponHitBlock(WeaponHitBlockEvent event) {
 		if (event.getBlock().getType().equals(Material.AIR)) return;
 
-		final ProjectileBlockBreakEffectEvent customEvent = new ProjectileBlockBreakEffectEvent(event.getPlayer(), event.getWeaponTitle());
+		final CrackShotProjectileBlockBreakEffectEvent customEvent = new CrackShotProjectileBlockBreakEffectEvent(event.getPlayer(), event.getWeaponTitle());
         CrackShotAddition.getInstance().getServer().getPluginManager().callEvent((Event)customEvent);
         if (customEvent.isCancelled()) return;
 

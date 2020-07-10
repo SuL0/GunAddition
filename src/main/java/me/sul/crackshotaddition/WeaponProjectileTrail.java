@@ -1,7 +1,7 @@
 package me.sul.crackshotaddition;
 
 import com.shampaggon.crackshot.events.WeaponShootEvent;
-import me.sul.crackshotaddition.events.ProjectileTrailEvent;
+import me.sul.crackshotaddition.events.CrackShotProjectileTrailEvent;
 import net.minecraft.server.v1_12_R1.Packet;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles;
@@ -15,7 +15,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,7 +33,7 @@ public class WeaponProjectileTrail implements Listener {
 		
 		hideEntity(projectile);
 		
-		final ProjectileTrailEvent event = new ProjectileTrailEvent(shooter, weaponTitle, Particle.CRIT);
+		final CrackShotProjectileTrailEvent event = new CrackShotProjectileTrailEvent(shooter, weaponTitle, Particle.CRIT);
         CrackShotAddition.getInstance().getServer().getPluginManager().callEvent((Event)event);
         if (event.isCancelled()) return;
         particle = event.getParticle();

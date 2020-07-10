@@ -3,8 +3,8 @@ package me.sul.crackshotaddition.weapons;
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
 import com.shampaggon.crackshot.events.WeaponShootEvent;
 import me.sul.crackshotaddition.CrackShotAddition;
-import me.sul.crackshotaddition.events.ProjectileBlockBreakEffectEvent;
-import me.sul.crackshotaddition.events.ProjectileTrailEvent;
+import me.sul.crackshotaddition.events.CrackShotProjectileBlockBreakEffectEvent;
+import me.sul.crackshotaddition.events.CrackShotProjectileTrailEvent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,14 +21,14 @@ public class FlameThrower implements Listener {
     public static final String FLAMETHROWER = "N화염방사기";
 
     @EventHandler
-    public void onBlockBreakEffectEvent(ProjectileBlockBreakEffectEvent e) {
+    public void onBlockBreakEffectEvent(CrackShotProjectileBlockBreakEffectEvent e) {
         if (e.getWeaponTitle().equals(FLAMETHROWER)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onProjectileTrailEvent(ProjectileTrailEvent e) {
+    public void onProjectileTrailEvent(CrackShotProjectileTrailEvent e) {
         if (e.getWeaponTitle().equals(FLAMETHROWER)) {
             e.setParticle(Particle.FLAME);
         }

@@ -3,7 +3,7 @@ package me.sul.crackshotaddition;
 import com.shampaggon.crackshot.events.WeaponPrepareShootEvent;
 import com.shampaggon.crackshot.events.WeaponReloadEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
-import me.sul.crackshotaddition.events.WeaponHoldEvent;
+import me.sul.crackshotaddition.events.CrackShotWeaponHeldEvent;
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangeEvent;
 import org.bukkit.Bukkit;
@@ -33,7 +33,7 @@ public class WeaponSwapDelay implements Listener {
             } else {
                 swapDelay = 0;
             }
-            Bukkit.getServer().getPluginManager().callEvent(new WeaponHoldEvent(e.getPlayer(), e.getNewItem(), newWeaponTitle, swapDelay));
+            Bukkit.getServer().getPluginManager().callEvent(new CrackShotWeaponHeldEvent(e.getPlayer(), e.getNewItem(), newWeaponTitle, swapDelay));
             if (swapDelay > 0) {
                 swapDelayOfPlayers.put(e.getPlayer().getUniqueId(), System.currentTimeMillis() + swapDelay*50); // 1tick = 1ms * 50
             }

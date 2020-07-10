@@ -7,19 +7,19 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 
-public class ProjectileTrailEvent extends Event implements Cancellable {
+public class CrackShotProjectileTrailEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	private Player player;
 	private boolean cancelled = false;
 	private Particle particle;
 	private String weaponTitle;
 	
-	public ProjectileTrailEvent(Player player, String weaponTitle, Particle particle) {
+	public CrackShotProjectileTrailEvent(Player player, String weaponTitle, Particle particle) {
 		this.particle = particle;
 		this.weaponTitle = weaponTitle;
 		this.player = player;
 	}
-	public ProjectileTrailEvent(Player player, String weaponTitle, String particle) {
+	public CrackShotProjectileTrailEvent(Player player, String weaponTitle, String particle) {
 		this.particle = Particle.valueOf(particle.toUpperCase());
 		this.weaponTitle = weaponTitle;
 		this.player = player;
