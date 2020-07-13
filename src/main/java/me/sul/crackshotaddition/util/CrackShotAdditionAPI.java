@@ -1,5 +1,6 @@
 package me.sul.crackshotaddition.util;
 
+import com.shampaggon.crackshot.CSMinion;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -24,22 +25,22 @@ public class CrackShotAdditionAPI {
 		return currentAmmo;
 	}
 
-	private static int getWeaponAmmoAmount_CSP(ItemStack var0) {
-		if (checkIfItemIsGun(var0)) {
-			String var1 = var0.getItemMeta().getDisplayName();
-			if (!var1.contains("ᴿ")) {
-				if (!var1.contains("«")) {
+	private static int getWeaponAmmoAmount_CSP(ItemStack is) {
+		if (checkIfItemIsGun(is)) {
+			String nbtItemName = CSMinion.getInstance().getItemNbtName(is);
+			if (!nbtItemName.contains("ᴿ")) {
+				if (!nbtItemName.contains("«")) {
 					return -1;
 				}
 
-				if (var1.contains("|")) {
+				if (nbtItemName.contains("|")) {
 					return -1;
 				}
 
-				String[] var2 = var1.split("«");
+				String[] var2 = nbtItemName.split("«");
 				String var3;
-				if (var1.contains("◀") || var1.contains("▶")) {
-					if (var1.contains("◀")) {
+				if (nbtItemName.contains("◀") || nbtItemName.contains("▶")) {
+					if (nbtItemName.contains("◀")) {
 						var3 = var2[1].split("◀")[0].replaceAll(" ", "");
 						if (!var3.contains("×") && !var3.contains("?")) {
 							return Integer.parseInt(var3);
@@ -48,7 +49,7 @@ public class CrackShotAdditionAPI {
 						return -1;
 					}
 
-					if (var1.contains("▶")) {
+					if (nbtItemName.contains("▶")) {
 						var3 = var2[1].split("▶")[1].replaceAll(" ", "").split("»")[0];
 						if (!var3.contains("×") && !var3.contains("?")) {
 							return Integer.parseInt(var3);
