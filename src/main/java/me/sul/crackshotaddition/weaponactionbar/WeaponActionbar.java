@@ -2,6 +2,7 @@ package me.sul.crackshotaddition.weaponactionbar;
 
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,7 +39,7 @@ public class WeaponActionbar implements Listener {
             }
             // 기존 액션바 지우기
             if (CrackShotAdditionAPI.checkIfItemIsGun(e.getPreviousItem())) {
-                e.getPlayer().sendActionBar("");
+                e.getPlayer().sendActionBar("§f");
             }
         }
     }
