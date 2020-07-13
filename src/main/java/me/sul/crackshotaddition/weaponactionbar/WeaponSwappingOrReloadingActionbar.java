@@ -21,7 +21,7 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
 
     // 총기 스왑
     @EventHandler
-    public void onWeaponHold(CrackShotWeaponHeldEvent e) {
+    public void onWeaponHeld(CrackShotWeaponHeldEvent e) {
         if (e.isWeaponSwap()) {
             indicateSwappingOrReloadingInActionbar(e.getPlayer(), EventType.Swapping, e.getWeaponItem(), e.getWeaponTitle(), e.getSwapDelay());
         } else {
@@ -30,7 +30,7 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
             WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(e.getPlayer(), e.getWeaponTitle(), currentAmmo, reloadAmt);
         }
     }
-    
+
     // 총기 리로드
     @EventHandler
     public void onWeaponReload(WeaponReloadEvent e) {
@@ -44,7 +44,7 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
 
             @Override
             public void run() {
-                // swap 끝나면 ammo 액션바로 교체
+                // Swap/Reload 끝나면 Ammo 액션바로 교체
                 if (leftTime <= 0) {
                     int ammo = 0;
                     int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(player, weaponTitle, weaponItem);
@@ -53,8 +53,9 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
                     } else if (eventType.equals(EventType.Reloading)){
                         ammo = reloadAmt;
                     }
-                    WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(player, weaponTitle, ammo, reloadAmt);
+                    WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(player, weaponTitle, ammo, reloadAmt); // 여기서 이 task cancel 시킴
                 }
+                // Swap/Reload 액션바
                 if (!player.getGameMode().equals(GameMode.SPECTATOR)) {
                     if (eventType.equals(EventType.Swapping)) {
                         player.sendActionBar("§f§l" + weaponTitle + " §fSwap §e" + leftTime + "§es");
@@ -66,6 +67,6 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
             }
         }.runTaskTimer((Plugin) CrackShotAddition.getInstance(), 0, 2);
 
-        WeaponActionbar.getInstance().putRunnableToMapAndCancelLastestOne(player, task);
+        WeaponActionbar.getInstance().putRunnableToMapAndCancelLastestOne(player, task); // run()이 실행되는동안 이게 실행이 안되는게 아님.
     }
 }
