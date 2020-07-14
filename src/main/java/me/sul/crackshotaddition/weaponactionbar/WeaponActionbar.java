@@ -1,8 +1,7 @@
 package me.sul.crackshotaddition.weaponactionbar;
 
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
-import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangeEvent;
-import org.bukkit.Bukkit;
+import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangedEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,7 +27,7 @@ public class WeaponActionbar implements Listener {
     }
 
     @EventHandler
-    public void onMainItemChanged(PlayerMainItemChangeEvent e) {
+    public void onMainItemChanged(PlayerMainItemChangedEvent e) {
         if (!CrackShotAdditionAPI.checkIfItemIsGun(e.getNewItem())) {
             // Runnable 캔슬
             BukkitTask playerActionbarTask = weaponActionbarRunnableOfPlayers.get(e.getPlayer().getUniqueId());
