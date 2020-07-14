@@ -31,12 +31,12 @@ public class WeaponAmmoActionbar implements Listener {
         indicateAmmoInActionbar(e.getPlayer(), e.getWeaponTitle(), currentAmmo, reloadAmt);
     }
 
-    public void indicateAmmoInActionbar(Player player, String parent_node, int ammo, int reloadAmt) {
+    public void indicateAmmoInActionbar(Player player, String parentNode, int ammo, int reloadAmt) {
         BukkitTask runnable = new BukkitRunnable() {
             @Override
             public void run() {
                 if (!player.getGameMode().equals(GameMode.SPECTATOR)) {
-                    player.sendActionBar("§f§l" + parent_node + " §e" + ammo + " §f§l/ §e" + reloadAmt);
+                    player.sendActionBar("§f§l" + parentNode + " §e" + ammo + " §f§l/ §e" + reloadAmt);
                 }
             }
         }.runTaskTimer((Plugin) CrackShotAddition.getInstance(), 0, 20);

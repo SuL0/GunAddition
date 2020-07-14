@@ -22,23 +22,25 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
     // 총기 스왑
     @EventHandler
     public void onWeaponHeld(CrackShotWeaponHeldEvent e) {
+        Player p = e.getPlayer();
         if (e.isWeaponSwap()) {
             indicateSwappingOrReloadingInActionbar(e.getPlayer(), EventType.Swapping, e.getWeaponItem(), e.getWeaponTitle(), e.getSwapDelay());
         } else {
-            int currentAmmo = CrackShotAdditionAPI.getWeaponAmmoAmount(e.getPlayer(), e.getWeaponTitle(), e.getWeaponItem());
-            int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(e.getPlayer(), e.getWeaponTitle(), e.getWeaponItem());
-            WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(e.getPlayer(), e.getWeaponTitle(), currentAmmo, reloadAmt);
+            int currentAmmo = CrackShotAdditionAPI.getWeaponAmmoAmount(p, e.getWeaponTitle(), e.getWeaponItem());
+            int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(p, e.getWeaponTitle(), e.getWeaponItem());
+            WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(p, e.getWeaponTitle(), currentAmmo, reloadAmt);
         }
     }
 
     // 총기 리로드
     @EventHandler
     public void onWeaponReload(WeaponReloadEvent e) {
-        indicateSwappingOrReloadingInActionbar(e.getPlayer(), EventType.Reloading, e.getPlayer().getInventory().getItemInMainHand(), e.getWeaponTitle(), e.getReloadDuration());
+        ItemStack is = e.getPlayer().getInventory().getItemInMainHand();
+        indicateSwappingOrReloadingInActionbar(e.getPlayer(), EventType.Reloading, is, e.getWeaponTitle(), e.getReloadDuration());
     }
 
 
-    public void indicateSwappingOrReloadingInActionbar(Player player, EventType eventType, ItemStack weaponItem, String weaponTitle, int totalTime) {
+    public void indicateSwappingOrReloadingInActionbar(Player player, EventType eventType, ItemStack weaponItem, String parentNode, int totalTime) {
         BukkitTask task = new BukkitRunnable() {
             float leftTime = totalTime/20F;
 
@@ -47,20 +49,20 @@ public class WeaponSwappingOrReloadingActionbar implements Listener {
                 // Swap/Reload 끝나면 Ammo 액션바로 교체
                 if (leftTime <= 0) {
                     int ammo = 0;
-                    int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(player, weaponTitle, weaponItem);
+                    int reloadAmt = CrackShotAdditionAPI.getWeaponReloadAmount(player, parentNode, weaponItem);
                     if (eventType.equals(EventType.Swapping)) {
-                        ammo = CrackShotAdditionAPI.getWeaponAmmoAmount(player, weaponTitle, weaponItem);
+                        ammo = CrackShotAdditionAPI.getWeaponAmmoAmount(player, parentNode, weaponItem);
                     } else if (eventType.equals(EventType.Reloading)){
                         ammo = reloadAmt;
                     }
-                    WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(player, weaponTitle, ammo, reloadAmt); // 여기서 이 task cancel 시킴
+                    WeaponAmmoActionbar.getInstance().indicateAmmoInActionbar(player, parentNode, ammo, reloadAmt); // 여기서 이 task cancel 시킴
                 }
                 // Swap/Reload 액션바
                 if (!player.getGameMode().equals(GameMode.SPECTATOR)) {
                     if (eventType.equals(EventType.Swapping)) {
-                        player.sendActionBar("§f§l" + weaponTitle + " §fSwap §e" + leftTime + "§es");
+                        player.sendActionBar("§f§l" + parentNode + " §fSwap §e" + leftTime + "§es");
                     } else if (eventType.equals(EventType.Reloading)){
-                        player.sendActionBar("§f§l" + weaponTitle + " §fReload §e" + leftTime + "§es");
+                        player.sendActionBar("§f§l" + parentNode + " §fReload §e" + leftTime + "§es");
                     }
                 }
                 leftTime = Math.round((leftTime-0.1)*10)/10F; // -2틱, 부동소수점 때문에 round로 소수점 1자리까지 반올림 하게 만듦.
