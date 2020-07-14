@@ -24,7 +24,7 @@ public class WeaponSwapDelay implements Listener {
 
     @EventHandler
     public void onMainItemChange(PlayerMainItemChangeEvent e) {
-        String previousWeaponTitle = CrackShotAdditionAPI.getWeaponTitle(e.getPreviousItem());
+        String previousWeaponTitle = CrackShotAdditionAPI.getWeaponTitle(e.getClonedPreviousItem());
         String newWeaponTitle = CrackShotAdditionAPI.getWeaponTitle(e.getNewItem());
         if (newWeaponTitle != null) {
             int swapDelay;
