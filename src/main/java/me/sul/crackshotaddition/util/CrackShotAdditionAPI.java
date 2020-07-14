@@ -1,5 +1,6 @@
 package me.sul.crackshotaddition.util;
 
+import com.shampaggon.crackshot.CSDirector;
 import com.shampaggon.crackshot.CSMinion;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,9 +18,9 @@ public class CrackShotAdditionAPI {
 
 	public static int getWeaponAmmoAmount(Player player, String parent_node, ItemStack is) {
 		int currentAmmo = getWeaponAmmoAmount_CSP(is);
+		// 듀얼모드(|)가 있을 때
 		if (currentAmmo == -1) {
-			// 듀얼모드(|)가 있을 때
-			// SEE: Airstrike같이 한번 쓰고 없어지는 템은 null이 뜸. (총기 내구도 때문에 파괴돼도 그럴지도?)
+			// NOTE: Airstrike같이 한번 쓰고 없어지는 템은 null이 뜸. (총기 내구도 때문에 파괴돼도 그럴지도?)
 			currentAmmo = CrackShotAddition.getCSDirector().getAmmoBetweenBrackets(player, parent_node, is);
 		}
 		return currentAmmo;
@@ -64,5 +65,9 @@ public class CrackShotAdditionAPI {
 			}
 		}
 		return -1;
+	}
+
+	public static String getINameFromConfig(String parentNode) {
+		return CSDirector.getInstance().getString(parentNode + ".Item_Information.Item_Name");
 	}
 }
