@@ -12,29 +12,29 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class WeaponSounds implements Listener {
+public class WeaponSwapSound implements Listener {
 	HashMap<UUID, String> previousSwapSound = new HashMap<UUID, String>();
 
 	public static String getSwapSound(ItemStack item) {
-		if (CrackShotAdditionAPI.checkIfItemIsGun(item)) {
-			if (item.getItemMeta().hasLore()) {
-				for (String lore: item.getItemMeta().getLore()) {
-					if (lore.contains("����")) {
-						return "ardraw";
-					} else if (lore.contains("����")) {
-						return "sgpump";
-					} else if (lore.contains("�����")) {
-	//					return "sgshoot";
-					} else if (lore.contains("����")) {
-	//					return "sgshoot";
-					} else if (lore.contains("������")) {
-						return "srdraw";
-					} else if (lore.contains("�������")) {
-						return "smgdraw";
-					}
-				}
-			}
-		}
+//		if (CrackShotAdditionAPI.checkIfItemIsGun(item)) {
+//			if (item.getItemMeta().hasLore()) {
+//				for (String lore: item.getItemMeta().getLore()) {
+//					if (lore.contains("����")) {
+//						return "ardraw";
+//					} else if (lore.contains("����")) {
+//						return "sgpump";
+//					} else if (lore.contains("�����")) {
+//	//					return "sgshoot";
+//					} else if (lore.contains("����")) {
+//	//					return "sgshoot";
+//					} else if (lore.contains("������")) {
+//						return "srdraw";
+//					} else if (lore.contains("�������")) {
+//						return "smgdraw";
+//					}
+//				}
+//			}
+//		}
 		return "itemswap";
 	}
 	

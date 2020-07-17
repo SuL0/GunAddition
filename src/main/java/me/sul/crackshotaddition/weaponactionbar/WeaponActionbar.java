@@ -28,7 +28,7 @@ public class WeaponActionbar implements Listener {
 
     @EventHandler
     public void onMainItemChanged(PlayerMainItemChangedEvent e) {
-        if (!CrackShotAdditionAPI.checkIfItemIsGun(e.getNewItem())) {
+        if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.getNewItem())) {
             // Runnable 캔슬
             BukkitTask playerActionbarTask = weaponActionbarRunnableOfPlayers.get(e.getPlayer().getUniqueId());
             if (playerActionbarTask != null) {
@@ -37,7 +37,7 @@ public class WeaponActionbar implements Listener {
                 }
             }
             // 기존 액션바 지우기
-            if (CrackShotAdditionAPI.checkIfItemIsGun(e.getClonedPreviousItem())) {
+            if (CrackShotAdditionAPI.isValidCrackShotWeapon(e.getClonedPreviousItem())) {
                 e.getPlayer().sendActionBar("§f");
             }
         }

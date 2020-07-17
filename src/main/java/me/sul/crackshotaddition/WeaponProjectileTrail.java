@@ -45,7 +45,7 @@ public class WeaponProjectileTrail implements Listener {
 			boolean skipFirstLoc = true;
 			@Override
 			public void run() {
-				if (projectile.isValid() == false) cancel();
+				if (!projectile.isValid()) cancel();
 				loc = projectile.getLocation();
 				if (!skipFirstLoc) {
 					List<Player> nearbyPlayers = new ArrayList<>();
@@ -74,9 +74,9 @@ public class WeaponProjectileTrail implements Listener {
 	}
 	
 	public static void hideEntity(Entity entity) {
-		PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(new int[]{entity.getEntityId()});
+		PacketPlayOutEntityDestroy packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(entity.getEntityId());
 		for (Player player : entity.getWorld().getPlayers()) {
-            ((CraftPlayer)player).getHandle().playerConnection.sendPacket((Packet)packetPlayOutEntityDestroy);
+            ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packetPlayOutEntityDestroy);
         }
 	}
 }
