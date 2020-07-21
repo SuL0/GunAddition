@@ -24,16 +24,16 @@ public class WeaponSwapDelay implements Listener {
 
     @EventHandler
     public void onMainItemChange(PlayerMainItemChangedEvent e) {
-        String previousWeaponTitle = CrackShotAdditionAPI.getWeaponTitle(e.getClonedPreviousItem());
-        String newWeaponTitle = CrackShotAdditionAPI.getWeaponTitle(e.getNewItem());
-        if (newWeaponTitle != null) {
+        String previousWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getClonedPreviousItem());
+        String newWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getNewItem());
+        if (newWeaponParentNode != null) {
             int swapDelay;
-            if (previousWeaponTitle != null) {
+            if (previousWeaponParentNode != null) {
                 swapDelay = WEAPON_SWAPDELAY;
             } else {
                 swapDelay = 0;
             }
-            Bukkit.getServer().getPluginManager().callEvent(new CrackShotWeaponHeldEvent(e.getPlayer(), e.getNewItem(), newWeaponTitle, swapDelay));
+            Bukkit.getServer().getPluginManager().callEvent(new CrackShotWeaponHeldEvent(e.getPlayer(), e.getNewItem(), newWeaponParentNode, swapDelay));
             if (swapDelay > 0) {
                 swapDelayOfPlayers.put(e.getPlayer().getUniqueId(), System.currentTimeMillis() + swapDelay*50); // 1tick = 1ms * 50
             }
