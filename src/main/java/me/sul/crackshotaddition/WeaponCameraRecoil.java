@@ -20,7 +20,7 @@ public class WeaponCameraRecoil implements Listener {
 		if (e.getWeaponTitle().equals("N화염방사기")) {
 			cameraRecoil(e.getPlayer(), 0, 0);
 		} else {
-			cameraRecoil(e.getPlayer(), 0, -0.5F);
+			cameraRecoil(e.getPlayer(), 0, -0.8F);
 		}
 	}
 	

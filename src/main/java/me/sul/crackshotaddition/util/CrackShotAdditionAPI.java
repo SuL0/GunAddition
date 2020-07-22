@@ -1,6 +1,7 @@
 package me.sul.crackshotaddition.util;
 
 import com.shampaggon.crackshot.CSDirector;
+import com.shampaggon.crackshot.CSMinion;
 import com.shampaggon.crackshot.CSUtility;
 import me.sul.servercore.serialnumber.UniqueIdAPI;
 import org.bukkit.Material;
@@ -14,7 +15,10 @@ public class CrackShotAdditionAPI {
 		return CrackShotAddition.getCSDirector();
 	}
 	private static CSUtility getCSUtility() {
-		return CrackShotAddition.getCSUtility();
+		return CrackShotAddition.getCsUtility();
+	}
+	private static CSMinion getCSMinion() {
+		return CrackShotAddition.getCSMinion();
 	}
 
 	public static boolean isValidCrackShotWeapon(ItemStack is) {
@@ -23,16 +27,22 @@ public class CrackShotAdditionAPI {
 				UniqueIdAPI.hasUniqueID(is));
 	}
 
+	public static String getWeaponNbtName(ItemStack is) {
+		return getCSMinion().getWeaponNbtName(is);
+	}
+
 	public static String getWeaponParentNode(ItemStack is) {
 		return getCSUtility().getWeaponTitle(is);
 	}
 
-	public static String getWeaponConfigName(ItemStack is) {
-		return getWeaponConfigName(getWeaponParentNode(is));
+
+	public static String getWeaponConfigName(ItemStack is) { // 방법1
+		return getCSDirector().getPureName(getWeaponNbtName(is));
 	}
-	public static String getWeaponConfigName(String parentNode) {
+	public static String getWeaponConfigName(String parentNode) { // 방법2
 		return getCSDirector().getString(parentNode + ".Item_Information.Item_Name");
 	}
+
 
 	public static int getWeaponReloadAmount(Player player, String parent_node, ItemStack is) {
 		return getCSDirector().getReloadAmount(player, parent_node, is);
