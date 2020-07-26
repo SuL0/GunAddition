@@ -19,27 +19,27 @@ public class WeaponBlockBreakEffect implements Listener {
 
 	@SuppressWarnings("deprecation")
 	@EventHandler
-	public void onWeaponHitBlock(WeaponHitBlockEvent event) {
-		if (event.getBlock().getType().equals(Material.AIR)) return;
+	public void onWeaponHitBlock(WeaponHitBlockEvent e) {
+		if (e.getBlock().getType().equals(Material.AIR)) return;
 
-		final CrackShotProjectileBlockBreakEffectEvent customEvent = new CrackShotProjectileBlockBreakEffectEvent(event.getPlayer(), event.getWeaponTitle());
+		final CrackShotProjectileBlockBreakEffectEvent customEvent = new CrackShotProjectileBlockBreakEffectEvent(e.getPlayer(), e.getWeaponTitle());
         CrackShotAddition.getInstance().getServer().getPluginManager().callEvent((Event)customEvent);
         if (customEvent.isCancelled()) return;
 
-		Location blockLoc = event.getBlock().getLocation().add(0.5, 0.5, 0.5);
-		blockLoc.add(event.getProjectile().getVelocity().multiply(-1).normalize());
-//		e.getBlock().getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, blockLoc, 20, 0, 0, 0, 1, e.getBlock().getType(), true);		1.15
+		Location blockLoc = e.getBlock().getLocation().add(0.5, 0.5, 0.5);
+		blockLoc.add(e.getProjectile().getVelocity().multiply(-1).normalize());
+
 		List<Player> nearbyPlayers = new ArrayList<>();
-		nearbyPlayers.add(event.getPlayer());
+		nearbyPlayers.add(e.getPlayer());
 		for (Player loopPlayer : Bukkit.getServer().getOnlinePlayers()) {
-			if (loopPlayer.equals(event.getPlayer())) continue;
+			if (loopPlayer.equals(e.getPlayer())) continue;
 			if (loopPlayer.getLocation().distance(blockLoc) <= 100) {
 				nearbyPlayers.add(loopPlayer);
 			}
 		}
-		event.getBlock().getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, event.getPlayer(),
+		e.getBlock().getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, e.getPlayer(),
 				blockLoc.getX(), blockLoc.getY(), blockLoc.getZ(),
 				20, 0, 0, 0, 1,
-				new MaterialData(event.getBlock().getType()), true);
+				new MaterialData(e.getBlock().getType()), true);  // 1.15버전은 new MaterialData(...) -> e.getBlock.getType() 만 해도됨
 	}
 }

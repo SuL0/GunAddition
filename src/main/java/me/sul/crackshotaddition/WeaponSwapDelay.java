@@ -24,8 +24,8 @@ public class WeaponSwapDelay implements Listener {
 
     @EventHandler
     public void onMainItemChange(PlayerMainItemChangedEvent e) {
-        String previousWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getClonedPreviousItem());
-        String newWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getNewItem());
+        String previousWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getClonedPreviousItemStack());
+        String newWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getNewItemStack());
         if (newWeaponParentNode != null) {
             int swapDelay;
             if (previousWeaponParentNode != null) {
@@ -33,7 +33,7 @@ public class WeaponSwapDelay implements Listener {
             } else {
                 swapDelay = 0;
             }
-            Bukkit.getServer().getPluginManager().callEvent(new CrackShotWeaponHeldEvent(e.getPlayer(), e.getNewItem(), newWeaponParentNode, swapDelay));
+            Bukkit.getServer().getPluginManager().callEvent(new CrackShotWeaponHeldEvent(e.getPlayer(), e.getNewItemStack(), newWeaponParentNode, swapDelay));
             if (swapDelay > 0) {
                 swapDelayOfPlayers.put(e.getPlayer().getUniqueId(), System.currentTimeMillis() + swapDelay*50); // 1tick = 1ms * 50
             }
@@ -44,7 +44,7 @@ public class WeaponSwapDelay implements Listener {
 //    
 //    크랙샷 무기 모든 행위 캔슬시키기
 //    
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPrepareShoot(WeaponPrepareShootEvent e) {
         if (swapDelayOfPlayers.containsKey(e.getPlayer().getUniqueId())) {
             if (swapDelayOfPlayers.get(e.getPlayer().getUniqueId()) <= System.currentTimeMillis()) {
@@ -54,7 +54,7 @@ public class WeaponSwapDelay implements Listener {
             }
         }
     }
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onReload(WeaponReloadEvent e) {
         if (swapDelayOfPlayers.containsKey(e.getPlayer().getUniqueId())) {
             if (swapDelayOfPlayers.get(e.getPlayer().getUniqueId()) <= System.currentTimeMillis()) {
@@ -64,7 +64,7 @@ public class WeaponSwapDelay implements Listener {
             }
         }
     }
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onScope(WeaponScopeEvent e) {
         if (swapDelayOfPlayers.containsKey(e.getPlayer().getUniqueId())) {
             if (swapDelayOfPlayers.get(e.getPlayer().getUniqueId()) <= System.currentTimeMillis()) {

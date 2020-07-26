@@ -36,7 +36,7 @@ public class WeaponAmmoActionbar implements Listener {
             @Override
             public void run() {
                 if (!player.getGameMode().equals(GameMode.SPECTATOR)) {
-                    player.sendActionBar("§f§l" + parentNode + " §e" + ammo + " §f§l/ §e" + reloadAmt);
+                    player.sendActionBar("§f§l" + parentNode + " §e" + ammo + " §f/ §e" + reloadAmt);
                 }
             }
         }.runTaskTimer((Plugin) CrackShotAddition.getInstance(), 0, 20);

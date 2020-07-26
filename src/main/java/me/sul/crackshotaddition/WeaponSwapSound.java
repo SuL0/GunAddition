@@ -42,8 +42,8 @@ public class WeaponSwapSound implements Listener {
 	@EventHandler
 	public void onSwap(PlayerMainItemChangedEvent e) {
 		Player p = e.getPlayer();
-		if (!(e.getNewItem().getType().equals(Material.AIR))) {
-			String sound = getSwapSound(e.getNewItem());
+		if (!(e.getNewItemStack().getType().equals(Material.AIR))) {
+			String sound = getSwapSound(e.getNewItemStack());
 			if (previousSwapSound.containsKey(p.getUniqueId())) {
 				p.stopSound(previousSwapSound.get(p.getUniqueId()));
 			}

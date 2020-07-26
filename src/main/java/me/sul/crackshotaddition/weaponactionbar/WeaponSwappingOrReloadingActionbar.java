@@ -4,7 +4,6 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent;
 import me.sul.crackshotaddition.CrackShotAddition;
 import me.sul.crackshotaddition.events.CrackShotWeaponHeldEvent;
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
