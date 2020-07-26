@@ -5,7 +5,7 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import me.sul.crackshotaddition.events.CrackShotWeaponHeldEvent;
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
-import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangedEvent;
+import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangedConsideringUidEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,7 +23,7 @@ public class WeaponSwapDelay implements Listener {
     public void onQuit(PlayerQuitEvent e) { swapDelayOfPlayers.remove(e.getPlayer().getUniqueId()); }
 
     @EventHandler
-    public void onMainItemChange(PlayerMainItemChangedEvent e) {
+    public void onMainItemChange(PlayerMainItemChangedConsideringUidEvent e) {
         String previousWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getClonedPreviousItemStack());
         String newWeaponParentNode = CrackShotAdditionAPI.getWeaponParentNode(e.getNewItemStack());
         if (newWeaponParentNode != null) {

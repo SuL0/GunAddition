@@ -1,7 +1,7 @@
 package me.sul.crackshotaddition;
 
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
-import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangedEvent;
+import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangedConsideringUidEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,7 +40,7 @@ public class WeaponSwapSound implements Listener {
 	
 
 	@EventHandler
-	public void onSwap(PlayerMainItemChangedEvent e) {
+	public void onSwap(PlayerMainItemChangedConsideringUidEvent e) {
 		Player p = e.getPlayer();
 		if (!(e.getNewItemStack().getType().equals(Material.AIR))) {
 			String sound = getSwapSound(e.getNewItemStack());
