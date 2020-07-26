@@ -55,6 +55,7 @@ public class CrackShotAddition extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapDelay(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponMuzzleFlash(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemFlutterFixation(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new MainCrackShotWeaponInfoMetaManager(), this);
 	}
 
 	public static CrackShotAddition getInstance() {
