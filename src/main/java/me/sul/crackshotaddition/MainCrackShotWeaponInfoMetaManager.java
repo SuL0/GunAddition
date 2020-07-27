@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -35,7 +36,7 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
     private static final String UNIQUE_ID_META = "csa.unique_id"; // 가변       // 진짜 총알 아이템 개수(*ReloadAmountPerAmmo 없음)
 
 
-    public static boolean isSet(Player p) {
+    public static boolean isSet(Player p) {  // 이 클래스 내부에서는 isSet()을 쓰지 않는게 좋음.
         return getItemStack(p) != null;
     }
     public static ItemStack getItemStack(Player p) {  // Metadata들이 올바르지 않는 경우는 PlayerItemHeldEvent에서 메소드를 호출했을 때 말곤 없음. 근데 모든 데이터가 얘를 기준으로 얻어질테니 엄청난 문제는 없을지도.
@@ -81,7 +82,7 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
         Player p = e.getPlayer();
         ItemStack newIs = e.getNewItemStack();
         if (!e.isChangedToCrackShotWeapon()) {
-            if (getParentNode(p) != null) {
+            if (getParentNode(p) != null) { // 여기서 isSet()은 쓰면 안됨. ItemStack이 다를 수 밖에 없기때문.
                 removeAllOfCrackShotMeta(p);
             }
             return;
@@ -179,5 +180,17 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
         int reloadAmmoAmt = getReloadAmmoAmount(p);
         p.setMetadata(CURRENT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, reloadAmmoAmt));
     }
-    
+
+
+
+
+
+    /* 램 관리 */
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        Player p = e.getPlayer();
+        if (getParentNode(p) != null) {
+            removeAllOfCrackShotMeta(p);
+        }
+    }
 }
