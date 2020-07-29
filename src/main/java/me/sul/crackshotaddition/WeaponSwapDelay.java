@@ -5,7 +5,7 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import me.sul.crackshotaddition.events.CrackShotWeaponHeldEvent;
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
-import me.sul.servercore.playertoolchangeevent.PlayerMainItemChangedConsideringUidEvent;
+import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
