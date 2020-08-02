@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.weaponnamecontroller;
+package me.sul.crackshotaddition.weaponappearance;
 
 import com.shampaggon.crackshot.CSDirector;
 import de.tr7zw.nbtapi.NBTItem;

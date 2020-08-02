@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition;
+package me.sul.crackshotaddition.weaponappearance;
 
 import com.shampaggon.crackshot.events.WeaponShootEvent;
 import org.bukkit.Bukkit;
@@ -12,14 +12,15 @@ import org.bukkit.util.Vector;
 import java.util.Collections;
 
 public class WeaponMuzzleFlash implements Listener {
-    private int RIGHT = 90;
-    private int LEFT = -90;
+    private final Particle MUZZLE_FLASH_PARTICLE = Particle.REDSTONE;
+    private final int RIGHT = 90;
+    private final int LEFT = -90;
 
 
     @EventHandler
     public void onShoot(WeaponShootEvent e) {
         if (e.getWeaponTitle().equals("AK-47_1")) {
-            spawnMuzzleFlashParticle(e.getPlayer(), RIGHT, 0.18F, -0.1F, 1.25F);
+            spawnMuzzleFlashParticle(e.getPlayer(), RIGHT, 0.17F, -0.2F, 1.25F);
         }
     }
 
@@ -41,6 +42,6 @@ public class WeaponMuzzleFlash implements Listener {
 
         // 최종 위치
         Location loc = p.getEyeLocation().toVector().add(toRightSideVec).add(toForwardSideVec).toLocation(p.getWorld());
-        loc.getWorld().spawnParticle(Particle.FLAME, Collections.singletonList(p), p, loc.getX(), loc.getY(), loc.getZ(), 1, 0, 0, 0, 0, null);
+        loc.getWorld().spawnParticle(MUZZLE_FLASH_PARTICLE, Collections.singletonList(p), p, loc.getX(), loc.getY(), loc.getZ(), 1, 0, 0, 0, 0, null);
     }
 }

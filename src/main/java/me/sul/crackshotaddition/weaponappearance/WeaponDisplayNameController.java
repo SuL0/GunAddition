@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.weaponnamecontroller;
+package me.sul.crackshotaddition.weaponappearance;
 
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent;
 import com.shampaggon.crackshot.events.WeaponShootEvent;

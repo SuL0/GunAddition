@@ -5,8 +5,7 @@ import com.shampaggon.crackshot.CSMinion;
 import me.sul.crackshotaddition.weaponactionbar.WeaponActionbar;
 import me.sul.crackshotaddition.weaponactionbar.WeaponAmmoActionbar;
 import me.sul.crackshotaddition.weaponactionbar.WeaponSwappingOrReloadingActionbar;
-import me.sul.crackshotaddition.weaponnamecontroller.WeaponDisplayNameController;
-import me.sul.crackshotaddition.weaponnamecontroller.WeaponDisplayNameFixation;
+import me.sul.crackshotaddition.weaponappearance.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,7 +28,7 @@ public class CrackShotAddition extends JavaPlugin implements Listener {
 		csDirector = (CSDirector) Bukkit.getPluginManager().getPlugin("CrackShot");
 //		registerWeaponActionbar();
 		registerWeapons();
-		registerWeaponDisplayNameController();
+		registerWeaponAppearance();
 		registerEvents();
 		Bukkit.getPluginManager().registerEvents(this, this);
 		getCommand("csa").setExecutor(new DebuggingCommand());
@@ -43,9 +42,12 @@ public class CrackShotAddition extends JavaPlugin implements Listener {
 	private void registerWeapons() {
 		Bukkit.getServer().getPluginManager().registerEvents(new FlameThrower(), this);
 	}
-	private void registerWeaponDisplayNameController() {
+	private void registerWeaponAppearance() {
 		new WeaponDisplayNameFixation();
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponDisplayNameController(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemFlutterFixation(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new WeaponMuzzleFlash(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemCooldownEffect(), this);
 	}
 	private void registerEvents() {
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapSound(), this);
@@ -53,8 +55,6 @@ public class CrackShotAddition extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponProjectileTrail(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponCameraRecoil(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapDelay(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponMuzzleFlash(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemFlutterFixation(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new MainCrackShotWeaponInfoMetaManager(), this);
 	}
 

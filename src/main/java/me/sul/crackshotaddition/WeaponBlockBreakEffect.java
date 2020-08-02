@@ -17,12 +17,11 @@ import java.util.List;
 
 public class WeaponBlockBreakEffect implements Listener {
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onWeaponHitBlock(WeaponHitBlockEvent e) {
 		if (e.getBlock().getType().equals(Material.AIR)) return;
 
-		final CrackShotProjectileBlockBreakEffectEvent customEvent = new CrackShotProjectileBlockBreakEffectEvent(e.getPlayer(), e.getWeaponTitle());
+		final CrackShotProjectileBlockBreakEffectEvent customEvent = new CrackShotProjectileBlockBreakEffectEvent(e.getPlayer(), e.getWeaponTitle()); // TODO: 파티클 여부는 무기.yml에 넣고 이벤트는 삭제하기
         CrackShotAddition.getInstance().getServer().getPluginManager().callEvent((Event)customEvent);
         if (customEvent.isCancelled()) return;
 
