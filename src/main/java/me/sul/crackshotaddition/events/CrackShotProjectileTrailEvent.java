@@ -1,7 +1,7 @@
 package me.sul.crackshotaddition.events;
 
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -9,20 +9,20 @@ import org.bukkit.event.HandlerList;
 
 public class CrackShotProjectileTrailEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
-	private Player player;
+	private Entity entity;
 	private boolean cancelled = false;
 	private Particle particle;
 	private String weaponTitle;
 	
-	public CrackShotProjectileTrailEvent(Player player, String weaponTitle, Particle particle) {
+	public CrackShotProjectileTrailEvent(Entity entity, String weaponTitle, Particle particle) {
 		this.particle = particle;
 		this.weaponTitle = weaponTitle;
-		this.player = player;
+		this.entity = entity;
 	}
-	public CrackShotProjectileTrailEvent(Player player, String weaponTitle, String particle) {
+	public CrackShotProjectileTrailEvent(Entity entity, String weaponTitle, String particle) {
 		this.particle = Particle.valueOf(particle.toUpperCase());
 		this.weaponTitle = weaponTitle;
-		this.player = player;
+		this.entity = entity;
 	}
 	public void setParticle(Particle particle) {
 		this.particle = particle;
@@ -30,8 +30,8 @@ public class CrackShotProjectileTrailEvent extends Event implements Cancellable 
 	public void setParticle(String particle) {
 		this.particle = Particle.valueOf(particle.toUpperCase());
 	}
-	public Player getPlayer() {
-		return player;
+	public Entity getEntity() {
+		return entity;
 	}
 	public String getWeaponTitle() {
 		return weaponTitle;
