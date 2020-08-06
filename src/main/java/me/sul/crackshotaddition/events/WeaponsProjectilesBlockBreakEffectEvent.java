@@ -5,13 +5,13 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class CrackShotProjectileBlockBreakEffectEvent extends Event implements Cancellable {
+public class WeaponsProjectilesBlockBreakEffectEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	private Player player;
 	private String weaponTitle;
 	private boolean cancelled = false;
 	
-	public CrackShotProjectileBlockBreakEffectEvent(Player player, String weaponTitle) {
+	public WeaponsProjectilesBlockBreakEffectEvent(Player player, String weaponTitle) {
 		this.player = player;
 		this.weaponTitle = weaponTitle;
 	}

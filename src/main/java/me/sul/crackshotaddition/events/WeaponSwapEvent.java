@@ -5,14 +5,14 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
-public class CrackShotWeaponHeldEvent extends Event {
+public class WeaponSwapEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player;
     private ItemStack weaponItem;
     private String weaponTitle;
     private int swapDelay;
 
-    public CrackShotWeaponHeldEvent(Player player, ItemStack weaponItem, String weaponTitle, Integer swapDelay) {
+    public WeaponSwapEvent(Player player, ItemStack weaponItem, String weaponTitle, Integer swapDelay) {
         this.player = player;
         this.weaponItem = weaponItem;
         this.weaponTitle = weaponTitle;
@@ -25,8 +25,6 @@ public class CrackShotWeaponHeldEvent extends Event {
     public ItemStack getWeaponItem() { return weaponItem; }
     public String getWeaponTitle() { return weaponTitle; }
     public int getSwapDelay() { return swapDelay; }
-
-    public boolean isWeaponSwap() { return (swapDelay > 0); }
 
     public HandlerList getHandlers() {
         return handlers;
