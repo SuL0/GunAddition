@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.weaponappearance;
+package me.sul.crackshotaddition.weaponappearance_item;
 
 import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;

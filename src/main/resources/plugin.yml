@@ -8,3 +8,8 @@ depend:
   - CrackShot
 softdepend:
   - ServerCore
+  - NBTAPI
+  - CustomEntity
+
+commands:
+  csa:

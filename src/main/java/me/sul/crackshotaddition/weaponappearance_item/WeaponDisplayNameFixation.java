@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.weaponappearance;
+package me.sul.crackshotaddition.weaponappearance_item;
 
 import com.shampaggon.crackshot.CSDirector;
 import de.tr7zw.nbtapi.NBTItem;
@@ -19,7 +19,8 @@ public class WeaponDisplayNameFixation {
                 for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                     ItemStack mainIs = p.getInventory().getItemInMainHand();
                     if (CrackShotAdditionAPI.isValidCrackShotWeapon(mainIs)) {
-                        NBTItem nbti = new NBTItem(mainIs);
+                        Bukkit.getServer().broadcastMessage("§e§lNameFixation");
+                        NBTItem nbti = new NBTItem(mainIs.clone());
                         nbti.setBoolean(NBT_FOR_NAME_FIXATION, bool);
                         mainIs.setItemMeta(nbti.getItem().getItemMeta());
                     }

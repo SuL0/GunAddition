@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition;
+package me.sul.crackshotaddition.weaponappearance_etc;
 
 import com.shampaggon.crackshot.events.WeaponShootEvent;
 import net.minecraft.server.v1_12_R1.Packet;

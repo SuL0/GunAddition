@@ -2,10 +2,11 @@ package me.sul.crackshotaddition;
 
 import com.shampaggon.crackshot.CSDirector;
 import com.shampaggon.crackshot.CSMinion;
-import me.sul.crackshotaddition.weaponactionbar.WeaponActionbar;
-import me.sul.crackshotaddition.weaponactionbar.WeaponAmmoActionbar;
-import me.sul.crackshotaddition.weaponactionbar.WeaponSwappingOrReloadingActionbar;
-import me.sul.crackshotaddition.weaponappearance.*;
+import me.sul.crackshotaddition.weaponappearance_etc.WeaponBlockBreakEffect;
+import me.sul.crackshotaddition.weaponappearance_etc.WeaponCameraRecoil;
+import me.sul.crackshotaddition.weaponappearance_etc.WeaponMuzzleFlash;
+import me.sul.crackshotaddition.weaponappearance_etc.WeaponProjectileTrail;
+import me.sul.crackshotaddition.weaponappearance_item.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +15,7 @@ import com.shampaggon.crackshot.CSUtility;
 
 import me.sul.crackshotaddition.weapons.FlameThrower;
 
-public class CrackShotAddition extends JavaPlugin implements Listener {
+public class CrackShotAddition extends JavaPlugin {
 	private static CrackShotAddition instance;
 	private static CSUtility csUtility;
 	private static CSDirector csDirector;
@@ -26,30 +27,16 @@ public class CrackShotAddition extends JavaPlugin implements Listener {
 		csUtility = new CSUtility();
 		csMinion = CSMinion.getInstance();
 		csDirector = (CSDirector) Bukkit.getPluginManager().getPlugin("CrackShot");
-//		registerWeaponActionbar();
-		registerWeapons();
-		registerWeaponAppearance();
-		registerEvents();
-		Bukkit.getPluginManager().registerEvents(this, this);
+		registerClasses();
 		getCommand("csa").setExecutor(new DebuggingCommand());
 
 	}
-	private void registerWeaponActionbar() {
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponActionbar(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponAmmoActionbar(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwappingOrReloadingActionbar(), this);
-	}
-	private void registerWeapons() {
+	private void registerClasses() {
 		Bukkit.getServer().getPluginManager().registerEvents(new FlameThrower(), this);
-	}
-	private void registerWeaponAppearance() {
-		new WeaponDisplayNameFixation();
+//		new WeaponDisplayNameFixation();		// NOTE: 이게 ServerCore의 인벤토리 이벤트에 문제를 일으킴
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponDisplayNameController(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemFlutterFixation(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponMuzzleFlash(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemCooldownEffect(), this);
-	}
-	private void registerEvents() {
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapSound(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponBlockBreakEffect(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WeaponProjectileTrail(), this);
@@ -65,6 +52,5 @@ public class CrackShotAddition extends JavaPlugin implements Listener {
 		return csUtility;
 	}
 	public static CSDirector getCsDirector() { return csDirector; }
-	public static CSDirector getCSDirector() { return csDirector; }
-	public static CSMinion getCSMinion() { return csMinion; }
+	public static CSMinion getCsMinion() { return csMinion; }
 }

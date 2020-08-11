@@ -12,13 +12,13 @@ import me.sul.crackshotaddition.CrackShotAddition;
 
 public class CrackShotAdditionAPI {
 	private static CSDirector getCSDirector() {
-		return CrackShotAddition.getCSDirector();
+		return CrackShotAddition.getCsDirector();
 	}
 	private static CSUtility getCSUtility() {
 		return CrackShotAddition.getCsUtility();
 	}
 	private static CSMinion getCSMinion() {
-		return CrackShotAddition.getCSMinion();
+		return CrackShotAddition.getCsMinion();
 	}
 
 	public static boolean isValidCrackShotWeapon(ItemStack is) {

@@ -1,7 +1,6 @@
-package me.sul.crackshotaddition.weaponappearance;
+package me.sul.crackshotaddition.weaponappearance_etc;
 
 import com.shampaggon.crackshot.events.WeaponShootEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;

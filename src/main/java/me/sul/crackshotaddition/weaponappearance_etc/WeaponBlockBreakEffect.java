@@ -1,11 +1,9 @@
-package me.sul.crackshotaddition;
+package me.sul.crackshotaddition.weaponappearance_etc;
 
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
-import me.sul.crackshotaddition.events.CrackShotProjectileBlockBreakEffectEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import me.sul.crackshotaddition.CrackShotAddition;
+import me.sul.crackshotaddition.events.WeaponsProjectilesBlockBreakEffectEvent;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -21,7 +19,7 @@ public class WeaponBlockBreakEffect implements Listener {
 	public void onWeaponHitBlock(WeaponHitBlockEvent e) {
 		if (e.getBlock().getType().equals(Material.AIR)) return;
 
-		final CrackShotProjectileBlockBreakEffectEvent customEvent = new CrackShotProjectileBlockBreakEffectEvent(e.getPlayer(), e.getWeaponTitle()); // TODO: 파티클 여부는 무기.yml에 넣고 이벤트는 삭제하기
+		final WeaponsProjectilesBlockBreakEffectEvent customEvent = new WeaponsProjectilesBlockBreakEffectEvent(e.getPlayer(), e.getWeaponTitle()); // TODO: 파티클 여부는 무기.yml에 넣고 이벤트는 삭제하기
         CrackShotAddition.getInstance().getServer().getPluginManager().callEvent((Event)customEvent);
         if (customEvent.isCancelled()) return;
 
@@ -40,5 +38,13 @@ public class WeaponBlockBreakEffect implements Listener {
 				blockLoc.getX(), blockLoc.getY(), blockLoc.getZ(),
 				20, 0, 0, 0, 1,
 				new MaterialData(e.getBlock().getType()), true);  // 1.15버전은 new MaterialData(...) -> e.getBlock.getType() 만 해도됨
+
+		// TODO: 블럭 부숴지는 소리 추가
 	}
+
+//	private Sound getBlockBreakSound(Block block) {
+//		WorldServer nmsWorld = ((CraftWorld) block.getWorld()).getHandle();
+//		BlockPosition blockPosition = new BlockPosition(block.getX(), block.getY(), block.getZ());
+//		nmsWorld.
+//	}
 }
