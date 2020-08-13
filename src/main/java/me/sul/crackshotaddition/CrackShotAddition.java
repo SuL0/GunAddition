@@ -30,19 +30,23 @@ public class CrackShotAddition extends JavaPlugin {
 		registerClasses();
 		getCommand("csa").setExecutor(new DebuggingCommand());
 
+
+		ItemDropTest instance = new ItemDropTest();
+		Bukkit.getPluginManager().registerEvents(instance, CrackShotAddition.getInstance());
+		getCommand("itemtest").setExecutor(instance);
 	}
 	private void registerClasses() {
 		Bukkit.getServer().getPluginManager().registerEvents(new FlameThrower(), this);
-//		new WeaponDisplayNameFixation();		// NOTE: 이게 ServerCore의 인벤토리 이벤트에 문제를 일으킴
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponDisplayNameController(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemFlutterFixation(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponMuzzleFlash(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapSound(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponBlockBreakEffect(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponProjectileTrail(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponCameraRecoil(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapDelay(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new MainCrackShotWeaponInfoMetaManager(), this);
+//		new WeaponDisplayNameFixation();		// NOTE: 이게 ServerCore의 인벤토리 이벤트에 문제를 일으킴, ㄴㄴ 없어도 되는데?
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponDisplayNameController(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponItemFlutterFixation(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponMuzzleFlash(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapSound(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponBlockBreakEffect(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponProjectileTrail(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponCameraRecoil(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new WeaponSwapDelay(), this);
+//		Bukkit.getServer().getPluginManager().registerEvents(new MainCrackShotWeaponInfoMetaManager(), this);
 	}
 
 	public static CrackShotAddition getInstance() {

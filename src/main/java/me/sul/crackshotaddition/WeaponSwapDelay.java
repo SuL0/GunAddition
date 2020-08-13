@@ -1,5 +1,6 @@
 package me.sul.crackshotaddition;
 
+import com.shampaggon.crackshot.CSDirector;
 import com.shampaggon.crackshot.events.WeaponPrepareShootEvent;
 import com.shampaggon.crackshot.events.WeaponReloadEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
@@ -17,7 +18,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class WeaponSwapDelay implements Listener {
-    private final int WEAPON_SWAPDELAY = 8; // ticks
     private final HashMap<UUID, Long> swapDelayOfPlayers = new HashMap<UUID, Long>();
 
     @EventHandler
@@ -32,18 +32,19 @@ public class WeaponSwapDelay implements Listener {
             p.setCooldown(e.getClonedPreviousItemStack().getType(), 0);
         }
 
+        int configSwapDelay = CSDirector.getInstance().getInt(newWeaponParentNode + ".Addition.Weapon_Swap_Delay");
         if (newWeaponParentNode != null) {
-            Bukkit.getServer().getPluginManager().callEvent(new WeaponSwapEvent(p, e.getNewItemStack(), newWeaponParentNode, WEAPON_SWAPDELAY));
-            long swapDelay = System.currentTimeMillis() + WEAPON_SWAPDELAY*50; // 1tick = 1ms * 50
-            swapDelayOfPlayers.put(p.getUniqueId(), swapDelay);
-            p.setCooldown(e.getNewItemStack().getType(), WEAPON_SWAPDELAY);
+            Bukkit.getServer().getPluginManager().callEvent(new WeaponSwapEvent(p, e.getNewItemStack(), newWeaponParentNode, configSwapDelay));
+            long convertedSwapDelay = System.currentTimeMillis() + configSwapDelay * 50; // 1tick = 1ms * 50
+            swapDelayOfPlayers.put(p.getUniqueId(), convertedSwapDelay);
+            p.setCooldown(e.getNewItemStack().getType(), configSwapDelay);
 
             Bukkit.getScheduler().runTaskLater(CrackShotAddition.getInstance(), () -> {
                 if (MainCrackShotWeaponInfoMetaManager.isSet(p) &&
-                        swapDelayOfPlayers.containsKey(p.getUniqueId()) && swapDelayOfPlayers.get(p.getUniqueId()) == swapDelay) { // 전에 넣은 딜레이 값이랑 똑같은지 확인
+                        swapDelayOfPlayers.containsKey(p.getUniqueId()) && swapDelayOfPlayers.get(p.getUniqueId()) == convertedSwapDelay) { // 전에 넣은 딜레이 값이랑 똑같은지 확인
                     Bukkit.getServer().getPluginManager().callEvent(new WeaponSwapCompleteEvent(p, e.getNewItemStack(), newWeaponParentNode));
                 }
-            }, WEAPON_SWAPDELAY);
+            }, configSwapDelay);
         }
     }
 

@@ -1,9 +1,11 @@
 package me.sul.crackshotaddition.weaponappearance_etc;
 
+import com.shampaggon.crackshot.CSDirector;
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
-import me.sul.crackshotaddition.CrackShotAddition;
-import me.sul.crackshotaddition.events.WeaponsProjectilesBlockBreakEffectEvent;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,30 +21,27 @@ public class WeaponBlockBreakEffect implements Listener {
 	public void onWeaponHitBlock(WeaponHitBlockEvent e) {
 		if (e.getBlock().getType().equals(Material.AIR)) return;
 
-		final WeaponsProjectilesBlockBreakEffectEvent customEvent = new WeaponsProjectilesBlockBreakEffectEvent(e.getPlayer(), e.getWeaponTitle()); // TODO: 파티클 여부는 무기.yml에 넣고 이벤트는 삭제하기
-        CrackShotAddition.getInstance().getServer().getPluginManager().callEvent(customEvent);
-        if (customEvent.isCancelled()) return;
+		boolean b_blockBreakEffect = CSDirector.getInstance().getBoolean(e.getWeaponTitle() + ".Addition.Block_Break_Effect");
+		if (b_blockBreakEffect) {
+			Location projStruckLoc = calcProjectileStruckLocation(e.getProjectile());
 
-		Location projStruckLoc = calcProjectileStruckLocation(e.getProjectile());
-
-		List<Player> nearbyPlayers = new ArrayList<>();
-		nearbyPlayers.add(e.getPlayer());
-		for (Player loopPlayer : Bukkit.getServer().getOnlinePlayers()) {
-			if (loopPlayer.equals(e.getPlayer())) continue;
-			if (loopPlayer.getLocation().distance(projStruckLoc) <= 100) {
-				nearbyPlayers.add(loopPlayer);
+			List<Player> nearbyPlayers = new ArrayList<>();
+			nearbyPlayers.add(e.getPlayer());
+			for (Player loopPlayer : Bukkit.getServer().getOnlinePlayers()) {
+				if (loopPlayer.equals(e.getPlayer())) continue;
+				if (loopPlayer.getLocation().distance(projStruckLoc) <= 100) {
+					nearbyPlayers.add(loopPlayer);
+				}
 			}
-		}
-		e.getBlock().getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, e.getPlayer(),
-				projStruckLoc.getX(), projStruckLoc.getY(), projStruckLoc.getZ(),
-				20, 0, 0, 0, 1,
-				new MaterialData(e.getBlock().getType()), true);  // 1.15버전은 new MaterialData(...) -> e.getBlock.getType() 만 해도됨
+			e.getBlock().getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, e.getPlayer(),
+					projStruckLoc.getX(), projStruckLoc.getY(), projStruckLoc.getZ(),
+					20, 0, 0, 0, 1,
+					new MaterialData(e.getBlock().getType()), true);  // 1.15버전은 new MaterialData(...) -> e.getBlock.getType() 만 해도됨
 
-		// TODO: 블럭 부숴지는 소리 추가
+			// TODO: 블럭 부숴지는 소리 추가
+		}
 	}
 
-
-	// TODO: normalized된 Vector 더해서 블럭 찾고나면, 정확한 모서리 위치를 찾아야 함.
 	private Location calcProjectileStruckLocation(Entity proj) {
 		Location lastestLoc = proj.getLocation();
 		Vector lastestVec = proj.getVelocity();

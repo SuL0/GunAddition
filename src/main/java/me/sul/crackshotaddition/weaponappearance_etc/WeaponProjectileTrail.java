@@ -38,6 +38,8 @@ public class WeaponProjectileTrail implements Listener {
 	}
 
 	public void projectileTrail(Entity shooter, Entity projectile, String weaponTitle) {
+//		String configProjectileTrailEffect = CSDirector.getInstance().getString(weaponTitle + ".Addition.Projectile_Trail");
+//		Particle particle = (configProjectileTrailEffect == null) ? DEFAULT_PARTICLE : Particle.valueOf(configProjectileTrailEffect); // 파티클은 by 총 보다 by 플레이어 가 훨신 많을 것 같은데?
 		projectileTrail(shooter, projectile, weaponTitle, DEFAULT_PARTICLE);
 	}
 	public void projectileTrail(Entity shooter, Entity projectile, @Nullable String weaponTitle ,Particle particle) {
