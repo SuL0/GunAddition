@@ -1,5 +1,6 @@
 package me.sul.crackshotaddition.weaponappearance_etc;
 
+import com.shampaggon.crackshot.CSDirector;
 import com.shampaggon.crackshot.events.WeaponShootEvent;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -18,12 +19,17 @@ public class WeaponMuzzleFlash implements Listener {
 
     @EventHandler
     public void onShoot(WeaponShootEvent e) {
-        if (e.getWeaponTitle().equals("AK-47_1")) {
-            spawnMuzzleFlashParticle(e.getPlayer(), RIGHT, 0.17F, -0.2F, 1.25F);
+        boolean b_muzzleFlash = CSDirector.getInstance().getBoolean(e.getWeaponTitle() + ".Addition.Muzzle_Flash.Enable");
+        if (b_muzzleFlash) {
+            double multiplyToRightSideVec = CSDirector.getInstance().getDouble(e.getWeaponTitle() + ".Addition.Muzzle_Flash.MultiplyToRightSideVec");
+            double sumToY = CSDirector.getInstance().getDouble(e.getWeaponTitle() + ".Addition.Muzzle_Flash.SumToY");
+            double multiplyToForwardSideVec = CSDirector.getInstance().getDouble(e.getWeaponTitle() + ".Addition.Muzzle_Flash.MultiplyToForwardSideVec");
+
+            spawnMuzzleFlashParticle(e.getPlayer(), RIGHT, multiplyToRightSideVec, sumToY, multiplyToForwardSideVec);
         }
     }
 
-    private void spawnMuzzleFlashParticle(Player p, int rightOrLeft, float multiplyToRightSideVec, float sumToY, float multiplyToForwardSideVec) {
+    private void spawnMuzzleFlashParticle(Player p, int rightOrLeft, double multiplyToRightSideVec, double sumToY, double multiplyToForwardSideVec) {
         double playerYaw = (p.getLocation().getYaw() + 90.0F + rightOrLeft) * Math.PI / 180.0D;
 
         Vector toRightSideVec = new Vector(Math.cos(playerYaw)*multiplyToRightSideVec, sumToY, Math.sin(playerYaw)*multiplyToRightSideVec);

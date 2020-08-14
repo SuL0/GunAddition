@@ -112,9 +112,14 @@ public class WeaponDisplayNameController implements Listener {
             if (currentAmmoAmt == null) currentAmmoAmt = 0;
 
             if (currentAmmoAmt == 0) {   // 총알 넣기
-                weaponNameBuilder.append(AMMO_ICON1 + "§c").append(currentAmmoAmt).append("§7/").append(possessedExtraAmmoAmt);
+                weaponNameBuilder.append(AMMO_ICON1 + "§c").append(currentAmmoAmt);
             } else {
-                weaponNameBuilder.append(AMMO_ICON1 + "§f").append(currentAmmoAmt).append("§7/").append(possessedExtraAmmoAmt);
+                weaponNameBuilder.append(AMMO_ICON1 + "§f").append(currentAmmoAmt);
+            }
+            if (possessedExtraAmmoAmt == 0) {
+                weaponNameBuilder.append("§7/§4").append(possessedExtraAmmoAmt);
+            } else {
+                weaponNameBuilder.append("§7/").append(possessedExtraAmmoAmt);
             }
 
 

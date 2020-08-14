@@ -19,7 +19,6 @@ public class WeaponDisplayNameFixation {
                 for (Player p : Bukkit.getServer().getOnlinePlayers()) {
                     ItemStack mainIs = p.getInventory().getItemInMainHand();
                     if (CrackShotAdditionAPI.isValidCrackShotWeapon(mainIs)) {
-                        Bukkit.getServer().broadcastMessage("§e§lNameFixation");
                         NBTItem nbti = new NBTItem(mainIs.clone());
                         nbti.setBoolean(NBT_FOR_NAME_FIXATION, bool);
                         mainIs.setItemMeta(nbti.getItem().getItemMeta());

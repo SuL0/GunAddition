@@ -17,10 +17,13 @@ public class WeaponCameraRecoil implements Listener {
 
 	@EventHandler()
 	public void onWeaponShoot(WeaponShootEvent e) {
-		double yawValue = CSDirector.getInstance().getDouble(e.getWeaponTitle() + ".Addition.Camera_Recoil_Yaw");
-		double pitchValue = CSDirector.getInstance().getDouble(e.getWeaponTitle() + ".Addition.Camera_Recoil_Pitch");
-		if (yawValue != 0 || pitchValue != 0) {
-			cameraRecoil(e.getPlayer(), (float) yawValue, (float) pitchValue);
+		boolean b_cameraRecoil = CSDirector.getInstance().getBoolean(e.getWeaponTitle() + ".Addition.Camera_Recoil.Enable");
+		if (b_cameraRecoil) {
+			double yawValue = CSDirector.getInstance().getDouble(e.getWeaponTitle() + ".Addition.Camera_Recoil.Yaw");
+			double pitchValue = CSDirector.getInstance().getDouble(e.getWeaponTitle() + ".Addition.Camera_Recoil.Pitch");
+
+			if (yawValue != 0 || pitchValue != 0)
+				cameraRecoil(e.getPlayer(), (float) yawValue, (float) pitchValue);
 		}
 	}
 	
