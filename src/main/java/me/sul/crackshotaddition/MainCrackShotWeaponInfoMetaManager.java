@@ -7,7 +7,6 @@ import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.inventoryevent.InventoryItemChangedEvent;
 import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;
 import me.sul.servercore.serialnumber.UniqueIdAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,12 +28,13 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
     private static final String MAINITEM_SLOT_META = "csa.mainitem_slot"; // 불변
     private static final String PARENT_NODE_META = "csa.parent_node"; // 불변
     private static final String CONFIG_NAME_META = "csa.config_name"; // 불변
-    private static final String CURRENT_AMMO_AMOUNT_META = "csa.current_ammo_amount"; // 가변
+    private static final String LEFT_AMMO_AMOUNT_META = "csa.left_ammo_amount"; // 가변
+    private static final String RIGHT_AMMO_AMOUNT_META = "csa.right_ammo_amount"; // 가변
     private static final String RELOAD_AMMO_AMOUNT_META = "csa.reload_ammo_amount"; // 불변
     private static final String AMMO_ITEM_MATERIAL_META = "csa.ammo_item_material"; // 불변
     private static final String RELOAD_AMOUNT_PER_AMMO_META = "csa.reload_amount_per_ammo"; // 불번
     private static final String POSSESSED_EXTRA_AMMO_AMOUNT_META = "csa.possessed_extra_ammo_amount"; // 가변       // 진짜 총알 아이템 개수(*ReloadAmountPerAmmo 없음)
-    private static final String UNIQUE_ID_META = "csa.unique_id"; // 가변       // 진짜 총알 아이템 개수(*ReloadAmountPerAmmo 없음)
+    private static final String UNIQUE_ID_META = "csa.unique_id"; // 불변
 
 
     public static boolean isSet(Player p) {  // 이 클래스 내부에서는 isSet()을 쓰지 않는게 좋음.
@@ -56,10 +56,16 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
     public static String getConfigName(Player p) {
         return (p.hasMetadata(CONFIG_NAME_META)) ? p.getMetadata(CONFIG_NAME_META).get(0).asString() : null;
     }
-    public static int getCurrentAmmoAmount(Player p) {
-        return (p.hasMetadata(CURRENT_AMMO_AMOUNT_META)) ? p.getMetadata(CURRENT_AMMO_AMOUNT_META).get(0).asInt() : -1;
+    public static boolean isDualWield(Player p) {
+        return getRightAmmoAmount(p) != -1;
     }
-    public static int getReloadAmmoAmount(Player p) {
+    public static int getLeftAmmoAmount(Player p) {
+        return (p.hasMetadata(LEFT_AMMO_AMOUNT_META)) ? p.getMetadata(LEFT_AMMO_AMOUNT_META).get(0).asInt() : -1;
+    }
+    public static int getRightAmmoAmount(Player p) {
+        return (p.hasMetadata(RIGHT_AMMO_AMOUNT_META)) ? p.getMetadata(RIGHT_AMMO_AMOUNT_META).get(0).asInt() : -1;
+    }
+    public static int getReloadAmmoAmount(Player p) { // isDualSide 추가하고 left ammo, right ammo ?
         return (p.hasMetadata(RELOAD_AMMO_AMOUNT_META)) ? p.getMetadata(RELOAD_AMMO_AMOUNT_META).get(0).asInt() : -1;
     }
     public static Material getAmmoItemMaterial(Player p) {
@@ -92,7 +98,16 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
         int mainItemSlot = e.getNewSlot();
         String parentNode = CrackShotAdditionAPI.getWeaponParentNode(newIs);
         String configName = CrackShotAdditionAPI.getWeaponConfigName(parentNode);
-        int currentAmmoAmt = CrackShotAdditionAPI.getWeaponAmmoAmount(p, parentNode, newIs);
+        boolean isDualWield = CSDirector.getInstance().isDualWield(p, parentNode, newIs);
+        int leftAmmoAmt;
+        int rightAmmoAmt = -1;
+        if (isDualWield) {
+            int[] dualAmmo = CSDirector.getInstance().grabDualAmmo(newIs, parentNode);
+            leftAmmoAmt = dualAmmo[0];
+            rightAmmoAmt = dualAmmo[1];
+        } else {
+            leftAmmoAmt = CrackShotAdditionAPI.getWeaponAmmoAmount(p, parentNode, newIs);
+        }
         int reloadAmmoAmt = CrackShotAdditionAPI.getWeaponReloadAmount(p, parentNode, newIs);
         Material ammoMaterial = null;
         int reloadAmtPerAmmo = -1;
@@ -113,7 +128,8 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
         p.setMetadata(MAINITEM_SLOT_META, new FixedMetadataValue(plugin, mainItemSlot));
         p.setMetadata(PARENT_NODE_META, new FixedMetadataValue(plugin, parentNode));
         p.setMetadata(CONFIG_NAME_META, new FixedMetadataValue(plugin, configName));
-        p.setMetadata(CURRENT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, currentAmmoAmt));
+        p.setMetadata(LEFT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, leftAmmoAmt));
+        p.setMetadata(RIGHT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, rightAmmoAmt));
         p.setMetadata(RELOAD_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, reloadAmmoAmt));
         if ((ammoMaterial != null)) {
             p.setMetadata(AMMO_ITEM_MATERIAL_META, new FixedMetadataValue(plugin, ammoMaterial));
@@ -129,7 +145,8 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
         p.removeMetadata(MAINITEM_SLOT_META, plugin);
         p.removeMetadata(PARENT_NODE_META, plugin);
         p.removeMetadata(CONFIG_NAME_META, plugin);
-        p.removeMetadata(CURRENT_AMMO_AMOUNT_META, plugin);
+        p.removeMetadata(LEFT_AMMO_AMOUNT_META, plugin);
+        p.removeMetadata(RIGHT_AMMO_AMOUNT_META, plugin);
         p.removeMetadata(RELOAD_AMMO_AMOUNT_META, plugin);
         p.removeMetadata(AMMO_ITEM_MATERIAL_META, plugin);
         p.removeMetadata(RELOAD_AMOUNT_PER_AMMO_META, plugin);
@@ -171,15 +188,26 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onShoot(WeaponShootEvent e) {
         Player p = e.getPlayer();
-        int currentAmmoAmt = getCurrentAmmoAmount(p) - 1;
-        p.setMetadata(CURRENT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, currentAmmoAmt));
+        if (isDualWield(p)) {
+            int[] dualAmmo = CSDirector.getInstance().grabDualAmmo(e.getPlayer().getInventory().getItemInMainHand(), e.getWeaponTitle());
+            p.setMetadata(LEFT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, dualAmmo[0]));
+            p.setMetadata(RIGHT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, dualAmmo[1]));
+        } else {
+            p.setMetadata(LEFT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, getLeftAmmoAmount(p) -1));
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onReloadComplete(WeaponReloadCompleteEvent e) {
         Player p = e.getPlayer();
         int reloadAmmoAmt = getReloadAmmoAmount(p);
-        p.setMetadata(CURRENT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, reloadAmmoAmt));
+        if (isDualWield(p)) {
+            // reloadAmt/2 안해도 됨
+            p.setMetadata(LEFT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, reloadAmmoAmt));
+            p.setMetadata(RIGHT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, reloadAmmoAmt));
+        } else {
+            p.setMetadata(LEFT_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, reloadAmmoAmt));
+        }
     }
 
 
