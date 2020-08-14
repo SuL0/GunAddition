@@ -8,6 +8,7 @@ import me.sul.crackshotaddition.events.WeaponSwapCompleteEvent;
 import me.sul.crackshotaddition.events.WeaponSwapEvent;
 import me.sul.servercore.inventoryevent.InventoryItemChangedEvent;
 import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,7 +52,7 @@ public class WeaponDisplayNameController implements Listener {
     public void onItemChanged(InventoryItemChangedEvent e) {
         Player p = e.getPlayer();
         Material requiredAmmoMaterial = MainCrackShotWeaponInfoMetaManager.getAmmoItemMaterial(p);
-        if (requiredAmmoMaterial != null && e.getItemStack().getType() == requiredAmmoMaterial) {
+        if (requiredAmmoMaterial != null && (e.getItemStack().getType() == requiredAmmoMaterial || e.getItemStack().getType() == Material.AIR)) {
             updateMainWeaponDisplay(p, DisplayNameType.NORMAL);
         }
     }
@@ -121,7 +122,6 @@ public class WeaponDisplayNameController implements Listener {
             } else {
                 weaponNameBuilder.append("§7/").append(possessedExtraAmmoAmt);
             }
-
 
             meta.setDisplayName(weaponNameBuilder.toString());
         }

@@ -7,6 +7,7 @@ import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.inventoryevent.InventoryItemChangedEvent;
 import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;
 import me.sul.servercore.serialnumber.UniqueIdAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -160,7 +161,7 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
         Player p = e.getPlayer();
         Material requiredAmmoMaterial = getAmmoItemMaterial(p);
         int reloadAmtPerAmmo = getReloadAmountPerAmmo(p);
-        if (requiredAmmoMaterial != null && e.getItemStack().getType() == requiredAmmoMaterial) {
+        if (requiredAmmoMaterial != null && (e.getItemStack().getType() == requiredAmmoMaterial || e.getItemStack().getType() == Material.AIR)) {
             int possessedExtraAmmoAmount = countPossessedAmmoAmount(p, requiredAmmoMaterial, reloadAmtPerAmmo);
             p.setMetadata(POSSESSED_EXTRA_AMMO_AMOUNT_META, new FixedMetadataValue(plugin, possessedExtraAmmoAmount));
         }
