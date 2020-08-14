@@ -31,8 +31,8 @@ public class CrackShotAdditionAPI {
 		return getCSMinion().getWeaponNbtName(is);
 	}
 
-	public static String getWeaponParentNode(ItemStack is) {
-		return getCSUtility().getWeaponTitle(is);
+	public static String getWeaponParentNode(ItemStack is) {  // NOTE: 현재로선 부착물을 지원하지 않음
+		return getCSMinion().getWeaponParentNodeFromNbt(is);
 	}
 
 
