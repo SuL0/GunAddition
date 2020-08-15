@@ -7,6 +7,7 @@ import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.inventoryevent.InventoryItemChangedEvent;
 import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;
 import me.sul.servercore.serialnumber.UniqueIdAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,7 +44,7 @@ public class MainCrackShotWeaponInfoMetaManager implements Listener {
     public static ItemStack getItemStack(Player p) {  // Metadata들이 올바르지 않는 경우는 PlayerItemHeldEvent에서 메소드를 호출했을 때 말곤 없음. 근데 모든 데이터가 얘를 기준으로 얻어질테니 엄청난 문제는 없을지도.
         int mainItemSlot = p.hasMetadata(MAINITEM_SLOT_META) ? p.getMetadata(MAINITEM_SLOT_META).get(0).asInt() : -1;
         if (mainItemSlot == -1) return null;
-        ItemStack mainItem = p.getInventory().getItem(mainItemSlot);
+        ItemStack mainItem = p.getInventory().getItem(mainItemSlot) != null ? p.getInventory().getItem(mainItemSlot) : new ItemStack(Material.AIR);
         if (!(UniqueIdAPI.hasUniqueID(mainItem) && UniqueIdAPI.getUniqueID(mainItem).equals(getUniqueId(p)))) { // 메인 아이템이 예상템과 다를 때(UID이용)
             removeAllOfCrackShotMeta(p); // 뭔가 잘못됐을 시 데이터 모두 삭제
             return null;

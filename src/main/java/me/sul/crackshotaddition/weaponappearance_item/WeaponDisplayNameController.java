@@ -51,8 +51,10 @@ public class WeaponDisplayNameController implements Listener {
     public void onItemChanged(InventoryItemChangedEvent e) {
         Player p = e.getPlayer();
         Material requiredAmmoMaterial = MainCrackShotWeaponInfoMetaManager.getAmmoItemMaterial(p);
-        if (requiredAmmoMaterial != null && (e.getItemStack().getType() == requiredAmmoMaterial || e.getItemStack().getType() == Material.AIR)) {
-            updateMainWeaponDisplay(p, DisplayNameType.NORMAL);
+        if (MainCrackShotWeaponInfoMetaManager.isSet(p)) {
+            if (requiredAmmoMaterial != null && (e.getItemStack().getType() == requiredAmmoMaterial || e.getItemStack().getType() == Material.AIR)) {
+                updateMainWeaponDisplay(p, DisplayNameType.NORMAL);
+            }
         }
     }
 
