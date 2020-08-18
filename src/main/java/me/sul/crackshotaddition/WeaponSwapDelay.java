@@ -6,6 +6,7 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent;
 import com.shampaggon.crackshot.events.WeaponScopeEvent;
 import me.sul.crackshotaddition.events.WeaponSwapCompleteEvent;
 import me.sul.crackshotaddition.events.WeaponSwapEvent;
+import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ public class WeaponSwapDelay implements Listener {
 
     @EventHandler
     public void onMainItemChange(PlayerMainItemChangedConsideringUidEvent e) {
+        if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.getClonedPreviousItemStack())) return;
         Player p = e.getPlayer();
         String newWeaponParentNode = (MainCrackShotWeaponInfoMetaManager.isSet(p)) ? MainCrackShotWeaponInfoMetaManager.getParentNode(p) : null;
         // 이전 템 쿨타임 적용 중 이였다면, 삭제

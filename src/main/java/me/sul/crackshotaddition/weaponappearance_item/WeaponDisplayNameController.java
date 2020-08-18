@@ -70,7 +70,9 @@ public class WeaponDisplayNameController implements Listener {
     // SWAPPING
     @EventHandler(priority = EventPriority.HIGH) // onPlayerMainItemChanged보다 후행돼야 함 (덮어 씌워야하기 때문)
     public void onSwap(WeaponSwapEvent e) {
-        updateMainWeaponDisplay(e.getPlayer(), DisplayNameType.SWAPPING);
+        if (e.getSwapDelay() > 0) {
+            updateMainWeaponDisplay(e.getPlayer(), DisplayNameType.SWAPPING);
+        }
     }
 
     @EventHandler
