@@ -21,6 +21,7 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WeaponProjectileTrail implements Listener {
 	public static Particle DEFAULT_PARTICLE = Particle.SWEEP_ATTACK; // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
@@ -66,14 +67,8 @@ public class WeaponProjectileTrail implements Listener {
 				loc = projectile.getLocation();
 				if (!skipFirstLoc) {
 					List<Player> nearbyPlayers = new ArrayList<>();
-					if (shooter instanceof Player)
-						nearbyPlayers.add((Player)shooter);
-					for (Player loopPlayer : Bukkit.getServer().getOnlinePlayers()) {
-						if (loopPlayer.equals(shooter)) continue;
-						if (loopPlayer.getLocation().distance(loc) <= 100) {
-							nearbyPlayers.add(loopPlayer);
-						}
-					}
+					if (shooter instanceof Player) nearbyPlayers.add((Player)shooter);
+					nearbyPlayers.addAll(Bukkit.getServer().getOnlinePlayers().stream().filter(loopP -> !loopP.equals(shooter) && loopP.getWorld().equals(shooter.getWorld()) && loopP.getLocation().distance(shooter.getLocation()) <= 100).collect(Collectors.toList()));
 
 					if (DebuggingCommand.distortion) {
 						loc = loc.clone().add(toRightSideVec.multiply((Math.max(cnt--, 0)) / DISTORTION_DISTANCE)); // 총알 궤적 위치 왜곡   // loc에 바로 더하면 projectile에 더해짐
