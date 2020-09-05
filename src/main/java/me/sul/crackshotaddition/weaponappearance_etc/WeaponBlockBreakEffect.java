@@ -15,6 +15,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WeaponBlockBreakEffect implements Listener {
 	@EventHandler
@@ -24,15 +25,11 @@ public class WeaponBlockBreakEffect implements Listener {
 		boolean b_blockBreakEffect = CSDirector.getInstance().getBoolean(e.getWeaponTitle() + ".Addition.Block_Break_Effect");
 		if (b_blockBreakEffect) {
 			Location projStruckLoc = calcProjectileStruckLocation(e.getProjectile());
+			Player p = e.getPlayer();
 
 			List<Player> nearbyPlayers = new ArrayList<>();
-			nearbyPlayers.add(e.getPlayer());
-			for (Player loopPlayer : Bukkit.getServer().getOnlinePlayers()) {
-				if (loopPlayer.equals(e.getPlayer())) continue;
-				if (loopPlayer.getLocation().distance(projStruckLoc) <= 100) {
-					nearbyPlayers.add(loopPlayer);
-				}
-			}
+			nearbyPlayers.add(p);
+			nearbyPlayers.addAll(Bukkit.getServer().getOnlinePlayers().stream().filter(loopP -> !loopP.equals(p) && loopP.getWorld().equals(p.getWorld()) && loopP.getLocation().distance(p.getLocation()) <= 100).collect(Collectors.toList()));
 			e.getBlock().getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, e.getPlayer(),
 					projStruckLoc.getX(), projStruckLoc.getY(), projStruckLoc.getZ(),
 					20, 0, 0, 0, 1,

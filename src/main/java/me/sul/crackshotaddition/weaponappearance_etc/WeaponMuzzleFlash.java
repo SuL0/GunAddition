@@ -30,7 +30,7 @@ public class WeaponMuzzleFlash implements Listener {
     }
 
     private void spawnMuzzleFlashParticle(Player p, int rightOrLeft, double multiplyToRightSideVec, double sumToY, double multiplyToForwardSideVec) {
-        double playerYaw = (p.getLocation().getYaw() + 90.0F + rightOrLeft) * Math.PI / 180.0D;
+        double playerYaw = (p.getLocation().getYaw() + 90.0F + rightOrLeft) * Math.PI / 180.0D; // toRadian
 
         Vector toRightSideVec = new Vector(Math.cos(playerYaw)*multiplyToRightSideVec, sumToY, Math.sin(playerYaw)*multiplyToRightSideVec);
         Vector toForwardSideVec = p.getLocation().getDirection().normalize().multiply(multiplyToForwardSideVec);
