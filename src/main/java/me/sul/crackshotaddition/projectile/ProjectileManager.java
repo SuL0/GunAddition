@@ -26,7 +26,7 @@ public class ProjectileManager {
 			List<Player> excludePlayers = new ArrayList<>(Collections.singletonList(shooter));
 			@Override
 			public void run() {
-				if (!projectile.isValid()) cancel();
+				if (!projectile.isValid()) { cancel(); return; }
 				loc = projectile.getLocation();
 				players = loc.getWorld().getPlayers();
 				for (Player p: players) {

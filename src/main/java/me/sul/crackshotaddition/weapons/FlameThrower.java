@@ -41,7 +41,7 @@ public class FlameThrower implements Listener {
 
                 @Override
                 public void run() {
-                    if (proj.isValid() == false) cancel();
+                    if (!proj.isValid()) { cancel(); return; }
                     loc = proj.getLocation();
                     if (!skipFirstLoc) {
                         loc.getWorld().spawnParticle(Particle.LAVA, loc,1);
@@ -51,10 +51,12 @@ public class FlameThrower implements Listener {
 
                     if (loc.equals(previousLoc)) {
                         cancel();
+                        return;
                     }
                     if (passedTick >= 10) {
                         e.getProjectile().remove();
                         cancel();
+                        return;
                     }
 
                     passedTick += 2;

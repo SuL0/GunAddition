@@ -63,7 +63,7 @@ public class WeaponProjectileTrail implements Listener {
 
 			@Override
 			public void run() {
-				if (!projectile.isValid()) cancel();
+				if (!projectile.isValid()) { cancel(); return; }
 				loc = projectile.getLocation();
 				if (!skipFirstLoc) {
 					List<Player> nearbyPlayers = new ArrayList<>();
@@ -84,6 +84,7 @@ public class WeaponProjectileTrail implements Listener {
 					if (loc.distance(previousLoc) <= 0.1) {
 						projectile.remove();
 						cancel();
+						return;
 					}
 				} else {
 					skipFirstLoc = false;

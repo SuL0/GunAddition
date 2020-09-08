@@ -1,5 +1,6 @@
 package me.sul.crackshotaddition;
 
+import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.crackshotaddition.weaponappearance_etc.WeaponProjectileTrail;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,11 +11,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class DebuggingCommand implements CommandExecutor {
     public static boolean distortion = true;
@@ -46,7 +42,8 @@ public class DebuggingCommand implements CommandExecutor {
             sendM(p, "getItemStack: " + MainCrackShotWeaponInfoMetaManager.getItemStack(p).getItemMeta().getDisplayName());
             sendM(p, "getParentNode: " + MainCrackShotWeaponInfoMetaManager.getParentNode(p));
             sendM(p, "getConfigName: " + MainCrackShotWeaponInfoMetaManager.getConfigName(p));
-            sendM(p, "getCurrentAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getCurrentAmmoAmount(p));
+            sendM(p, "getLeftAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getLeftAmmoAmount(p));
+            sendM(p, "getRightAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getRightAmmoAmount(p));
             sendM(p, "getReloadAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getReloadAmmoAmount(p));
             sendM(p, "getAmmoItemMaterial: " + MainCrackShotWeaponInfoMetaManager.getAmmoItemMaterial(p));
             sendM(p, "getReloadAmountPerAmmo: " + MainCrackShotWeaponInfoMetaManager.getReloadAmountPerAmmo(p));
@@ -57,6 +54,8 @@ public class DebuggingCommand implements CommandExecutor {
         } else if (args[0].equalsIgnoreCase("distortion")) {
             distortion = !distortion;
             sendM(p, "총알 궤적 왜곡 " + distortion);
+        } else if (args[0].equalsIgnoreCase("parentnode")) {
+            sendM(p, "parentNode: " + CrackShotAdditionAPI.getWeaponParentNode(p.getItemInHand()));
         }
         return true;
     }
