@@ -1,6 +1,5 @@
 package me.sul.crackshotaddition;
 
-import me.sul.crackshotaddition.util.CrackShotAdditionAPI;
 import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

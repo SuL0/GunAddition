@@ -1,16 +1,18 @@
 package me.sul.crackshotaddition.events;
 
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
+@Getter
 public class WeaponSwapEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Player player;
-    private ItemStack weaponItem;
-    private String weaponTitle;
-    private int swapDelay;
+    private final Player player;
+    private final ItemStack weaponItem;
+    private final String weaponTitle;
+    private final int swapDelay;
 
     public WeaponSwapEvent(Player player, ItemStack weaponItem, String weaponTitle, Integer swapDelay) {
         this.player = player;
@@ -19,13 +21,7 @@ public class WeaponSwapEvent extends Event {
         this.swapDelay = swapDelay;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-    public ItemStack getWeaponItem() { return weaponItem; }
-    public String getWeaponTitle() { return weaponTitle; }
-    public int getSwapDelay() { return swapDelay; }
-
+    @Override
     public HandlerList getHandlers() {
         return handlers;
     }

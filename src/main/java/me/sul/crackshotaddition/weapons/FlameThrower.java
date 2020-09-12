@@ -3,8 +3,6 @@ package me.sul.crackshotaddition.weapons;
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
 import com.shampaggon.crackshot.events.WeaponShootEvent;
 import me.sul.crackshotaddition.CrackShotAddition;
-import me.sul.crackshotaddition.events.WeaponsProjectilesBlockBreakEffectEvent;
-import me.sul.crackshotaddition.events.WeaponProjectileTrailEvent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles;
 import org.bukkit.Location;
 import org.bukkit.Material;
