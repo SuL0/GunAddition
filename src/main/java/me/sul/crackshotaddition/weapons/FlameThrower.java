@@ -21,13 +21,6 @@ public class FlameThrower implements Listener {
     public static final String FLAMETHROWER = "N화염방사기";
 
     @EventHandler
-    public void onProjectileTrailEvent(WeaponProjectileTrailEvent e) {
-        if (e.getWeaponTitle().equals(FLAMETHROWER)) {
-            e.setParticle(Particle.FLAME);
-        }
-    }
-
-    @EventHandler
     public void onShoot(WeaponShootEvent e) {
         if (e.getWeaponTitle().equals(FLAMETHROWER)) {
             Entity proj = e.getProjectile();

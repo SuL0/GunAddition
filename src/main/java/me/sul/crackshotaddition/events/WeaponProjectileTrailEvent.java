@@ -2,15 +2,13 @@ package me.sul.crackshotaddition.events;
 
 import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 
-public class WeaponProjectileTrailEvent extends Event implements Cancellable {
+public class WeaponProjectileTrailEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private Entity entity;
-	private boolean cancelled = false;
 	private Particle particle;
 	private String weaponTitle;
 	
@@ -38,13 +36,6 @@ public class WeaponProjectileTrailEvent extends Event implements Cancellable {
 	}
 	public Particle getParticle() {
 		return particle;
-	}
-	public boolean isCancelled() {
-		return cancelled;
-	}
-
-	public void setCancelled(boolean cancelled) {
-		this.cancelled = cancelled;
 	}
 
 	public HandlerList getHandlers() {

@@ -4,7 +4,7 @@ import com.shampaggon.crackshot.events.WeaponShootEvent;
 import me.sul.crackshotaddition.CrackShotAddition;
 import me.sul.crackshotaddition.DebuggingCommand;
 import me.sul.crackshotaddition.events.WeaponProjectileTrailEvent;
-import me.sul.customentity.event.CustomEntityShootEvent;
+import me.sul.customentity.entityweapon.event.CEWeaponShootEvent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,13 +12,11 @@ import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,28 +27,26 @@ public class WeaponProjectileTrail implements Listener {
 	private final float SHIFTVECTOR_LENGTH = 0.2F;
 
 	@EventHandler
-	public void onCustomEntityShoot(CustomEntityShootEvent e) {
-		projectileTrail(e.getEntity(), e.getProjectile(), null);
+	public void onCEWeaponShootEvent(CEWeaponShootEvent e) {
+		projectileTrail(e.getEntity(), e.getProjectile(), DEFAULT_PARTICLE);
 	}
 	@EventHandler
 	public void onShoot(WeaponShootEvent e) {
-		// TODO: 무기.yml에서 읽어오고, 매개변수에 파티클 타입 넣는 방식으로 변경
-		projectileTrail(e.getPlayer(), e.getProjectile(), e.getWeaponTitle());
-	}
+		Particle particle = DEFAULT_PARTICLE;
 
-	public void projectileTrail(Entity shooter, Entity projectile, String weaponTitle) {
+		// by 총 파티클
 //		String configProjectileTrailEffect = CSDirector.getInstance().getString(weaponTitle + ".Addition.Projectile_Trail");
-//		Particle particle = (configProjectileTrailEffect == null) ? DEFAULT_PARTICLE : Particle.valueOf(configProjectileTrailEffect); // 파티클은 by 총 보다 by 플레이어 가 훨신 많을 것 같은데?
-		projectileTrail(shooter, projectile, weaponTitle, DEFAULT_PARTICLE);
+//		Particle particle = (configProjectileTrailEffect == null) ? DEFAULT_PARTICLE : Particle.valueOf(configProjectileTrailEffect);
+
+		// by 플레이어 파티클
+		final WeaponProjectileTrailEvent event = new WeaponProjectileTrailEvent(e.getPlayer(), e.getWeaponTitle(), particle);
+		CrackShotAddition.getInstance().getServer().getPluginManager().callEvent(event);
+		particle = event.getParticle();
+
+		projectileTrail(e.getPlayer(), e.getProjectile(), particle);
 	}
-	public void projectileTrail(Entity shooter, Entity projectile, @Nullable String weaponTitle ,Particle particle) {
+	public void projectileTrail(Entity shooter, Entity projectile, Particle particle) {
 		hideEntity(projectile);
-		if (weaponTitle != null) {
-			final WeaponProjectileTrailEvent event = new WeaponProjectileTrailEvent(shooter, weaponTitle, DEFAULT_PARTICLE);
-			CrackShotAddition.getInstance().getServer().getPluginManager().callEvent((Event) event);
-			if (event.isCancelled()) return;
-			particle = event.getParticle();
-		}
 
 		final Particle finalParticle = particle;
 		new BukkitRunnable() {

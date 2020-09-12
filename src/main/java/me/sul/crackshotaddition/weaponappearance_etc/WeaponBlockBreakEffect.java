@@ -2,10 +2,12 @@ package me.sul.crackshotaddition.weaponappearance_etc;
 
 import com.shampaggon.crackshot.CSDirector;
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
+import me.sul.customentity.entityweapon.event.CEWeaponHitBlockEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,24 +21,32 @@ import java.util.stream.Collectors;
 
 public class WeaponBlockBreakEffect implements Listener {
 	@EventHandler
+	public void onCEWeaponHitBlockEvent(CEWeaponHitBlockEvent e) {
+		blockBreakEffect(e.getEntity(), e.getProjectile(), e.getBlock());
+	}
+	@EventHandler
 	public void onWeaponHitBlock(WeaponHitBlockEvent e) {
-		if (e.getBlock().getType().equals(Material.AIR)) return;
-
 		boolean b_blockBreakEffect = CSDirector.getInstance().getBoolean(e.getWeaponTitle() + ".Addition.Block_Break_Effect");
 		if (b_blockBreakEffect) {
-			Location projStruckLoc = calcProjectileStruckLocation(e.getProjectile());
-			Player p = e.getPlayer();
-
-			List<Player> nearbyPlayers = new ArrayList<>();
-			nearbyPlayers.add(p);
-			nearbyPlayers.addAll(Bukkit.getServer().getOnlinePlayers().stream().filter(loopP -> !loopP.equals(p) && loopP.getWorld().equals(p.getWorld()) && loopP.getLocation().distance(p.getLocation()) <= 100).collect(Collectors.toList()));
-			e.getBlock().getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, e.getPlayer(),
-					projStruckLoc.getX(), projStruckLoc.getY(), projStruckLoc.getZ(),
-					20, 0, 0, 0, 1,
-					new MaterialData(e.getBlock().getType()), true);  // 1.15버전은 new MaterialData(...) -> e.getBlock.getType() 만 해도됨
-
-			// TODO: 블럭 부숴지는 소리 추가
+			blockBreakEffect(e.getPlayer(), e.getProjectile(), e.getBlock());
 		}
+	}
+	private void blockBreakEffect(Entity shooter, Entity projectile, Block block) {
+		if (block.getType() == Material.AIR) return;
+
+		Location projStruckLoc = calcProjectileStruckLocation(projectile);
+
+		List<Player> nearbyPlayers = new ArrayList<>();
+		if (shooter instanceof Player) nearbyPlayers.add((Player) shooter); // 거리가 멀더라도 p는 무조건 포함
+		nearbyPlayers.addAll(Bukkit.getServer().getOnlinePlayers().stream()
+				.filter(loopP -> !loopP.equals(shooter) && loopP.getWorld().equals(shooter.getWorld()) && loopP.getLocation().distance(shooter.getLocation()) <= 100)
+				.collect(Collectors.toList()));
+		block.getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, (shooter instanceof Player) ? (Player)shooter : null,
+				projStruckLoc.getX(), projStruckLoc.getY(), projStruckLoc.getZ(),
+				20, 0, 0, 0, 1,
+				new MaterialData(block.getType()), true);  // 1.15버전은 new MaterialData(...) -> block.getType() 만 해도됨
+
+		// TODO: 블럭 부서지는 소리 추가
 	}
 
 	private Location calcProjectileStruckLocation(Entity proj) {
