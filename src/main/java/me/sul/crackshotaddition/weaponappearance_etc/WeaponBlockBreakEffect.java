@@ -19,30 +19,31 @@ import java.util.stream.Collectors;
 public class WeaponBlockBreakEffect implements Listener {
 	@EventHandler
 	public void onCEWeaponHitBlockEvent(CEWeaponHitBlockEvent e) {
-		blockBreakEffect(e.getEntity(), e.getProjectile(), e.getBlock());
+		blockBreakEffect(e.getEntity(), e.getProjectile());
 	}
 	@EventHandler
 	public void onWeaponHitBlock(WeaponHitBlockEvent e) {
 		boolean b_blockBreakEffect = CSDirector.getInstance().getBoolean(e.getWeaponTitle() + ".Addition.Block_Break_Effect");
 		if (b_blockBreakEffect) {
-			blockBreakEffect(e.getPlayer(), e.getProjectile(), e.getBlock());
+			blockBreakEffect(e.getPlayer(), e.getProjectile());
 		}
 	}
-	private void blockBreakEffect(Entity shooter, Entity projectile, Block block) {
-		if (block.getType() == Material.AIR) return;
-
+	private void blockBreakEffect(Entity shooter, Entity projectile) {
 		Location projStruckLoc = calcProjectileStruckLocation(projectile);
+		Block projStruckBlock = projStruckLoc.getBlock();
+		World world = projStruckLoc.getWorld();
+		if (projStruckBlock.getType() == Material.AIR) return;
 
 		List<Player> nearbyPlayers = new ArrayList<>();
 		if (shooter instanceof Player) nearbyPlayers.add((Player) shooter); // 거리가 멀더라도 p는 무조건 포함
 		nearbyPlayers.addAll(Bukkit.getServer().getOnlinePlayers().stream()
 				.filter(loopP -> !loopP.equals(shooter) && loopP.getWorld().equals(shooter.getWorld()) && loopP.getLocation().distance(shooter.getLocation()) <= 100)
 				.collect(Collectors.toList()));
-		block.getLocation().getWorld().spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, (shooter instanceof Player) ? (Player)shooter : null,
+		world.spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, (shooter instanceof Player) ? (Player)shooter : null,
 				projStruckLoc.getX(), projStruckLoc.getY(), projStruckLoc.getZ(),
 				20, 0, 0, 0, 1,
-				new MaterialData(block.getType()), true);  // 1.15버전은 new MaterialData(...) -> block.getType() 만 해도됨
-		block.getWorld().playSound(projStruckLoc, Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, 1.5F, 1);
+				new MaterialData(projStruckBlock.getType()), true);  // 1.15버전은 new MaterialData(...) -> block.getType() 만 해도됨
+		world.playSound(projStruckLoc, Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, 1.5F, 1);
 	}
 
 	private Location calcProjectileStruckLocation(Entity proj) {
