@@ -3,10 +3,7 @@ package me.sul.crackshotaddition.weaponappearance_etc;
 import com.shampaggon.crackshot.CSDirector;
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent;
 import me.sul.customentity.entityweapon.event.CEWeaponHitBlockEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -45,8 +42,7 @@ public class WeaponBlockBreakEffect implements Listener {
 				projStruckLoc.getX(), projStruckLoc.getY(), projStruckLoc.getZ(),
 				20, 0, 0, 0, 1,
 				new MaterialData(block.getType()), true);  // 1.15버전은 new MaterialData(...) -> block.getType() 만 해도됨
-
-		// TODO: 블럭 부서지는 소리 추가
+		block.getWorld().playSound(projStruckLoc, Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, 1.5F, 1);
 	}
 
 	private Location calcProjectileStruckLocation(Entity proj) {
@@ -77,7 +73,6 @@ public class WeaponBlockBreakEffect implements Listener {
 		}
 		return new Location(loc.getWorld(), 0, 0, 0);
 	}
-
 	private boolean isStruckableMaterial(Material material) {
 		switch(material) {
 			case AIR:
