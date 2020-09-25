@@ -21,7 +21,6 @@ dependencies {
     compileOnly("com.destroystokyo.paper", "paper-api", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc", "spigot", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol", "ProtocolLib", "4.5.1")
-    compileOnly("org.projectlombok", "lombok", "1.18.12")
     compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/CrackShot_SuL.jar"))
     compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/ServerCore_SuL.jar"))
     compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/CustomEntity_SuL.jar"))
@@ -31,8 +30,9 @@ dependencies {
 
 spigot {
     authors = listOf("SuL")
-    version = "1.12"
-    depends = listOf("ProtocolLib", "ServerCore", "CustomEntity", "NBTAPI")
+    apiVersion = "1.12"
+    version = project.version.toString()
+    softDepends = listOf("ProtocolLib", "ServerCore", "CustomEntity", "NBTAPI")
     commands {
         create("csa") {
             description = "Command for test"

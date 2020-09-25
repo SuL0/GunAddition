@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.events
+package kr.sul.crackshotaddition.events
 
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -11,6 +11,7 @@ class WeaponSwapEvent(val player: Player, val weaponItem: ItemStack, val weaponT
     }
 
     companion object {
+        @JvmStatic
         val handlerList = HandlerList()
     }
 }

@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.weaponappearance_etc
+package kr.sul.crackshotaddition.weaponappearance
 
 import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponShootEvent
@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import java.util.*
 
-class WeaponCameraRecoil : Listener {
+object WeaponCameraRecoil : Listener {
     var set: Set<EnumPlayerTeleportFlags> = HashSet(listOf(EnumPlayerTeleportFlags.X, EnumPlayerTeleportFlags.Y, EnumPlayerTeleportFlags.Z, EnumPlayerTeleportFlags.X_ROT, EnumPlayerTeleportFlags.Y_ROT))
 
     @EventHandler

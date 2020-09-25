@@ -1,6 +1,6 @@
-package me.sul.crackshotaddition
+package kr.sul.crackshotaddition.addition
 
-import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent
+import kr.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-class WeaponSwapSound : Listener {
+object WeaponSwapSound : Listener {
     private var previousSwapSound = HashMap<UUID, String>()
     @EventHandler
     fun onSwap(e: PlayerMainItemChangedConsideringUidEvent) {
@@ -28,8 +28,7 @@ class WeaponSwapSound : Listener {
         previousSwapSound.remove(e.player.uniqueId)
     }
 
-    companion object {
-        fun getSwapSound(item: ItemStack?): String {
+    fun getSwapSound(item: ItemStack?): String {
 //		if (CrackShotAdditionAPI.checkIfItemIsGun(item)) {
 //			if (item.getItemMeta().hasLore()) {
 //				for (String lore: item.getItemMeta().getLore()) {
@@ -49,7 +48,6 @@ class WeaponSwapSound : Listener {
 //				}
 //			}
 //		}
-            return "itemswap"
-        }
+        return "itemswap"
     }
 }

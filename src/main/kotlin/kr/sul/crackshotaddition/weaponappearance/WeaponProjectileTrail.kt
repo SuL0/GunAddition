@@ -1,9 +1,9 @@
-package me.sul.crackshotaddition.weaponappearance_etc
+package kr.sul.crackshotaddition.weaponappearance
 
 import com.shampaggon.crackshot.events.WeaponShootEvent
-import me.sul.crackshotaddition.CrackShotAddition
-import me.sul.crackshotaddition.DebuggingCommand
-import me.sul.crackshotaddition.events.WeaponProjectileTrailEvent
+import kr.sul.crackshotaddition.CrackShotAddition
+import kr.sul.crackshotaddition.DebuggingCommand
+import kr.sul.crackshotaddition.events.WeaponProjectileTrailEvent
 import me.sul.customentity.entityweapon.event.CEWeaponShootEvent
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
 import org.bukkit.Bukkit
@@ -21,12 +21,10 @@ import java.util.stream.Collectors
 import kotlin.math.cos
 import kotlin.math.sin
 
-class WeaponProjectileTrail : Listener {
-    companion object {
-        const val DISTORTION_DISTANCE = 60
-        const val SHIFTVECTOR_LENGTH = 0.2f
-        val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
-    }
+object WeaponProjectileTrail : Listener {
+    const val DISTORTION_DISTANCE = 60
+    const val SHIFTVECTOR_LENGTH = 0.2f
+    val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
 
     @EventHandler
     fun onCEWeaponShootEvent(e: CEWeaponShootEvent) {

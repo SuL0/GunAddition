@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.events
+package kr.sul.crackshotaddition.events
 
 import org.bukkit.Particle
 import org.bukkit.entity.Entity
@@ -11,6 +11,7 @@ class WeaponProjectileTrailEvent(val entity: Entity, val weaponTitle: String, va
     }
 
     companion object {
+        @JvmStatic
         val handlerList = HandlerList()
     }
 }

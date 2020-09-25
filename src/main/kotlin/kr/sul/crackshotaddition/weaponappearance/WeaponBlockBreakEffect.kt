@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.weaponappearance_etc
+package kr.sul.crackshotaddition.weaponappearance
 
 import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent
@@ -13,7 +13,7 @@ import org.bukkit.util.Vector
 import java.util.*
 import java.util.stream.Collectors
 
-class WeaponBlockBreakEffect : Listener {
+object WeaponBlockBreakEffect : Listener {
     @EventHandler
     fun onCEWeaponHitBlockEvent(e: CEWeaponHitBlockEvent) {
         blockBreakEffect(e.entity, e.projectile)

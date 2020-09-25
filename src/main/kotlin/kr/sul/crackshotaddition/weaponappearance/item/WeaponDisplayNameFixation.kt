@@ -1,14 +1,16 @@
-package me.sul.crackshotaddition.weaponappearance_item
+package kr.sul.crackshotaddition.weaponappearance.item
 
 import com.shampaggon.crackshot.CSDirector
 import de.tr7zw.nbtapi.NBTItem
-import me.sul.crackshotaddition.util.CrackShotAdditionAPI
+import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
 
+// 이거 static이라서 구문을 뭔가 써야하는데?
 object WeaponDisplayNameFixation {
     private const val NBT_FOR_NAME_FIXATION = "NbtForNameFixation"
     private var bool = true
+
     init {
         object : BukkitRunnable() {
             override fun run() {

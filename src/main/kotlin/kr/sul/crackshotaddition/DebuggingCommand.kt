@@ -1,17 +1,17 @@
-package me.sul.crackshotaddition
+package kr.sul.crackshotaddition
 
-import me.sul.crackshotaddition.util.CrackShotAdditionAPI
-import me.sul.crackshotaddition.weaponappearance_etc.WeaponProjectileTrail
+import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.Particle
 import org.bukkit.block.Chest
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class DebuggingCommand : CommandExecutor {
+object DebuggingCommand : CommandExecutor {
+    var distortion = true
+
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (sender !is Player) return false
         if (args.isEmpty()) return false
@@ -32,31 +32,31 @@ class DebuggingCommand : CommandExecutor {
             sender.setCooldown(Material.DIAMOND_PICKAXE, 20)
         } else if (args[0].equals("info", ignoreCase = true)) {
             sendM(sender, "")
-            sendM(sender, "isSet: " + MainCrackShotWeaponInfoMetaManager.isSet(sender))
-            sendM(sender, "getItemStack: " + MainCrackShotWeaponInfoMetaManager.getItemStack(sender)!!.getItemMeta().getDisplayName())
-            sendM(sender, "getParentNode: " + MainCrackShotWeaponInfoMetaManager.getParentNode(sender))
-            sendM(sender, "getConfigName: " + MainCrackShotWeaponInfoMetaManager.getConfigName(sender))
-            sendM(sender, "getLeftAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getLeftAmmoAmount(sender))
-            sendM(sender, "getRightAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getRightAmmoAmount(sender))
-            sendM(sender, "getReloadAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getReloadAmmoAmount(sender))
-            sendM(sender, "getAmmoItemMaterial: " + MainCrackShotWeaponInfoMetaManager.getAmmoItemMaterial(sender))
-            sendM(sender, "getReloadAmountPerAmmo: " + MainCrackShotWeaponInfoMetaManager.getReloadAmountPerAmmo(sender))
-            sendM(sender, "getPossessedExtraAmmoAmount: " + MainCrackShotWeaponInfoMetaManager.getPossessedExtraAmmoAmount(sender))
-            sendM(sender, "getUniqueId: " + MainCrackShotWeaponInfoMetaManager.getUniqueId(sender))
+            val weaponInfo = MainCrackShotWeaponInfoManager.get(sender)
+            if (weaponInfo == null) {
+                sendM(sender, "null")
+                return true
+            }
+            sendM(sender, "ItemStack.displayName: ${weaponInfo.getMainItem().itemMeta.displayName}")
+            sendM(sender, "ParentNode: ${weaponInfo.parentNode}")
+            sendM(sender, "ConfigName: ${weaponInfo.configName}")
+            sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")
+            sendM(sender, "LeftAmmoAmount: ${weaponInfo.ammoInfo.leftAmmoAmount}")
+            sendM(sender, "RightAmmoAmount: ${weaponInfo.ammoInfo.rightAmmoAmount}")
+            sendM(sender, "ReloadAmmoAmount: ${weaponInfo.ammoInfo.reloadAmount}")
+            sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammoInfo.ammoMaterial}")
+            sendM(sender, "TakeAsMagazine: ${weaponInfo.ammoInfo.takeAsMagazine}")
+            sendM(sender, "PossessedExtraAmmoAmount: ${weaponInfo.ammoInfo.possessedExtraAmmoAmount}")
         } else if (args[0].equals("distortion", ignoreCase = true)) {
             distortion = !distortion
             sendM(sender, "총알 궤적 왜곡 $distortion")
         } else if (args[0].equals("parentnode", ignoreCase = true)) {
-            sendM(sender, "parentNode: " + CrackShotAdditionAPI.getWeaponParentNode(sender.itemInHand))
+            sendM(sender, "parentNode: " + CrackShotAdditionAPI.getWeaponParentNode(sender.inventory.itemInMainHand))
         }
         return true
     }
 
     private fun sendM(p: Player, msg: String) {
         p.sendMessage(msg)
-    }
-
-    companion object {
-        var distortion = true
     }
 }

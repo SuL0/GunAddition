@@ -1,4 +1,4 @@
-package me.sul.crackshotaddition.weaponappearance_etc
+package kr.sul.crackshotaddition.weaponappearance
 
 import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponShootEvent
@@ -10,12 +10,10 @@ import org.bukkit.util.Vector
 import kotlin.math.abs
 import kotlin.math.pow
 
-class WeaponMuzzleFlash : Listener {
-    companion object {
-        private val MUZZLE_FLASH_PARTICLE = Particle.REDSTONE
-        private const val RIGHT = 90
-        private const val LEFT = -90
-    }
+object WeaponMuzzleFlash : Listener {
+    private val MUZZLE_FLASH_PARTICLE = Particle.REDSTONE
+    private const val RIGHT = 90
+    private const val LEFT = -90
 
     @EventHandler
     fun onShoot(e: WeaponShootEvent) {

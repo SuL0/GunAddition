@@ -1,8 +1,8 @@
-package me.sul.crackshotaddition.weapons
+package kr.sul.crackshotaddition.weapons
 
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
-import me.sul.crackshotaddition.CrackShotAddition
+import kr.sul.crackshotaddition.CrackShotAddition
 import net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles
 import org.bukkit.Location
 import org.bukkit.Material
@@ -13,10 +13,8 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 
-class FlameThrower : Listener {
-    companion object {
-        const val FLAMETHROWER = "N화염방사기"
-    }
+object FlameThrower : Listener {
+    private const val FLAMETHROWER = "N화염방사기"
 
     @EventHandler
     fun onShoot(e: WeaponShootEvent) {

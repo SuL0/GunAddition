@@ -1,17 +1,15 @@
-package me.sul.crackshotaddition.weaponappearance_item
+package kr.sul.crackshotaddition.weaponappearance.item
 
-import me.sul.crackshotaddition.util.CrackShotAdditionAPI
-import me.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent
+import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
+import kr.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class WeaponItemFlutterFixation : Listener {
-    companion object {
-        private val POTION_EFFECT_TYPE = PotionEffectType.SLOW_DIGGING
-    }
+object WeaponItemFlutterFixation : Listener {
+    private val POTION_EFFECT_TYPE = PotionEffectType.SLOW_DIGGING
 
     // 서버에 들어왔을 때도 이 이벤트가 실행되기때문에 onJoin은 넣을 필요가 없음.
     @EventHandler
