@@ -49,7 +49,6 @@ object MainCrackShotWeaponInfoManager : Listener {
     // possessedExtraAmmoAmount: (*reloadAmountPerAmmo 없음) - 이거 없애야 할 듯
     // reloadAmountPerAmmo 대신 Take_Ammo_As_Magazine를 넣어야 할 듯
 
-    private val plugin = CrackShotAddition.instance
     private val weaponInfoMap = hashMapOf<Player, CrackShotWeaponInfo?>()
 
 
@@ -58,16 +57,16 @@ object MainCrackShotWeaponInfoManager : Listener {
         return if (isSet(p)) weaponInfoMap[p] else null
     }
     @JvmStatic
-    fun isSet(p: Player): Boolean {  // 옛날 주석: 이 클래스 내부에서는 isSet()을 쓰지 않는게 좋음.
+    fun isSet(p: Player, passVerifyingData: Boolean = false): Boolean {  // 이 클래스 내부에서는 isSet()을 쓰지 않는게 좋음
         if (weaponInfoMap.containsKey(p) && weaponInfoMap[p] != null) {
-            return weaponInfoMap[p]!!.verifyData()
+            return (passVerifyingData || weaponInfoMap[p]!!.verifyData())
         }
         return false
     }
 
     @JvmStatic
     private fun removeCrackShotWeaponInfo(p: Player) {
-        Bukkit.getServer().broadcastMessage("§cremoveAllOfCrackShotMeta")
+        Bukkit.getServer().broadcastMessage("§csetToNull")
         weaponInfoMap[p] = null
     }
 
@@ -79,7 +78,8 @@ object MainCrackShotWeaponInfoManager : Listener {
         val p = e.player
         val newIs = e.newItemStack
         if (!e.isChangedToCrackShotWeapon) {
-            if (isSet(p)) { //단순히 데이터 남아있으면 삭제하는 것. ItemStack이 다를 수 밖에 없어서 Exception 발생함 -> checkingData는 스킵해야 함
+            // 단순히 데이터 남아있으면 삭제하는 것
+            if (isSet(p, passVerifyingData = true)) { // 아이템이 바뀌어서 호출된 이벤트니, getItemStack이 예상 값과 다를 수 밖에 없어서 Exception 발생함 -> verifyData는 스킵해야 함
                 removeCrackShotWeaponInfo(p)
             }
             return
@@ -115,7 +115,7 @@ object MainCrackShotWeaponInfoManager : Listener {
             }
         }
 
-        Bukkit.getServer().broadcastMessage("set Metadata")
+        Bukkit.getServer().broadcastMessage("§aput weaponInfoMap")
         weaponInfoMap[p] = CrackShotWeaponInfo(p, mainItemSlot, parentNode, configName, uniqueId, ammoInfo)
     }
 
@@ -161,7 +161,7 @@ object MainCrackShotWeaponInfoManager : Listener {
                 rightAmmoAmount = reloadAmount
             } else {
                 if (takeAsMagazine == null) throw Exception()
-                leftAmmoAmount = if (takeAsMagazine!!) leftAmmoAmount?.plus(1) else reloadAmount
+                leftAmmoAmount = if (takeAsMagazine!!) reloadAmount else leftAmmoAmount?.plus(1)
             }
         }
     }
