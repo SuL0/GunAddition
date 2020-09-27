@@ -8,6 +8,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 object DebuggingCommand : CommandExecutor {
     var distortion = true
@@ -15,7 +16,7 @@ object DebuggingCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (sender !is Player) return false
         if (args.isEmpty()) return false
-        if (args[0].equals("chest", ignoreCase = true)) {
+        if (args[0].equals("chest", true)) {
             val block = sender.getTargetBlock(null, 20)
             if (block.type == Material.CHEST) {
                 val chest = block.state as Chest
@@ -28,9 +29,9 @@ object DebuggingCommand : CommandExecutor {
                     sender.openInventory(chest.blockInventory)
                 }, 20L)
             }
-        } else if (args[0].equals("cool", ignoreCase = true)) {
+        } else if (args[0].equals("cool", true)) {
             sender.setCooldown(Material.DIAMOND_PICKAXE, 20)
-        } else if (args[0].equals("info", ignoreCase = true)) {
+        } else if (args[0].equals("info", true)) {
             sendM(sender, "")
             val weaponInfo = MainCrackShotWeaponInfoManager.get(sender)
             if (weaponInfo == null) {
@@ -47,11 +48,22 @@ object DebuggingCommand : CommandExecutor {
             sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammoInfo.ammoMaterial}")
             sendM(sender, "TakeAsMagazine: ${weaponInfo.ammoInfo.takeAsMagazine}")
             sendM(sender, "PossessedExtraAmmoAmount: ${weaponInfo.ammoInfo.possessedExtraAmmoAmount}")
-        } else if (args[0].equals("distortion", ignoreCase = true)) {
+        } else if (args[0].equals("distortion", true)) {
             distortion = !distortion
             sendM(sender, "총알 궤적 왜곡 $distortion")
-        } else if (args[0].equals("parentnode", ignoreCase = true)) {
+        } else if (args[0].equals("parentnode", true)) {
             sendM(sender, "parentNode: " + CrackShotAdditionAPI.getWeaponParentNode(sender.inventory.itemInMainHand))
+        } else if (args[0] == "fromJava") {
+            if (args[1] == "default") {
+                val item = sender.inventory.getItem(0)
+                sendM(sender, "-default-")
+                sendM(sender, "item : ${item.type}")
+            }
+            else if (args[1] == "withElvis") {
+                val item = sender.inventory.getItem(0)?.clone() ?: ItemStack(Material.DIAMOND)
+                sendM(sender, "-withElvis-")
+                sendM(sender, "item : ${item.type}")
+            }
         }
         return true
     }

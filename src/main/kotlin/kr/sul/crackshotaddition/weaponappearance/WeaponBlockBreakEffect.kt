@@ -60,8 +60,8 @@ object WeaponBlockBreakEffect : Listener {
         return Location(proj.world, 0.0, 0.0, 0.0)
     }
 
-    private fun getBlockCornerLocation(loc: Location, vec: Vector): Location {
-        var vec = vec
+    private fun getBlockCornerLocation(loc: Location, vecParam: Vector): Location {
+        var vec = vecParam
         val origMaterial = loc.block.type
         val maxI = 10 // 블럭을 10등분
         vec = vec.multiply(vec.length() / maxI)

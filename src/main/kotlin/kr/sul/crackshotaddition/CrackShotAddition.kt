@@ -13,6 +13,7 @@ import kr.sul.crackshotaddition.weaponappearance.item.WeaponDisplayNameControlle
 import kr.sul.crackshotaddition.weaponappearance.item.WeaponDisplayNameFixation
 import kr.sul.crackshotaddition.weaponappearance.item.WeaponItemFlutterFixation
 import kr.sul.crackshotaddition.weapons.FlameThrower
+import kr.sul.servercore.util.ObjectInitializer
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -41,16 +42,6 @@ class CrackShotAddition : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(WeaponCameraRecoil, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
         Bukkit.getServer().pluginManager.registerEvents(MainCrackShotWeaponInfoManager, this)
-        forceInit(WeaponDisplayNameFixation.javaClass)
-    }
-
-
-    private fun <T> forceInit(clazz: Class<T>): Class<T>? {
-        try {
-            Class.forName(clazz.name, true, clazz.classLoader)
-        } catch (e: ClassNotFoundException) {
-            throw AssertionError(e) // Can't happen
-        }
-        return clazz
+        ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }

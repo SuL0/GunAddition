@@ -25,7 +25,7 @@ object WeaponDisplayNameController : Listener {
     // NORMAL
     @EventHandler(priority = EventPriority.NORMAL) // onSwap보다 선행돼야 함 (Swap에게 덮어 씌워져야하기 때문)
     fun onPlayerMainItemChanged(e: PlayerMainItemChangedConsideringUidEvent) {
-        if (e.isChangedToCrackShotWeapon) {
+        if (e.isChangedToCrackShotWeapon()) {
             updateMainWeaponDisplay(e.player, DisplayNameType.NORMAL)
         }
     }

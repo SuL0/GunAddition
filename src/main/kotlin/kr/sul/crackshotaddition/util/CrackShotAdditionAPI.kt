@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition.util
 
 import kr.sul.crackshotaddition.CrackShotAddition
-import kr.sul.servercore.serialnumber.UniqueIdAPI
+import kr.sul.servercore.util.UniqueIdAPI
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

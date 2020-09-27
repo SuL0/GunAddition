@@ -6,7 +6,7 @@ import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
 import kr.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent
-import kr.sul.servercore.serialnumber.UniqueIdAPI
+import kr.sul.servercore.util.UniqueIdAPI
 import me.sul.customentity.util.DebugUtil
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -77,7 +77,7 @@ object MainCrackShotWeaponInfoManager : Listener {
     fun onPlayerMainItemChanged(e: PlayerMainItemChangedConsideringUidEvent) {
         val p = e.player
         val newIs = e.newItemStack
-        if (!e.isChangedToCrackShotWeapon) {
+        if (!e.isChangedToCrackShotWeapon()) {
             // 단순히 데이터 남아있으면 삭제하는 것
             if (isSet(p, passVerifyingData = true)) { // 아이템이 바뀌어서 호출된 이벤트니, getItemStack이 예상 값과 다를 수 밖에 없어서 Exception 발생함 -> verifyData는 스킵해야 함
                 removeCrackShotWeaponInfo(p)
@@ -88,7 +88,7 @@ object MainCrackShotWeaponInfoManager : Listener {
         val mainItemSlot = e.newSlot
         val parentNode = CrackShotAdditionAPI.getWeaponParentNode(newIs) ?: throw Exception("$newIs")
         val configName = CrackShotAdditionAPI.getWeaponConfigName(parentNode) ?: throw Exception(parentNode)
-        val uniqueId = UniqueIdAPI.getUniqueID(newIs) ?: throw Exception("$newIs")
+        val uniqueId = UniqueIdAPI.getUniqueID(newIs)
 
         // CrackShotWeaponAmmoInfo 설정
         val ammoInfo = CrackShotWeaponAmmoInfo(CSDirector.getInstance().getBoolean("$parentNode.Ammo.Enable"))
