@@ -3,11 +3,8 @@ plugins {
     id("kr.entree.spigradle") version "2.2.3"
 }
 
-
 group = "kr.sul"
 version = "1.0-SNAPSHOT"
-
-tasks.compileJava.get().options.encoding = "UTF-8"
 
 repositories {
     mavenCentral()
@@ -17,16 +14,14 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     compileOnly("com.destroystokyo.paper", "paper-api", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc", "spigot", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol", "ProtocolLib", "4.5.1")
     compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/CrackShot_SuL.jar"))
-    compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/ServerCore_SuL.jar"))
     compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/CustomEntity_SuL.jar"))
+    compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/NotFat/ServerCore_S-NotFat.jar"))
     compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/Dependencies/item-nbt-api-plugin-2.5.0.jar"))
 }
-
 
 spigot {
     authors = listOf("SuL")
@@ -42,27 +37,25 @@ spigot {
 }
 
 
+tasks.compileJava.get().options.encoding = "UTF-8"
+
 val shade = configurations.create("shade")
 shade.extendsFrom(configurations.implementation.get())
 
+val fatJar = task("fatJar", type = Jar::class) {
+    archiveFileName.set("${project.name}_S.jar")
+    destinationDirectory.set(file("C:/Users/PHR/Desktop/PluginStorage"))
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    with(tasks.jar.get() as CopySpec)
+}
+
 tasks {
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
+    compileKotlin.get().kotlinOptions.jvmTarget = "1.8"
+    compileTestKotlin.get().kotlinOptions.jvmTarget = "1.8"
 
     jar {
-        archiveFileName.set("${project.name}_SuL.jar")
-        destinationDirectory.set(file("C:/Users/PHR/Desktop/PluginStorage"))
-        from(
-                shade.map {
-                    if (it.isDirectory)
-                        it
-                    else
-                        zipTree(it)
-                }
-        )
+        dependsOn(fatJar)
+        archiveFileName.set("${project.name}_S-NotFat.jar")
+        destinationDirectory.set(file("C:/Users/PHR/Desktop/PluginStorage/NotFat"))
     }
 }
