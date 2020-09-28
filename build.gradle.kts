@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("stdlib-jdk8"))
     compileOnly("com.destroystokyo.paper", "paper-api", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc", "spigot", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol", "ProtocolLib", "4.5.1")
