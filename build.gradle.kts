@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(files("C:/Users/PHR/Desktop/PluginStorage/KotlinLoader_S-1.4.10.jar"))
+    implementation(kotlin("stdlib-jdk8"))
     compileOnly("com.destroystokyo.paper", "paper-api", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc", "spigot", "1.12.2-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol", "ProtocolLib", "4.5.1")
