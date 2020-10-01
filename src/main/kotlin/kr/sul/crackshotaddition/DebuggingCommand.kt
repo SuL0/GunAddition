@@ -1,5 +1,7 @@
 package kr.sul.crackshotaddition
 
+import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
+import kr.sul.crackshotaddition.infomanager.heldweapon.PlayerHeldWeaponInfoManager
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -33,21 +35,26 @@ object DebuggingCommand : CommandExecutor {
             sender.setCooldown(Material.DIAMOND_PICKAXE, 20)
         } else if (args[0].equals("info", true)) {
             sendM(sender, "")
-            val weaponInfo = MainCrackShotWeaponInfoManager.get(sender)
-            if (weaponInfo == null) {
-                sendM(sender, "null")
-                return true
-            }
-            sendM(sender, "ItemStack.displayName: ${weaponInfo.getMainItem().itemMeta.displayName}")
+            val weaponInfo = PlayerHeldWeaponInfoManager.getInfo(sender)!!
+            val ammoInfo = PlayerInvAmmoInfoManager.getInfo(sender)
+
+            sendM(sender, "")
+            sendM(sender, "ItemStack.displayName: ${weaponInfo.getHeldItem().itemMeta.displayName}")
             sendM(sender, "ParentNode: ${weaponInfo.parentNode}")
             sendM(sender, "ConfigName: ${weaponInfo.configName}")
             sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")
-            sendM(sender, "LeftAmmoAmount: ${weaponInfo.ammoInfo.leftAmmoAmount}")
-            sendM(sender, "RightAmmoAmount: ${weaponInfo.ammoInfo.rightAmmoAmount}")
-            sendM(sender, "ReloadAmmoAmount: ${weaponInfo.ammoInfo.reloadAmount}")
-            sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammoInfo.ammoMaterial}")
-            sendM(sender, "TakeAsMagazine: ${weaponInfo.ammoInfo.takeAsMagazine}")
-            sendM(sender, "PossessedExtraAmmoAmount: ${weaponInfo.ammoInfo.possessedExtraAmmoAmount}")
+            sendM(sender, "LeftAmmoAmount: ${weaponInfo.leftAmmoAmount}")
+            sendM(sender, "RightAmmoAmount: ${weaponInfo.rightAmmoAmount}")
+            sendM(sender, "ReloadAmmoAmount: ${weaponInfo.reloadCapacity}")
+            sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammo?.itemInfo}")
+            sendM(sender, "TakeAsMagazine: ${weaponInfo.takeAsMagazine}")
+            Bukkit.getServer().broadcastMessage("")
+            Bukkit.getServer().broadcastMessage("<AmmoInfo>")
+            for ((key, value) in ammoInfo.possessedAmmoList) {
+                Bukkit.getServer().broadcastMessage("$key : $value")
+                Bukkit.getServer().broadcastMessage(" §7- Usage: ${key.whereToUse}")
+            }
+
         } else if (args[0].equals("distortion", true)) {
             distortion = !distortion
             sendM(sender, "총알 궤적 왜곡 $distortion")

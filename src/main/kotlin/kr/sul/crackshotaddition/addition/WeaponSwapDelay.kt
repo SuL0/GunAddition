@@ -5,11 +5,11 @@ import com.shampaggon.crackshot.events.WeaponPrepareShootEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
 import kr.sul.crackshotaddition.CrackShotAddition
-import kr.sul.crackshotaddition.MainCrackShotWeaponInfoManager
+import kr.sul.crackshotaddition.infomanager.heldweapon.PlayerHeldWeaponInfoManager
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
-import kr.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent
+import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToOnotherEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -26,10 +26,10 @@ object WeaponSwapDelay : Listener {
     }
 
     @EventHandler
-    fun onMainItemChange(e: PlayerMainItemChangedConsideringUidEvent) {
+    fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToOnotherEvent) {
         if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.clonedPreviousItemStack)) return
         val p = e.player
-        val newWeaponParentNode = MainCrackShotWeaponInfoManager.get(p)?.parentNode
+        val newWeaponParentNode = PlayerHeldWeaponInfoManager.getInfo(p)?.parentNode
 
         // 이전 템 쿨타임 적용 중 이였다면, 삭제
         if (p.getCooldown(e.clonedPreviousItemStack.type) > 1) {
@@ -43,7 +43,7 @@ object WeaponSwapDelay : Listener {
             swapDelayOfPlayers[p.uniqueId] = millisecSwapDelay
             p.setCooldown(e.newItemStack.type, configSwapDelay)
             Bukkit.getScheduler().runTaskLater(CrackShotAddition.instance, {
-                if (MainCrackShotWeaponInfoManager.isSet(p) &&
+                if (PlayerHeldWeaponInfoManager.isSet(p) &&
                         swapDelayOfPlayers.containsKey(p.uniqueId) && swapDelayOfPlayers[p.uniqueId] == millisecSwapDelay) { // 전에 넣은 딜레이 값이랑 똑같은지 확인
                     Bukkit.getServer().pluginManager.callEvent(WeaponSwapCompleteEvent(p, e.newItemStack, newWeaponParentNode))
                 }

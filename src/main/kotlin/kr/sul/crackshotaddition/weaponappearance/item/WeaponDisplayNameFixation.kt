@@ -16,11 +16,11 @@ object WeaponDisplayNameFixation {
             override fun run() {
                 bool = !bool
                 for (p in Bukkit.getServer().onlinePlayers) {
-                    val mainIs = p.inventory.itemInMainHand
-                    if (CrackShotAdditionAPI.isValidCrackShotWeapon(mainIs)) {
-                        val nbti = NBTItem(mainIs.clone())
+                    val heldIs = p.inventory.itemInMainHand
+                    if (CrackShotAdditionAPI.isValidCrackShotWeapon(heldIs)) {
+                        val nbti = NBTItem(heldIs.clone())
                         nbti.setBoolean(NBT_FOR_NAME_FIXATION, bool)
-                        mainIs.itemMeta = nbti.item.itemMeta
+                        heldIs.itemMeta = nbti.item.itemMeta
                     }
                 }
             }

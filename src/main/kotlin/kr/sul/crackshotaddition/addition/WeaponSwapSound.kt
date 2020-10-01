@@ -1,6 +1,6 @@
 package kr.sul.crackshotaddition.addition
 
-import kr.sul.servercore.inventoryevent.PlayerMainItemChangedConsideringUidEvent
+import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToOnotherEvent
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -11,7 +11,7 @@ import java.util.*
 object WeaponSwapSound : Listener {
     private var previousSwapSound = HashMap<UUID, String>()
     @EventHandler
-    fun onSwap(e: PlayerMainItemChangedConsideringUidEvent) {
+    fun onSwap(e: PlayerHeldItemIsChangedToOnotherEvent) {
         val p = e.player
         if (e.newItemStack.type != Material.AIR) {
             val sound = getSwapSound(e.newItemStack)
