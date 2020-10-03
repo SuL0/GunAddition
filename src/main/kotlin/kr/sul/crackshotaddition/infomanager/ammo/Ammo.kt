@@ -4,8 +4,7 @@ import com.shampaggon.crackshot.CSDirector
 import org.bukkit.inventory.ItemStack
 
 // Material이랑 비슷하게 설계했음. Ammo는 종류별로 객체가 한개씩 있고, 그걸 계속 가져다 쓰게끔.
-// TODO: private constructor이 왜 warning이 뜨는거지
-data class Ammo(private val id: Int, private val durability: Short) {
+data class Ammo(private val id: Int, private val durability: Short, val dontUseConstructor: Boolean) {
     val whereToUse = arrayListOf<String>() // ParentNode
     val itemStack = ItemStack(id, 1, durability)
     val itemInfo = "${itemStack.typeId}~${itemStack.durability}"
@@ -41,7 +40,7 @@ data class Ammo(private val id: Int, private val durability: Short) {
                 return ammo
             }
             if (ifNotExistCreateOne) {
-                return Ammo(id, durability)
+                return Ammo(id, durability, true)
             }
             return null
         }
