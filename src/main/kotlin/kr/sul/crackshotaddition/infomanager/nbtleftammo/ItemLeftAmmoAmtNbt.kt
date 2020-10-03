@@ -19,10 +19,7 @@ object ItemLeftAmmoAmtNbt {
         if (!weaponInfo.reloadEnabled) return null
 
         val nbti = NBTItem(item)
-        // NBT에 Left Ammo에 관한 값이 아예 없을 때 -> 아이템에 NBT 넣기
-        if (!nbti.hasKey(LEFTSIDE_AMMO_AMT_KEY)) {
-            updateLeftAmmoAmtNbt(p, item) { csDirector.getAmmoBetweenBrackets(p, it.parentNode, item) }
-        }
+        if (!nbti.hasKey(LEFTSIDE_AMMO_AMT_KEY)) throw Exception("$p, $item")
         return nbti.getInteger(LEFTSIDE_AMMO_AMT_KEY)
     }
     fun getRightSideAmmoAmt(p: Player, item: ItemStack): Int? {
@@ -30,10 +27,7 @@ object ItemLeftAmmoAmtNbt {
         if (!weaponInfo.reloadEnabled) return null
 
         val nbti = NBTItem(item)
-        // NBT에 Left Ammo에 관한 값이 아예 없을 때 -> 아이템에 NBT 넣기
-        if (!nbti.hasKey(RIGHTSIDE_AMMO_AMT_KEY)) {
-            updateLeftAmmoAmtNbt(p, item)
-        }
+        if (!nbti.hasKey(RIGHTSIDE_AMMO_AMT_KEY)) throw Exception("$p, $item")
         return nbti.getInteger(RIGHTSIDE_AMMO_AMT_KEY)
     }
 
