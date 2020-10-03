@@ -3,13 +3,12 @@ package kr.sul.crackshotaddition.weaponappearance.item
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
-import kr.sul.crackshotaddition.infomanager.heldweapon.PlayerHeldWeaponInfoManager
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
+import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToOnotherEvent
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -18,7 +17,7 @@ import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
 object WeaponDisplayNameController : Listener {
-    internal enum class DisplayNameType {
+    enum class DisplayNameType {
         NORMAL, RELOADING, SWAPPING
     }
     private const val AMMO_ICON1 = "§f锄 " // §f 없으면 색 이상해짐
@@ -28,30 +27,34 @@ object WeaponDisplayNameController : Listener {
     @EventHandler(priority = EventPriority.NORMAL) // onSwap보다 선행돼야 함 (Swap에게 덮어 씌워져야하기 때문)
     fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToOnotherEvent) {
         if (e.isChangedToCrackShotWeapon()) {
-            updateMainWeaponDisplay(e.player, DisplayNameType.NORMAL)
+            updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
         }
     }
 
     @EventHandler
     fun onShoot(e: WeaponShootEvent) {
-        updateMainWeaponDisplay(e.player, DisplayNameType.NORMAL)
+        updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
     }
 
     @EventHandler
     fun onReloadComplete(e: WeaponReloadCompleteEvent) {
-        updateMainWeaponDisplay(e.player, DisplayNameType.NORMAL)
+        updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
     }
 
     @EventHandler
     fun onItemChanged(e: InventoryItemChangedEvent) {
         val p = e.player
-        val ammoItemStack = PlayerHeldWeaponInfoManager.getInfo(p)?.ammo?.itemStack
-        if (ammoItemStack != null && (e.newItemStack.type == ammoItemStack.type || e.newItemStack.type == Material.AIR)) {
+        val heldItem = p.inventory.itemInMainHand
+        if (!WeaponInfoExtractor.isValidCrackShotWeapon(heldItem)) return
+        val ammoItem = WeaponInfoExtractor(p, heldItem).ammoNeeded?.itemStack
+
+        // 바뀌게 된 아이템이 Ammo / AIR
+        if (ammoItem != null && (e.newItemStack.type == ammoItem.type || e.newItemStack.type == Material.AIR)) {
             // Reload나 Swapping중이였다면, 이게 무시돼야 함
-            val heldItemName = PlayerHeldWeaponInfoManager.getInfo(p)!!.getHeldItem().itemMeta.displayName
+            val heldItemName = heldItem.itemMeta.displayName
             if (heldItemName.contains(DisplayNameType.RELOADING.name) || heldItemName.contains(DisplayNameType.SWAPPING.name)) return
 
-            updateMainWeaponDisplay(p, DisplayNameType.NORMAL)
+            updateHeldWeaponDisplay(p, DisplayNameType.NORMAL)
         }
     }
 
@@ -59,47 +62,50 @@ object WeaponDisplayNameController : Listener {
     @EventHandler(priority = EventPriority.HIGH)
     fun onReload(e: WeaponReloadEvent) {
         if (e.isCancelled) return
-        updateMainWeaponDisplay(e.player, DisplayNameType.RELOADING)
+        updateHeldWeaponDisplay(e.player, DisplayNameType.RELOADING)
     }
 
     // SWAPPING
     @EventHandler(priority = EventPriority.HIGH) // onPlayerHeldItemChanged보다 후행돼야 함 (덮어 씌워야하기 때문)
     fun onSwap(e: WeaponSwapEvent) {
         if (e.swapDelay > 0) {
-            updateMainWeaponDisplay(e.player, DisplayNameType.SWAPPING)
+            updateHeldWeaponDisplay(e.player, DisplayNameType.SWAPPING)
         }
     }
 
     @EventHandler
     fun onSwapComplete(e: WeaponSwapCompleteEvent) {
-        updateMainWeaponDisplay(e.player, DisplayNameType.NORMAL)
+        updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
     }
 
-    private fun updateMainWeaponDisplay(p: Player, displayNameType: DisplayNameType) {
-        val weaponInfo = PlayerHeldWeaponInfoManager.getInfo(p)!!
-        val weapon = weaponInfo.getHeldItem()
+    private fun updateHeldWeaponDisplay(p: Player, displayNameType: DisplayNameType) {
+        updateWeaponDisplay(p, p.inventory.itemInMainHand, displayNameType)
+    }
+    fun updateWeaponDisplay(p: Player, item: ItemStack, displayNameType: DisplayNameType) {
+        if (!WeaponInfoExtractor.isValidCrackShotWeapon(item)) throw Exception("$p, $item, $displayNameType")
+        val weaponInfo = WeaponInfoExtractor(p, item)
+        val weapon = weaponInfo.item
         val configName = weaponInfo.configName
         var leftAmmo: Int? = null
         var rightAmmo: Int? = null
-        var possessedExtraAmmoAmt: Int? = null
+        var reloadableAmt: Int? = null
         if (displayNameType == DisplayNameType.NORMAL) {
-            leftAmmo = weaponInfo.leftAmmoAmount
-            rightAmmo = weaponInfo.rightAmmoAmount
+            leftAmmo = weaponInfo.leftAmmoAmt
+            rightAmmo = weaponInfo.rightAmmoAmt
 
             val invAmmoInfo = PlayerInvAmmoInfoManager.getInfo(p)
-            possessedExtraAmmoAmt = weaponInfo.ammo?.let { invAmmoInfo.getReloadableAmountPerWeapon(p, weapon, it) }
+            reloadableAmt = weaponInfo.ammoNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(p, weapon)!! }
         }
-        makePrettyWeaponDisplayName(p, displayNameType, weapon, configName, leftAmmo, rightAmmo, possessedExtraAmmoAmt)
+        makePrettyWeaponDisplayName(p, displayNameType, weapon, configName, leftAmmo, rightAmmo, reloadableAmt)
     }
-
 
 
     @JvmStatic  // 외부에서 사용할 때는 무조건 DisplayNameType.NORMAL
-    fun makePrettyWeaponDisplayName(p: Player?, weapon: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, possessedExtraAmmoAmt: Int?) {
-        makePrettyWeaponDisplayName(p, DisplayNameType.NORMAL, weapon, configName, leftAmmo, rightAmmo, possessedExtraAmmoAmt)
+    fun makePrettyWeaponDisplayName(p: Player?, item: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, reloadableAmount: Int?) {
+        makePrettyWeaponDisplayName(p, DisplayNameType.NORMAL, item, configName, leftAmmo, rightAmmo, reloadableAmount)
     }
-    private fun makePrettyWeaponDisplayName(p: Player?, displayNameType: DisplayNameType, weapon: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, possessedExtraAmmoAmt: Int?) {
-        val meta = weapon.itemMeta
+    private fun makePrettyWeaponDisplayName(p: Player?, displayNameType: DisplayNameType, item: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, reloadableAmt: Int?) {
+        val meta = item.itemMeta
         val weaponNameBuilder = StringBuilder()
         weaponNameBuilder.append(configName) // 총기 이름 넣기
         for (i in 0 until MIDDLE_BLANK_LENGTH) {
@@ -124,10 +130,10 @@ object WeaponDisplayNameController : Listener {
                 }
 
                 // 슬래쉬 및 보유 총알 넣기
-                if (possessedExtraAmmoAmt == null || possessedExtraAmmoAmt == 0) {
-                    weaponNameBuilder.append("§7/§4").append(possessedExtraAmmoAmt ?: 0)
+                if (reloadableAmt == null || reloadableAmt == 0) {
+                    weaponNameBuilder.append("§7/§4").append(reloadableAmt ?: 0)
                 } else {
-                    weaponNameBuilder.append("§7/").append(possessedExtraAmmoAmt)
+                    weaponNameBuilder.append("§7/").append(reloadableAmt)
                 }
             }
             // 무한
@@ -141,7 +147,7 @@ object WeaponDisplayNameController : Listener {
         }
         meta.displayName = weaponNameBuilder.toString()
 
-        weapon.itemMeta = meta
+        item.itemMeta = meta
         p?.updateInventory()
     }
 }
