@@ -21,7 +21,7 @@ object WeaponBlockBreakEffect : Listener {
 
     @EventHandler
     fun onWeaponHitBlock(e: WeaponHitBlockEvent) {
-        val bBlockbreakeffect = CSDirector.getInstance().getBoolean(e.weaponTitle + ".Addition.Block_Break_Effect")
+        val bBlockbreakeffect = CSDirector.getInstance().getBoolean(e.parentNode + ".Addition.Block_Break_Effect")
         if (bBlockbreakeffect) {
             blockBreakEffect(e.player, e.projectile)
         }

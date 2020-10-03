@@ -18,7 +18,7 @@ object FlameThrower : Listener {
 
     @EventHandler
     fun onShoot(e: WeaponShootEvent) {
-        if (e.weaponTitle == FLAMETHROWER) {
+        if (e.parentNode == FLAMETHROWER) {
             val proj = e.projectile
             object : BukkitRunnable() {
                 var previousLoc: Location? = null
@@ -50,7 +50,7 @@ object FlameThrower : Listener {
 
     @EventHandler
     fun onWeaponHitBlock(e: WeaponHitBlockEvent) {
-        if (e.weaponTitle == FLAMETHROWER) {
+        if (e.parentNode == FLAMETHROWER) {
             val block = e.block
             if (block.getRelative(BlockFace.UP).type == Material.AIR) {
                 block.getRelative(BlockFace.UP).type = Material.FIRE

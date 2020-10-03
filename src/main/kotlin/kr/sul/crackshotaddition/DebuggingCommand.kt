@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition
 
+import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.infomanager.heldweapon.PlayerHeldWeaponInfoManager
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -10,7 +10,6 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 
 object DebuggingCommand : CommandExecutor {
     var distortion = true
@@ -31,26 +30,24 @@ object DebuggingCommand : CommandExecutor {
                     sender.openInventory(chest.blockInventory)
                 }, 20L)
             }
-        } else if (args[0].equals("cool", true)) {
-            sender.setCooldown(Material.DIAMOND_PICKAXE, 20)
         } else if (args[0].equals("info", true)) {
             sendM(sender, "")
-            val weaponInfo = PlayerHeldWeaponInfoManager.getInfo(sender)!!
+            val weaponInfo = WeaponInfoExtractor(sender, sender.inventory.itemInMainHand)
             val ammoInfo = PlayerInvAmmoInfoManager.getInfo(sender)
 
             sendM(sender, "")
-            sendM(sender, "ItemStack.displayName: ${weaponInfo.getHeldItem().itemMeta.displayName}")
+            sendM(sender, "ItemStack.displayName: ${weaponInfo.item.itemMeta.displayName}")
             sendM(sender, "ParentNode: ${weaponInfo.parentNode}")
             sendM(sender, "ConfigName: ${weaponInfo.configName}")
             sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")
-            sendM(sender, "LeftAmmoAmount: ${weaponInfo.leftAmmoAmount}")
-            sendM(sender, "RightAmmoAmount: ${weaponInfo.rightAmmoAmount}")
+            sendM(sender, "LeftAmmoAmount: ${weaponInfo.leftAmmoAmt}")
+            sendM(sender, "RightAmmoAmount: ${weaponInfo.rightAmmoAmt}")
             sendM(sender, "ReloadAmmoAmount: ${weaponInfo.reloadCapacity}")
-            sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammo?.itemInfo}")
+            sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammoNeeded?.itemInfo}")
             sendM(sender, "TakeAsMagazine: ${weaponInfo.takeAsMagazine}")
             Bukkit.getServer().broadcastMessage("")
             Bukkit.getServer().broadcastMessage("<AmmoInfo>")
-            for ((key, value) in ammoInfo.possessedAmmoList) {
+            for ((key, value) in ammoInfo.possessedAmmoAmount) {
                 Bukkit.getServer().broadcastMessage("$key : $value")
                 Bukkit.getServer().broadcastMessage(" §7- Usage: ${key.whereToUse}")
             }
@@ -59,18 +56,7 @@ object DebuggingCommand : CommandExecutor {
             distortion = !distortion
             sendM(sender, "총알 궤적 왜곡 $distortion")
         } else if (args[0].equals("parentnode", true)) {
-            sendM(sender, "parentNode: " + CrackShotAdditionAPI.getWeaponParentNode(sender.inventory.itemInMainHand))
-        } else if (args[0] == "fromJava") {
-            if (args[1] == "default") {
-                val item = sender.inventory.getItem(0)
-                sendM(sender, "-default-")
-                sendM(sender, "item : ${item.type}")
-            }
-            else if (args[1] == "withElvis") {
-                val item = sender.inventory.getItem(0)?.clone() ?: ItemStack(Material.DIAMOND)
-                sendM(sender, "-withElvis-")
-                sendM(sender, "item : ${item.type}")
-            }
+            Bukkit.getServer().broadcastMessage("parentNode: " + CrackShotAdditionAPI.csDirector.returnParentNode(sender))
         }
         return true
     }

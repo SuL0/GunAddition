@@ -5,9 +5,9 @@ import com.shampaggon.crackshot.events.WeaponPrepareShootEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
 import kr.sul.crackshotaddition.CrackShotAddition
-import kr.sul.crackshotaddition.infomanager.heldweapon.PlayerHeldWeaponInfoManager
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
+import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToOnotherEvent
 import org.bukkit.Bukkit
@@ -29,26 +29,29 @@ object WeaponSwapDelay : Listener {
     fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToOnotherEvent) {
         if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.clonedPreviousItemStack)) return
         val p = e.player
-        val newWeaponParentNode = PlayerHeldWeaponInfoManager.getInfo(p)?.parentNode
 
         // 이전 템 쿨타임 적용 중 이였다면, 삭제
         if (p.getCooldown(e.clonedPreviousItemStack.type) > 1) {
             p.setCooldown(e.clonedPreviousItemStack.type, 0)
         }
 
-        val configSwapDelay = CSDirector.getInstance().getInt("$newWeaponParentNode.Addition.Weapon_Swap_Delay")
-        if (newWeaponParentNode != null) {
-            Bukkit.getServer().pluginManager.callEvent(WeaponSwapEvent(p, e.newItemStack, newWeaponParentNode, configSwapDelay))
-            val millisecSwapDelay = System.currentTimeMillis() + configSwapDelay * 50 // 1tick = 1ms * 50
-            swapDelayOfPlayers[p.uniqueId] = millisecSwapDelay
-            p.setCooldown(e.newItemStack.type, configSwapDelay)
-            Bukkit.getScheduler().runTaskLater(CrackShotAddition.instance, {
-                if (PlayerHeldWeaponInfoManager.isSet(p) &&
-                        swapDelayOfPlayers.containsKey(p.uniqueId) && swapDelayOfPlayers[p.uniqueId] == millisecSwapDelay) { // 전에 넣은 딜레이 값이랑 똑같은지 확인
-                    Bukkit.getServer().pluginManager.callEvent(WeaponSwapCompleteEvent(p, e.newItemStack, newWeaponParentNode))
-                }
-            }, configSwapDelay.toLong())
-        }
+        if (!WeaponInfoExtractor.isValidCrackShotWeapon(e.newItemStack)) return
+        val newlyHeldWeaponInfo = WeaponInfoExtractor(p, e.newItemStack)
+
+        // 쿨타임 설정
+        val configSwapDelay = CSDirector.getInstance().getInt("${newlyHeldWeaponInfo.parentNode}.Addition.Weapon_Swap_Delay")
+        Bukkit.getServer().pluginManager.callEvent(WeaponSwapEvent(p, e.newItemStack, newlyHeldWeaponInfo.parentNode, configSwapDelay))
+        val millisecSwapDelay = System.currentTimeMillis() + configSwapDelay * 50 // 1tick = 1ms * 50
+        swapDelayOfPlayers[p.uniqueId] = millisecSwapDelay
+        p.setCooldown(e.newItemStack.type, configSwapDelay)
+
+        // 쿨타임 지난 후
+        Bukkit.getScheduler().runTaskLater(CrackShotAddition.instance, {
+            if (CrackShotAdditionAPI.isValidCrackShotWeapon(p.inventory.itemInMainHand) &&
+                    swapDelayOfPlayers.containsKey(p.uniqueId) && swapDelayOfPlayers[p.uniqueId] == millisecSwapDelay) { // 전에 넣은 딜레이 값이랑 똑같은지 확인
+                Bukkit.getServer().pluginManager.callEvent(WeaponSwapCompleteEvent(p, e.newItemStack, newlyHeldWeaponInfo.parentNode))
+            }
+        }, configSwapDelay.toLong())
     }
 
     //    

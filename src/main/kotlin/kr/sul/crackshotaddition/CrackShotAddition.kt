@@ -6,7 +6,7 @@ import com.shampaggon.crackshot.CSUtility
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.infomanager.heldweapon.PlayerHeldWeaponInfoManager
+import kr.sul.crackshotaddition.infomanager.nbtleftammo.ItemLeftAmmoAmtNbtUpdater
 import kr.sul.crackshotaddition.weaponappearance.WeaponBlockBreakEffect
 import kr.sul.crackshotaddition.weaponappearance.WeaponCameraRecoil
 import kr.sul.crackshotaddition.weaponappearance.WeaponMuzzleFlash
@@ -22,8 +22,8 @@ import org.bukkit.plugin.java.JavaPlugin
 class CrackShotAddition : JavaPlugin() {
     companion object {
         lateinit var instance: CrackShotAddition private set
-        val csUtility = CSUtility()
         val csDirector = Bukkit.getPluginManager().getPlugin("CrackShot") as CSDirector
+        val csUtility = CSUtility()
         val csMinion: CSMinion = CSMinion.getInstance()
     }
 
@@ -43,8 +43,8 @@ class CrackShotAddition : JavaPlugin() {
         Bukkit.getServer().pluginManager.registerEvents(WeaponProjectileTrail, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponCameraRecoil, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
-        Bukkit.getServer().pluginManager.registerEvents(PlayerHeldWeaponInfoManager, this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoManager, this)
+        Bukkit.getServer().pluginManager.registerEvents(ItemLeftAmmoAmtNbtUpdater, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }

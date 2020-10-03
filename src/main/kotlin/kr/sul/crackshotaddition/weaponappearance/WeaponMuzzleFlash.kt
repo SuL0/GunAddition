@@ -8,7 +8,9 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.util.Vector
 import kotlin.math.abs
+import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.sin
 
 object WeaponMuzzleFlash : Listener {
     private val MUZZLE_FLASH_PARTICLE = Particle.REDSTONE
@@ -17,18 +19,18 @@ object WeaponMuzzleFlash : Listener {
 
     @EventHandler
     fun onShoot(e: WeaponShootEvent) {
-        val bMuzzleflash = CSDirector.getInstance().getBoolean(e.weaponTitle + ".Addition.Muzzle_Flash.Enable")
+        val bMuzzleflash = CSDirector.getInstance().getBoolean(e.parentNode + ".Addition.Muzzle_Flash.Enable")
         if (bMuzzleflash) {
-            val multiplyToRightSideVec = CSDirector.getInstance().getDouble(e.weaponTitle + ".Addition.Muzzle_Flash.MultiplyToRightSideVec")
-            val sumToY = CSDirector.getInstance().getDouble(e.weaponTitle + ".Addition.Muzzle_Flash.SumToY")
-            val multiplyToForwardSideVec = CSDirector.getInstance().getDouble(e.weaponTitle + ".Addition.Muzzle_Flash.MultiplyToForwardSideVec")
+            val multiplyToRightSideVec = CSDirector.getInstance().getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToRightSideVec")
+            val sumToY = CSDirector.getInstance().getDouble(e.parentNode + ".Addition.Muzzle_Flash.SumToY")
+            val multiplyToForwardSideVec = CSDirector.getInstance().getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToForwardSideVec")
             spawnMuzzleFlashParticle(e.player, RIGHT, multiplyToRightSideVec, sumToY, multiplyToForwardSideVec)
         }
     }
 
     private fun spawnMuzzleFlashParticle(p: Player, rightOrLeft: Int, multiplyToRightSideVec: Double, sumToY: Double, multiplyToForwardSideVec: Double) {
         val playerYaw = (p.location.yaw + 90.0f + rightOrLeft) * Math.PI / 180.0 // toRadian
-        val toRightSideVec = Vector(Math.cos(playerYaw) * multiplyToRightSideVec, sumToY, Math.sin(playerYaw) * multiplyToRightSideVec)
+        val toRightSideVec = Vector(cos(playerYaw) * multiplyToRightSideVec, sumToY, sin(playerYaw) * multiplyToRightSideVec)
         val toForwardSideVec = p.location.direction.normalize().multiply(multiplyToForwardSideVec)
 
         // 벡터 보정

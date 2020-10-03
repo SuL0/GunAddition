@@ -1,6 +1,6 @@
 package kr.sul.crackshotaddition.infomanager.ammo
 
-import com.shampaggon.crackshot.CSDirector
+import kr.sul.crackshotaddition.CrackShotAddition
 import org.bukkit.inventory.ItemStack
 
 // Material이랑 비슷하게 설계했음. Ammo는 종류별로 객체가 한개씩 있고, 그걸 계속 가져다 쓰게끔.
@@ -11,12 +11,14 @@ data class Ammo(private val id: Int, private val durability: Short, val dontUseC
 
 
     companion object {
+        private val csDirector = CrackShotAddition.csDirector
+
         val listOfAllAmmo = arrayListOf<Ammo>()
 
         init {
             // config에서부터 전체 ammo list 불러와서 ammoList에 넣기
-            for (parentNode in CSDirector.instance.parentNodeList.values) {
-                val ammoInfo = CSDirector.instance.getString("${parentNode}.Ammo.Ammo_Item_ID")
+            for (parentNode in csDirector.parentNodeList.values) {
+                val ammoInfo = csDirector.getString("${parentNode}.Ammo.Ammo_Item_ID")
                 if (ammoInfo != null) {
                     val splitedAmmoInfo = ammoInfo.split("~").map { it.toInt() }.toMutableList()
                     if (splitedAmmoInfo.size == 1) splitedAmmoInfo.add(0)
@@ -47,7 +49,7 @@ data class Ammo(private val id: Int, private val durability: Short, val dontUseC
 
         /* parentNode에 필요한 Ammo 가져오기 */
         fun getAmmoNeeded(parentNode: String): Ammo? {
-            val ammoInfo = CSDirector.instance.getString("${parentNode}.Ammo.Ammo_Item_ID")
+            val ammoInfo = csDirector.getString("$parentNode.Ammo.Ammo_Item_ID")
             return if (ammoInfo != null) {
                 val splitedAmmoInfo = ammoInfo.split("~").map { it.toInt() }.toMutableList()
                 if (splitedAmmoInfo.size == 1) splitedAmmoInfo.add(0)

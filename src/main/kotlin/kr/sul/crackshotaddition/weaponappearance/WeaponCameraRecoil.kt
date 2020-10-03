@@ -15,10 +15,10 @@ object WeaponCameraRecoil : Listener {
 
     @EventHandler
     fun onWeaponShoot(e: WeaponShootEvent) {
-        val bCamerarecoil = CSDirector.getInstance().getBoolean(e.weaponTitle + ".Addition.Camera_Recoil.Enable")
+        val bCamerarecoil = CSDirector.getInstance().getBoolean("${e.parentNode}.Addition.Camera_Recoil.Enable")
         if (bCamerarecoil) {
-            val yawValue = CSDirector.getInstance().getDouble(e.weaponTitle + ".Addition.Camera_Recoil.Yaw")
-            val pitchValue = CSDirector.getInstance().getDouble(e.weaponTitle + ".Addition.Camera_Recoil.Pitch")
+            val yawValue = CSDirector.getInstance().getDouble("${e.parentNode}.Addition.Camera_Recoil.Yaw")
+            val pitchValue = CSDirector.getInstance().getDouble("${e.parentNode}.Addition.Camera_Recoil.Pitch")
             if (yawValue != 0.0 || pitchValue != 0.0) cameraRecoil(e.player, yawValue.toFloat(), pitchValue.toFloat())
         }
     }

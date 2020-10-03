@@ -36,11 +36,11 @@ object WeaponProjectileTrail : Listener {
         var particle = DEFAULT_PARTICLE
 
         // by 총 파티클
-//		String configProjectileTrailEffect = CSDirector.getInstance().getString(weaponTitle + ".Addition.Projectile_Trail");
+//		String configProjectileTrailEffect = CSDirector.getInstance().getString(parentNode + ".Addition.Projectile_Trail");
 //		Particle particle = (configProjectileTrailEffect == null) ? DEFAULT_PARTICLE : Particle.valueOf(configProjectileTrailEffect);
 
         // by 플레이어 파티클
-        val weaponProjectileTrailEvent = WeaponProjectileTrailEvent(e.player, e.weaponTitle, particle)
+        val weaponProjectileTrailEvent = WeaponProjectileTrailEvent(e.player, e.parentNode, particle)
         CrackShotAddition.instance.server.pluginManager.callEvent(weaponProjectileTrailEvent)
         particle = weaponProjectileTrailEvent.particle
         projectileTrail(e.player, e.projectile, particle)

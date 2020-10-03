@@ -20,7 +20,7 @@ class PlayerInvAmmoInfo(p: Player) {
         if (weaponInfo.ammoNeeded == null) return null
 
         val possessedAmmoAmt = possessedAmmoAmount[weaponInfo.ammoNeeded]!!
-        val reloadCapacity = weaponInfo.reloadCapacity
+        val reloadCapacity = weaponInfo.reloadCapacity!!
         return possessedAmmoAmt * reloadCapacity
     }
 

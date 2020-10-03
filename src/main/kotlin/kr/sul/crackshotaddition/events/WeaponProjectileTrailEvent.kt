@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class WeaponProjectileTrailEvent(val entity: Entity, val weaponTitle: String, var particle: Particle) : Event() {
+class WeaponProjectileTrailEvent(val entity: Entity, val parentNode: String, var particle: Particle) : Event() {
     override fun getHandlers(): HandlerList {
         return handlerList
     }
