@@ -17,7 +17,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.*
 
-object WeaponSwapDelay : Listener {
+object WeaponHeldDelay : Listener {
     private val swapDelayOfPlayers = HashMap<UUID, Long>()
 
     @EventHandler
@@ -27,7 +27,7 @@ object WeaponSwapDelay : Listener {
 
     @EventHandler
     fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToOnotherEvent) {
-        if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.clonedPreviousItemStack)) return
+//        if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.clonedPreviousItemStack)) return  // 총->총 스왑만 딜레이 있게 하는 코드
         val p = e.player
 
         // 이전 템 쿨타임 적용 중 이였다면, 삭제
@@ -39,7 +39,7 @@ object WeaponSwapDelay : Listener {
         val newlyHeldWeaponInfo = WeaponInfoExtractor(p, e.newItemStack)
 
         // 쿨타임 설정
-        val configSwapDelay = CSDirector.getInstance().getInt("${newlyHeldWeaponInfo.parentNode}.Addition.Weapon_Swap_Delay")
+        val configSwapDelay = CSDirector.getInstance().getInt("${newlyHeldWeaponInfo.parentNode}.Addition.Weapon_Held_Delay")
         Bukkit.getServer().pluginManager.callEvent(WeaponSwapEvent(p, e.newItemStack, newlyHeldWeaponInfo.parentNode, configSwapDelay))
         val millisecSwapDelay = System.currentTimeMillis() + configSwapDelay * 50 // 1tick = 1ms * 50
         swapDelayOfPlayers[p.uniqueId] = millisecSwapDelay
