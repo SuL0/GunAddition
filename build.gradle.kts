@@ -10,6 +10,7 @@ repositories {
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.dmulloy2.net/nexus/repository/public/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/public/")
     mavenLocal()
 }
 
@@ -24,6 +25,9 @@ dependencies {
     compileOnly(files("$pluginStorage/CustomEntity_S.jar"))
     compileOnly(files("$pluginStorage/ServerCore_S.jar"))
     compileOnly(files("$pluginStorage/Dependencies/item-nbt-api-plugin-2.5.0.jar"))
+
+    testImplementation("com.github.seeseemelk", "MockBukkit-v1.13-spigot", "0.2.0")
+    testImplementation(files("$pluginStorage/CrackShot_S.jar"))
 }
 
 spigot {
