@@ -8,7 +8,7 @@ import kr.sul.crackshotaddition.events.WeaponSwapEvent
 import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
-import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToOnotherEvent
+import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -25,9 +25,9 @@ object WeaponDisplayNameController : Listener {
 
     // NORMAL
     @EventHandler(priority = EventPriority.NORMAL) // onSwap보다 선행돼야 함 (Swap에게 덮어 씌워져야하기 때문)
-    fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToOnotherEvent) {
+    fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToAnotherEvent) {
         if (e.isChangedToCrackShotWeapon()) {
-            updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
+            updateWeaponDisplay(e.player, e.newItemStack, DisplayNameType.NORMAL) // updateHeldWeaponDisplay 쓰면 안됨. p.itemInMainHand가 previousItem이기 때문.
         }
     }
 
@@ -54,7 +54,7 @@ object WeaponDisplayNameController : Listener {
             val heldItemName = heldItem.itemMeta.displayName
             if (heldItemName.contains(DisplayNameType.RELOADING.name) || heldItemName.contains(DisplayNameType.SWAPPING.name)) return
 
-            updateHeldWeaponDisplay(p, DisplayNameType.NORMAL)
+            updateWeaponDisplay(p, e.newItemStack, DisplayNameType.NORMAL)  // updateHeldWeaponDisplay 쓰면 안됨. p.itemInMainHand가 previousItem이기 때문.
         }
     }
 
