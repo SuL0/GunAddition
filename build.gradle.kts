@@ -28,6 +28,7 @@ dependencies {
 
     testImplementation("com.github.seeseemelk", "MockBukkit-v1.13-spigot", "0.2.0")
     testImplementation(files("$pluginStorage/CrackShot_S.jar"))
+    testImplementation(files("$pluginStorage/ServerCore_S.jar"))
 }
 
 spigot {

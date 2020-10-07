@@ -9,7 +9,7 @@ import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
 import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
-import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToOnotherEvent
+import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -26,7 +26,7 @@ object WeaponHeldDelay : Listener {
     }
 
     @EventHandler
-    fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToOnotherEvent) {
+    fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToAnotherEvent) {
 //        if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.clonedPreviousItemStack)) return  // 총->총 스왑만 딜레이 있게 하는 코드
         val p = e.player
 
