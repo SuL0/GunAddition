@@ -54,7 +54,7 @@ object WeaponDisplayNameController : Listener {
             val heldItemName = heldItem.itemMeta.displayName
             if (heldItemName.contains(DisplayNameType.RELOADING.name) || heldItemName.contains(DisplayNameType.SWAPPING.name)) return
 
-            updateWeaponDisplay(p, e.newItemStack, DisplayNameType.NORMAL)  // updateHeldWeaponDisplay 쓰면 안됨. p.itemInMainHand가 previousItem이기 때문.
+            updateHeldWeaponDisplay(p, DisplayNameType.NORMAL)
         }
     }
 
