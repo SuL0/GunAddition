@@ -12,8 +12,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 object DebuggingCommand : CommandExecutor {
-    var distortion = true
-
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (sender !is Player) return false
         if (args.isEmpty()) return false
@@ -37,7 +35,7 @@ object DebuggingCommand : CommandExecutor {
 
             sendM(sender, "")
             sendM(sender, "ItemStack.displayName: ${weaponInfo.item.itemMeta.displayName}")
-            sendM(sender, "ItemStack.displayName: ${weaponInfo.nbtName}")
+            sendM(sender, "ItemStack.nbtName: ${weaponInfo.nbtName}")
             sendM(sender, "ParentNode: ${weaponInfo.parentNode}")
             sendM(sender, "ConfigName: ${weaponInfo.configName}")
             sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")
@@ -54,9 +52,6 @@ object DebuggingCommand : CommandExecutor {
                 Bukkit.getServer().broadcastMessage(" §7- Usage: ${key.whereToUse}")
             }
 
-        } else if (args[0].equals("distortion", true)) {
-            distortion = !distortion
-            sendM(sender, "총알 궤적 왜곡 $distortion")
         } else if (args[0].equals("nbtname", true)) {
             val item = sender.inventory.itemInMainHand
             val weaponInfo = WeaponInfoExtractor(sender, item)

@@ -24,7 +24,7 @@ import kotlin.math.sin
 object WeaponProjectileTrail : Listener {
     const val DISTORTION_DISTANCE = 60
     const val SHIFTVECTOR_LENGTH = 0.2f
-    val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
+    private val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
 
     @EventHandler
     fun onCEWeaponShootEvent(e: CEWeaponShootEvent) {
@@ -41,7 +41,7 @@ object WeaponProjectileTrail : Listener {
 
         // by 플레이어 파티클
         val weaponProjectileTrailEvent = WeaponProjectileTrailEvent(e.player, e.parentNode, particle)
-        CrackShotAddition.instance.server.pluginManager.callEvent(weaponProjectileTrailEvent)
+        Bukkit.getServer().pluginManager.callEvent(weaponProjectileTrailEvent)
         particle = weaponProjectileTrailEvent.particle
         projectileTrail(e.player, e.projectile, particle)
     }
@@ -66,9 +66,8 @@ object WeaponProjectileTrail : Listener {
                     nearbyPlayers.addAll(Bukkit.getServer().onlinePlayers.stream()
                             .filter { loopP: Player -> loopP != shooter && loopP.world == shooter.world && loopP.location.distance(shooter.location) <= 100 }
                             .collect(Collectors.toList()))
-                    if (DebuggingCommand.distortion) {
-                        loc = loc.clone().add(toRightSideVec.multiply(Math.max(cnt--, 0) / DISTORTION_DISTANCE)) // 총알 궤적 위치 왜곡   // loc에 바로 더하면 projectile에 더해짐
-                    }
+                    
+                    loc = loc.clone().add(toRightSideVec.multiply(Math.max(cnt--, 0) / DISTORTION_DISTANCE)) // 총알 궤적 위치 왜곡   // loc에 바로 더하면 projectile에 더해져서 clone해야 함
                     val particleLoc = loc.clone()
                     val shiftVector = projectile.velocity.clone().multiply(-1).multiply(SHIFTVECTOR_LENGTH)
                     var i = 0

@@ -23,7 +23,7 @@ object WeaponDisplayNameController : Listener {
         NORMAL, RELOADING, SWAPPING
     }
     private const val AMMO_ICON1 = "§f锄 " // §f 없으면 색 이상해짐
-    private const val MIDDLE_BLANK_LENGTH = 7
+    private const val MIDDLE_BLANK_LENGTH = 5
 
     // NORMAL
     @EventHandler(priority = EventPriority.NORMAL) // onSwap보다 선행돼야 함 (Swap에게 덮어 씌워져야하기 때문)
@@ -35,6 +35,7 @@ object WeaponDisplayNameController : Listener {
 
     @EventHandler
     fun onShoot(e: WeaponShootEvent) {
+        if (e.player.inventory.itemInMainHand.type == Material.AIR) return // 소모성 아이템을 사용했을 때
         updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
     }
 
