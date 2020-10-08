@@ -37,9 +37,11 @@ object DebuggingCommand : CommandExecutor {
 
             sendM(sender, "")
             sendM(sender, "ItemStack.displayName: ${weaponInfo.item.itemMeta.displayName}")
+            sendM(sender, "ItemStack.displayName: ${weaponInfo.nbtName}")
             sendM(sender, "ParentNode: ${weaponInfo.parentNode}")
             sendM(sender, "ConfigName: ${weaponInfo.configName}")
             sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")
+            sendM(sender, "ReloadEnabled: ${weaponInfo.reloadEnabled}")
             sendM(sender, "LeftAmmoAmount: ${weaponInfo.leftAmmoAmt}")
             sendM(sender, "RightAmmoAmount: ${weaponInfo.rightAmmoAmt}")
             sendM(sender, "ReloadAmmoAmount: ${weaponInfo.reloadCapacity}")
@@ -55,8 +57,14 @@ object DebuggingCommand : CommandExecutor {
         } else if (args[0].equals("distortion", true)) {
             distortion = !distortion
             sendM(sender, "총알 궤적 왜곡 $distortion")
-        } else if (args[0].equals("parentnode", true)) {
-            Bukkit.getServer().broadcastMessage("parentNode: " + CrackShotAdditionAPI.csDirector.returnParentNode(sender))
+        } else if (args[0].equals("nbtname", true)) {
+            val item = sender.inventory.itemInMainHand
+            val weaponInfo = WeaponInfoExtractor(sender, item)
+            Bukkit.getServer().broadcastMessage("NBTName: ${weaponInfo.nbtName}")
+        } else if (args[0].equals("ammo", true)) {
+            val item = sender.inventory.itemInMainHand
+            val weaponInfo = WeaponInfoExtractor(sender, item)
+            Bukkit.getServer().broadcastMessage("getAmmoBetweenBrackets: ${CrackShotAddition.csDirector.getAmmoBetweenBrackets(sender, weaponInfo.parentNode, item)}")
         }
         return true
     }

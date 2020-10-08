@@ -6,7 +6,6 @@ import com.shampaggon.crackshot.CSUtility
 import kr.sul.crackshotaddition.addition.WeaponHeldDelay
 import kr.sul.crackshotaddition.addition.WeaponHeldSound
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.infomanager.nbtleftammo.ItemLeftAmmoAmtNbtUpdater
 import kr.sul.crackshotaddition.weaponappearance.WeaponBlockBreakEffect
 import kr.sul.crackshotaddition.weaponappearance.WeaponCameraRecoil
 import kr.sul.crackshotaddition.weaponappearance.WeaponMuzzleFlash
@@ -54,7 +53,6 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponCameraRecoil, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponHeldDelay, this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoManager, this)
-        Bukkit.getServer().pluginManager.registerEvents(ItemLeftAmmoAmtNbtUpdater, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }

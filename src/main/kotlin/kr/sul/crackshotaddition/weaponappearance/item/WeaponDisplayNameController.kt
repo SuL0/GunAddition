@@ -3,10 +3,12 @@ package kr.sul.crackshotaddition.weaponappearance.item
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csMinion
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
-import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
+import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.Material
@@ -69,7 +71,7 @@ object WeaponDisplayNameController : Listener {
     @EventHandler(priority = EventPriority.HIGH) // onPlayerHeldItemChanged보다 후행돼야 함 (덮어 씌워야하기 때문)
     fun onSwap(e: WeaponSwapEvent) {
         if (e.swapDelay > 0) {
-            updateHeldWeaponDisplay(e.player, DisplayNameType.SWAPPING)
+            updateWeaponDisplay(e.player, e.newItem, DisplayNameType.SWAPPING)
         }
     }
 
@@ -105,45 +107,57 @@ object WeaponDisplayNameController : Listener {
         makePrettyWeaponDisplayName(p, DisplayNameType.NORMAL, item, configName, leftAmmo, rightAmmo, reloadableAmount)
     }
     private fun makePrettyWeaponDisplayName(p: Player?, displayNameType: DisplayNameType, item: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, reloadableAmt: Int?) {
+        val parentNode = csMinion.getWeaponParentNodeFromNbt(item)
+        val removeUnusedTag = csDirector.getBoolean("$parentNode.Item_Information.Remove_Unused_Tag")  // 수류탄 같은 특수무기를 위함. 이게 없으면 Infinity로 나오기 때문임
+
         val meta = item.itemMeta
         val weaponNameBuilder = StringBuilder()
-        weaponNameBuilder.append(configName) // 총기 이름 넣기
-        for (i in 0 until MIDDLE_BLANK_LENGTH) {
-            weaponNameBuilder.append(" ") // 중간 공백 넣기
-        }
-        if (displayNameType == DisplayNameType.NORMAL) {
-            if (leftAmmo != Integer.MAX_VALUE) {
-                // 왼쪽 총알 넣기
-                if (leftAmmo == 0) {
-                    weaponNameBuilder.append("${AMMO_ICON1}§c").append(leftAmmo)
-                } else {
-                    weaponNameBuilder.append("${AMMO_ICON1}§f").append(leftAmmo)
-                }
 
-                // | 및 오른쪽 총알 넣기
-                if (rightAmmo != null) {
-                    if (rightAmmo == 0) {
-                        weaponNameBuilder.append(" §f| §c").append(rightAmmo).append(" ")
+        weaponNameBuilder.append(configName) // 총기 이름 넣기
+        if (!removeUnusedTag) {
+            for (i in 0 until MIDDLE_BLANK_LENGTH) {
+                weaponNameBuilder.append(" ") // 중간 공백 넣기
+            }
+            if (displayNameType == DisplayNameType.NORMAL) {
+                // 총알 무한 //
+                if (leftAmmo == Integer.MAX_VALUE) {
+                    weaponNameBuilder.append("${AMMO_ICON1}§dInfinity")
+                    if (rightAmmo == Integer.MAX_VALUE) {
+                        weaponNameBuilder.append(" §f| §dInfinity")
+                    }
+                }
+                // 총알 정상 //
+                else {
+                    // 왼쪽 총알 넣기
+                    if (leftAmmo == 0) {
+                        weaponNameBuilder.append("${AMMO_ICON1}§c$leftAmmo")
                     } else {
-                        weaponNameBuilder.append(" §f| ").append(rightAmmo).append(" ")
+                        weaponNameBuilder.append("${AMMO_ICON1}§f$leftAmmo")
+                    }
+
+                    // | 및 오른쪽 총알 넣기
+                    if (rightAmmo != null) {
+                        if (rightAmmo == 0) {
+                            weaponNameBuilder.append(" §f| §c$rightAmmo ")
+                        } else {
+                            weaponNameBuilder.append(" §f| §f$rightAmmo ")
+                        }
                     }
                 }
 
-                // 슬래쉬 및 보유 총알 넣기
-                if (reloadableAmt == null || reloadableAmt == 0) {
-                    weaponNameBuilder.append("§7/§4").append(reloadableAmt ?: 0)
-                } else {
-                    weaponNameBuilder.append("§7/").append(reloadableAmt)
+                // 슬래쉬 및 보유 총알 넣기 //
+                if (reloadableAmt != null) {
+                    if (reloadableAmt == 0) {
+                        weaponNameBuilder.append("§7/§40")
+                    } else {
+                        weaponNameBuilder.append("§7/§7$reloadableAmt")
+                    }
                 }
+            } else if (displayNameType == DisplayNameType.RELOADING) {
+                weaponNameBuilder.append("${AMMO_ICON1}§cRELOADING..")
+            } else if (displayNameType == DisplayNameType.SWAPPING) {
+                weaponNameBuilder.append("${AMMO_ICON1}§cSWAPPING..")
             }
-            // 무한
-            else {
-                weaponNameBuilder.append("§dInfinity")
-            }
-        } else if (displayNameType == DisplayNameType.RELOADING) {
-            weaponNameBuilder.append("${AMMO_ICON1}§cRELOADING..")
-        } else if (displayNameType == DisplayNameType.SWAPPING) {
-            weaponNameBuilder.append("${AMMO_ICON1}§cSWAPPING..")
         }
         meta.displayName = weaponNameBuilder.toString()
 
