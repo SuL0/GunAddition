@@ -1,6 +1,7 @@
 package kr.sul.crackshotaddition.infomanager.extractor
 
-import kr.sul.crackshotaddition.CrackShotAddition
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csMinion
 import kr.sul.crackshotaddition.infomanager.ammo.Ammo
 import kr.sul.crackshotaddition.infomanager.nbtleftammo.ItemLeftAmmoAmtNbt
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
@@ -38,10 +39,10 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
         get() = run { if (!reloadEnabled) return null;  csDirector.getBoolean("$parentNode.Reload.Take_Ammo_As_Magazine") } // default가 false
 
     fun isDualWield(): Boolean {
-        return leftAmmoAmt!=null && rightAmmoAmt!=null && (csDirector.getString("$parentNode.Item_Information.Attachments.Type") == null)
+        return csDirector.isDualWield(p, parentNode, item) // 여기서 총알 비교 추가 ㄴㄴ. initializeLeftAmmo에서 오류남
     }
     fun hasAttachment(): Boolean {
-        return leftAmmoAmt!=null && rightAmmoAmt!=null && (csDirector.getString("$parentNode.Item_Information.Attachments.Type") != null) // main, accessory
+        return csDirector.getString("$parentNode.Item_Information.Attachments.Type") != null   // returns main or accessory
     }
 
     init {
@@ -50,9 +51,6 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
 
 
     companion object {
-        val csDirector = CrackShotAddition.csDirector
-        val csMinion = CrackShotAddition.csMinion
-
         fun isValidCrackShotWeapon(item: ItemStack): Boolean {
             return CrackShotAdditionAPI.isValidCrackShotWeapon(item)
         }
