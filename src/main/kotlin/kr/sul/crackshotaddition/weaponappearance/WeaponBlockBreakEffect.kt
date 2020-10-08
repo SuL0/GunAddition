@@ -40,7 +40,7 @@ object WeaponBlockBreakEffect : Listener {
         world.spawnParticle(Particle.BLOCK_CRACK, nearbyPlayers, if (shooter is Player) shooter else null,
                 projStruckLoc.x, projStruckLoc.y, projStruckLoc.z,
                 20, 0.0, 0.0, 0.0, 1.0,
-                MaterialData(projStruckBlock.type), true) // 1.15버전은 new MaterialData(...) -> block.getType() 만 해도됨
+                MaterialData(projStruckBlock.type, projStruckBlock.data), true) // 1.15버전은 new MaterialData(...) -> block.getType() 만 해도됨
         world.playSound(projStruckLoc, Sound.BLOCK_STONE_BREAK, SoundCategory.BLOCKS, 1.5f, 1f)
     }
 
