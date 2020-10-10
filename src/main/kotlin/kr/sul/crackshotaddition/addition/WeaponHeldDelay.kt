@@ -54,9 +54,8 @@ object WeaponHeldDelay : Listener {
         }, configSwapDelay.toLong())
     }
 
-    //    
-    //    크랙샷 무기 모든 행위 캔슬시키기
-    //    
+    
+    //    크랙샷 무기 모든 행위 캔슬시키기  //
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPrepareShoot(e: WeaponPrepareShootEvent) {
         val p = e.player

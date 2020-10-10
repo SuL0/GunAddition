@@ -1,5 +1,6 @@
 package kr.sul.crackshotaddition.infomanager.extractor
 
+import com.shampaggon.crackshot.WeaponNbtParentNodeManager
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csMinion
 import kr.sul.crackshotaddition.infomanager.ammo.Ammo
@@ -21,7 +22,7 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
 
 
     // 기본적인 정보 //
-    val parentNode: String = csMinion.getWeaponParentNodeFromNbt(item)
+    val parentNode: String = WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item)
     val uniqueId: String
         get() = UniqueIdAPI.getUniqueID(item)
     val configName: String

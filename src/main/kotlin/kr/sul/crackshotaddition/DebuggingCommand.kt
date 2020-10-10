@@ -1,8 +1,7 @@
 package kr.sul.crackshotaddition
 
-import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
+import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Chest

@@ -1,10 +1,10 @@
 package kr.sul.crackshotaddition.weaponappearance.item
 
+import com.shampaggon.crackshot.WeaponNbtParentNodeManager
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
-import kr.sul.crackshotaddition.CrackShotAddition.Companion.csMinion
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
@@ -108,7 +108,7 @@ object WeaponDisplayNameController : Listener {
         makePrettyWeaponDisplayName(p, DisplayNameType.NORMAL, item, configName, leftAmmo, rightAmmo, reloadableAmount)
     }
     private fun makePrettyWeaponDisplayName(p: Player?, displayNameType: DisplayNameType, item: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, reloadableAmt: Int?) {
-        val parentNode = csMinion.getWeaponParentNodeFromNbt(item)
+        val parentNode = WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item)
         val removeUnusedTag = csDirector.getBoolean("$parentNode.Item_Information.Remove_Unused_Tag")  // 수류탄 같은 특수무기를 위함. 이게 없으면 Infinity로 나오기 때문임
 
         val meta = item.itemMeta
