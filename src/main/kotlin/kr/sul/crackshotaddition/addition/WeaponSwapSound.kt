@@ -8,10 +8,10 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-object WeaponHeldSound : Listener {
+object WeaponSwapSound : Listener {
     private var previousSwapSound = HashMap<UUID, String>()
     @EventHandler
-    fun onSwap(e: PlayerHeldItemIsChangedToAnotherEvent) {
+    fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToAnotherEvent) {
         val p = e.player
         if (e.newItemStack.type != Material.AIR) {
             val sound = getSwapSound(e.newItemStack)
