@@ -30,7 +30,7 @@ object DebuggingCommand : CommandExecutor {
         } else if (args[0].equals("info", true)) {
             sendM(sender, "")
             val weaponInfo = WeaponInfoExtractor(sender, sender.inventory.itemInMainHand)
-            val ammoInfo = PlayerInvAmmoInfoManager.getInfo(sender)
+            val playerInvAmmoInfo = PlayerInvAmmoInfoManager.getInfo(sender)
 
             sendM(sender, "")
             sendM(sender, "ItemStack.displayName: ${weaponInfo.item.itemMeta.displayName}")
@@ -46,7 +46,7 @@ object DebuggingCommand : CommandExecutor {
             sendM(sender, "TakeAsMagazine: ${weaponInfo.takeAsMagazine}")
             Bukkit.getServer().broadcastMessage("")
             Bukkit.getServer().broadcastMessage("<AmmoInfo>")
-            for ((key, value) in ammoInfo.possessedAmmoAmount) {
+            for ((key, value) in playerInvAmmoInfo.allOfPossessedAmmoAmt) {
                 Bukkit.getServer().broadcastMessage("$key : $value")
                 Bukkit.getServer().broadcastMessage(" §7- Usage: ${key.whereToUse}")
             }

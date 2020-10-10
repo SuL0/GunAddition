@@ -1,16 +1,21 @@
 package kr.sul.crackshotaddition.weaponappearance.item
 
 import com.shampaggon.crackshot.WeaponNbtParentNodeManager
+import com.shampaggon.crackshot.events.WeaponAttachmentToggleEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
+import kr.sul.crackshotaddition.events.PlayerInvAmmoAmtChangedEvent
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
+import kr.sul.crackshotaddition.infomanager.ammo.Ammo
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
 import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
+import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -25,7 +30,11 @@ object WeaponDisplayNameController : Listener {
     private const val AMMO_ICON1 = "§f锄 " // §f 없으면 색 이상해짐
     private const val MIDDLE_BLANK_LENGTH = 5
 
-    // NORMAL
+    private const val INFINITY_DISPLAY = "§dInfinity"
+    private const val RELOADING_DISPLAY = "§cRELOADING.."
+    private const val SWAPPING_DISPLAY = "§cSWAPPING.."
+
+    // NORMAL //
     @EventHandler(priority = EventPriority.NORMAL) // onSwap보다 선행돼야 함 (Swap에게 덮어 씌워져야하기 때문)
     fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToAnotherEvent) {
         if (e.isChangedToCrackShotWeapon()) {
@@ -44,31 +53,40 @@ object WeaponDisplayNameController : Listener {
         updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    fun onAttachmentToggle(e: WeaponAttachmentToggleEvent) {
+        if (e.isCancelled) return
+        Bukkit.getServer().broadcastMessage("update display on attachment toggle")
+        updateWeaponDisplay(e.player, e.itemStack, DisplayNameType.NORMAL)
+    }
+
     @EventHandler
-    fun onItemChanged(e: InventoryItemChangedEvent) {
+    fun onInventoryItemChanged(e: InventoryItemChangedEvent) {
+        if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.newItemStack)) return
+        updateWeaponDisplay(e.player, e.newItemStack, DisplayNameType.NORMAL)
+    }
+
+    @EventHandler
+    fun onPlayerInvAmmoAmtChanged(e: PlayerInvAmmoAmtChangedEvent) {
         val p = e.player
-        val heldItem = p.inventory.itemInMainHand
-        if (!WeaponInfoExtractor.isValidCrackShotWeapon(heldItem)) return
-        val ammoItem = WeaponInfoExtractor(p, heldItem).ammoNeeded?.itemStack
-
-        // 바뀌게 된 아이템이 Ammo / AIR
-        if (ammoItem != null && (e.newItemStack.type == ammoItem.type || e.newItemStack.type == Material.AIR)) {
-            // Reload나 Swapping중이였다면, 이게 무시돼야 함
-            val heldItemName = heldItem.itemMeta.displayName
-            if (heldItemName.contains(DisplayNameType.RELOADING.name) || heldItemName.contains(DisplayNameType.SWAPPING.name)) return
-
-            updateHeldWeaponDisplay(p, DisplayNameType.NORMAL)
+        // e.updatedAmmo를 사용하는 총기들 선별 후 Display 업데이트
+        for (weaponToUpdateDisplay in p.inventory.storageContents
+                        .filterNotNull()
+                        .filter { CrackShotAdditionAPI.isValidCrackShotWeapon(it) }
+                        .filter { Ammo.getAmmoNeeded(p, it) == e.updatedAmmo }
+                        .filter { !it.itemMeta.displayName.contains(RELOADING_DISPLAY) && !it.itemMeta.displayName.contains(SWAPPING_DISPLAY) }) {
+            updateWeaponDisplay(p, weaponToUpdateDisplay, DisplayNameType.NORMAL)
         }
     }
 
-    // RELOADING
+    // RELOADING //
     @EventHandler(priority = EventPriority.HIGH)
     fun onReload(e: WeaponReloadEvent) {
         if (e.isCancelled) return
         updateHeldWeaponDisplay(e.player, DisplayNameType.RELOADING)
     }
 
-    // SWAPPING
+    // SWAPPING //
     @EventHandler(priority = EventPriority.HIGH) // onPlayerHeldItemChanged보다 후행돼야 함 (덮어 씌워야하기 때문)
     fun onSwap(e: WeaponSwapEvent) {
         if (e.swapDelay > 0) {
@@ -97,7 +115,7 @@ object WeaponDisplayNameController : Listener {
             rightAmmo = weaponInfo.rightAmmoAmt
 
             val invAmmoInfo = PlayerInvAmmoInfoManager.getInfo(p)
-            reloadableAmt = weaponInfo.ammoNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(p, weapon)!! }
+            reloadableAmt = weaponInfo.ammoNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(weapon)!! }
         }
         makePrettyWeaponDisplayName(p, displayNameType, weapon, configName, leftAmmo, rightAmmo, reloadableAmt)
     }
@@ -122,9 +140,9 @@ object WeaponDisplayNameController : Listener {
             if (displayNameType == DisplayNameType.NORMAL) {
                 // 총알 무한 //
                 if (leftAmmo == Integer.MAX_VALUE) {
-                    weaponNameBuilder.append("${AMMO_ICON1}§dInfinity")
+                    weaponNameBuilder.append("${AMMO_ICON1}$INFINITY_DISPLAY")
                     if (rightAmmo == Integer.MAX_VALUE) {
-                        weaponNameBuilder.append(" §f| §dInfinity")
+                        weaponNameBuilder.append(" §f| $INFINITY_DISPLAY")
                     }
                 }
                 // 총알 정상 //
@@ -155,9 +173,9 @@ object WeaponDisplayNameController : Listener {
                     }
                 }
             } else if (displayNameType == DisplayNameType.RELOADING) {
-                weaponNameBuilder.append("${AMMO_ICON1}§cRELOADING..")
+                weaponNameBuilder.append("${AMMO_ICON1}$RELOADING_DISPLAY")
             } else if (displayNameType == DisplayNameType.SWAPPING) {
-                weaponNameBuilder.append("${AMMO_ICON1}§cSWAPPING..")
+                weaponNameBuilder.append("${AMMO_ICON1}$SWAPPING_DISPLAY")
             }
         }
         meta.displayName = weaponNameBuilder.toString()

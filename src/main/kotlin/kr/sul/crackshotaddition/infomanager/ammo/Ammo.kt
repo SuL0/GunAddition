@@ -1,6 +1,8 @@
 package kr.sul.crackshotaddition.infomanager.ammo
 
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
+import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 // Material이랑 비슷하게 설계했음. Ammo는 "종류별로 객체가 한개씩" 있고, 그걸 가져다 쓰게끔. //
@@ -33,11 +35,17 @@ data class Ammo internal constructor(private val id: Int, private val durability
 
         // METHODS //
 
+        // 체크 //
+        fun isAmmoItem(item: ItemStack): Boolean {
+            return of(item) != null
+        }
+
         // Ammo 가져오기 //
-        fun of(itemStack: ItemStack): Ammo? { return getAmmo(itemStack.typeId, itemStack.durability) }
+        fun of(item: ItemStack): Ammo? { return getAmmo(item.typeId, item.durability) }
         fun of(id: Int, durability: Short): Ammo? { return getAmmo(id, durability) }
 
         private fun getAmmo(id: Int, durability: Short, initializeMode: Boolean = false): Ammo? {
+            // listOfAllAmmo에서 검색하기
             for (ammo in listOfAllAmmo.filter { id == it.itemStack.typeId && durability == it.itemStack.durability }) {
                 return ammo
             }
@@ -48,7 +56,11 @@ data class Ammo internal constructor(private val id: Int, private val durability
             return null
         }
 
-        // parentNode에 필요한 Ammo 가져오기 //
+        // 총기에 필요한 Ammo 가져오기 //
+        fun getAmmoNeeded(p: Player, item: ItemStack): Ammo? {
+            val parentNode = WeaponInfoExtractor(p, item).parentNode
+            return getAmmoNeeded(parentNode)
+        }
         fun getAmmoNeeded(parentNode: String): Ammo? {
             val ammoInfo = csDirector.getString("$parentNode.Ammo.Ammo_Item_ID")
             return if (ammoInfo != null) {

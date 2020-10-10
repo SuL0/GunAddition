@@ -1,11 +1,11 @@
 package kr.sul.crackshotaddition.events
 
+import kr.sul.crackshotaddition.infomanager.ammo.Ammo
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
-import org.bukkit.inventory.ItemStack
 
-class WeaponSwapEvent(val player: Player, val newItem: ItemStack, val parentNode: String, val swapDelay: Int) : Event() {
+class PlayerInvAmmoAmtChangedEvent(val player: Player, val updatedAmmo: Ammo, val ammoAmount: Int) : Event() {
 
     override fun getHandlers(): HandlerList {
         return handlerList

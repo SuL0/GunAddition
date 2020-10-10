@@ -1,6 +1,8 @@
 package kr.sul.crackshotaddition.infomanager.ammo
 
+import kr.sul.crackshotaddition.events.PlayerInvAmmoAmtChangedEvent
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -21,17 +23,31 @@ object PlayerInvAmmoInfoManager : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onItemChanged(e: InventoryItemChangedEvent) {
         val p = e.player
-        if (Ammo.of(e.newItemStack) != null && Ammo.listOfAllAmmo.contains(Ammo.of(e.newItemStack))) {
-            getInfo(p).update(p, Ammo.of(e.newItemStack)!!)
+        val playerInvAmmoInfo = getInfo(p)
+
+        var amtChangedAmmo: Ammo? = null
+        if (Ammo.of(e.newItemStack) != null && Ammo.isAmmoItem(e.newItemStack)) {
+            val ammo = Ammo.of(e.newItemStack)!!
+
+            val isAmmoChanged = playerInvAmmoInfo.update(p, ammo)  // 총알 보유 개수 업데이트
+            if (isAmmoChanged) {
+                amtChangedAmmo = ammo
+            }
         }
         else if (e.newItemStack.type == Material.AIR) {
-            getInfo(p).updateAll(p)
+            amtChangedAmmo = playerInvAmmoInfo.updateAll(p)  // 총알 보유 개수 모두 업데이트
+        }
+
+        // 총알 보유 개수가 바꼇다면, 이벤트 호출
+        if (amtChangedAmmo != null) {
+            val possessedAmmoAmtUpdatedEvent = PlayerInvAmmoAmtChangedEvent(p, amtChangedAmmo, playerInvAmmoInfo.getPossessedAmmoAmt(amtChangedAmmo))
+            Bukkit.getPluginManager().callEvent(possessedAmmoAmtUpdatedEvent)
         }
     }
 
 
     @EventHandler(priority = EventPriority.LOWEST)
-    fun onLogin(e: PlayerLoginEvent) { // JoinEvent를 쓰면 플레이어를 초기화하는 중, onItemChagned가 먼저 호출받게됨
+    fun onLogin(e: PlayerLoginEvent) { // JoinEvent를 쓰면 플레이어를 초기화하기도 전에, onItemChagned가 먼저 호출받게됨
         playersAmmoInfoMap[e.player] = PlayerInvAmmoInfo(e.player)
     }
 
