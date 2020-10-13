@@ -16,6 +16,7 @@ import kr.sul.crackshotaddition.weaponappearance.item.WeaponItemFlutterFixation
 import kr.sul.crackshotaddition.weapons.FlameThrower
 import kr.sul.servercore.util.ObjectInitializer
 import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.JavaPluginLoader
@@ -30,14 +31,14 @@ class CrackShotAddition : JavaPlugin {
 
 
     companion object {
-        lateinit var instance: CrackShotAddition private set
+        lateinit var plugin: Plugin private set
         val csDirector = Bukkit.getPluginManager().getPlugin("CrackShot") as CSDirector
         val csUtility = CSUtility()
         val csMinion: CSMinion = CSMinion.getInstance()
     }
 
     override fun onEnable() {
-        instance = this
+        plugin = this
         registerClasses()
         getCommand("csa").executor = DebuggingCommand
     }

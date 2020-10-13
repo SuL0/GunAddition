@@ -1,8 +1,7 @@
 package kr.sul.crackshotaddition.weaponappearance
 
 import com.shampaggon.crackshot.events.WeaponShootEvent
-import kr.sul.crackshotaddition.CrackShotAddition
-import kr.sul.crackshotaddition.DebuggingCommand
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.events.WeaponProjectileTrailEvent
 import me.sul.customentity.entityweapon.event.CEWeaponShootEvent
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
@@ -88,7 +87,7 @@ object WeaponProjectileTrail : Listener {
                 }
                 previousLoc = loc
             }
-        }.runTaskTimer(CrackShotAddition.instance, 0L, 1L)
+        }.runTaskTimer(plugin, 0L, 1L)
     }
 
     private fun hideEntity(entity: Entity) {

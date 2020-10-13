@@ -4,7 +4,7 @@ import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponPrepareShootEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
-import kr.sul.crackshotaddition.CrackShotAddition
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
 import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
@@ -46,7 +46,7 @@ object WeaponSwapDelay : Listener {
         p.setCooldown(e.newItemStack.type, configSwapDelay)
 
         // 쿨타임 지난 후
-        Bukkit.getScheduler().runTaskLater(CrackShotAddition.instance, {
+        Bukkit.getScheduler().runTaskLater(plugin, {
             if (CrackShotAdditionAPI.isValidCrackShotWeapon(p.inventory.itemInMainHand) &&
                     swapDelayOfPlayers.containsKey(p.uniqueId) && swapDelayOfPlayers[p.uniqueId] == millisecSwapDelay) { // 전에 넣은 딜레이 값이랑 똑같은지 확인
                 Bukkit.getServer().pluginManager.callEvent(WeaponSwapCompleteEvent(p, e.newItemStack, newlyHeldWeaponInfo.parentNode))

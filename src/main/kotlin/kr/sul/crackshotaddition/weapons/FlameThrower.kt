@@ -3,14 +3,13 @@ package kr.sul.crackshotaddition.weapons
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition
-import net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 
 object FlameThrower : Listener {
@@ -44,7 +43,7 @@ object FlameThrower : Listener {
                     passedTick += 2
                     previousLoc = loc
                 }
-            }.runTaskTimer(CrackShotAddition.instance as Plugin, 0, 2)
+            }.runTaskTimer(plugin, 0, 2)
         }
     }
 
@@ -60,7 +59,7 @@ object FlameThrower : Listener {
                             block.getRelative(BlockFace.UP).type = Material.AIR
                         }
                     }
-                }.runTaskLater(CrackShotAddition.instance, 20)
+                }.runTaskLater(plugin, 20)
             }
         }
     }

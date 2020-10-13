@@ -38,7 +38,6 @@ spigot {
     softDepends = listOf("ProtocolLib", "ServerCore", "CustomEntity", "NBTAPI")
     commands {
         create("csa") {
-            description = "Command for test"
             permission = "op.op"
         }
     }
