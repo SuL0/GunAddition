@@ -1,11 +1,9 @@
 package kr.sul.crackshotaddition.weaponappearance.item
 
-import com.shampaggon.crackshot.WeaponNbtParentNodeManager
 import com.shampaggon.crackshot.events.WeaponAttachmentToggleEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
-import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.events.PlayerInvAmmoAmtChangedEvent
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
@@ -39,7 +37,7 @@ object WeaponDisplayNameController : Listener {
     @EventHandler(priority = EventPriority.NORMAL) // onSwap보다 선행돼야 함 (Swap에게 덮어 씌워져야하기 때문)
     fun onPlayerHeldItemChanged(e: PlayerHeldItemIsChangedToAnotherEvent) {
         if (e.isChangedToCrackShotWeapon()) {
-            updateWeaponDisplay(e.player, e.newItemStack, DisplayNameType.NORMAL) // updateHeldWeaponDisplay 쓰면 안됨. p.itemInMainHand가 previousItem이기 때문.
+            updateWeaponDisplay(e.player, DisplayNameType.NORMAL, e.newItemStack) // updateHeldWeaponDisplay 쓰면 안됨. p.itemInMainHand가 previousItem이기 때문.
         }
     }
 
@@ -58,14 +56,14 @@ object WeaponDisplayNameController : Listener {
     fun onAttachmentToggle(e: WeaponAttachmentToggleEvent) {
         if (e.isCancelled) return
         Bukkit.getScheduler().runTaskLater(plugin, {
-            updateWeaponDisplay(e.player, e.itemStack, DisplayNameType.NORMAL)
+            updateWeaponDisplay(e.player, DisplayNameType.NORMAL, e.itemStack)
         },1L) // WeaponAttachmentToggleEvent가 아이템 이름 바뀌기도 전에 호출되기 때문임
     }
 
     @EventHandler
     fun onInventoryItemChanged(e: InventoryItemChangedEvent) {
         if (!CrackShotAdditionAPI.isValidCrackShotWeapon(e.newItemStack)) return
-        updateWeaponDisplay(e.player, e.newItemStack, DisplayNameType.NORMAL)
+        updateWeaponDisplay(e.player, DisplayNameType.NORMAL, e.newItemStack)
     }
 
     @EventHandler
@@ -77,7 +75,7 @@ object WeaponDisplayNameController : Listener {
                         .filter { CrackShotAdditionAPI.isValidCrackShotWeapon(it) }
                         .filter { Ammo.getAmmoNeeded(p, it) == e.updatedAmmo }
                         .filter { !it.itemMeta.displayName.contains(RELOADING_DISPLAY) && !it.itemMeta.displayName.contains(SWAPPING_DISPLAY) }) {
-            updateWeaponDisplay(p, weaponToUpdateDisplay, DisplayNameType.NORMAL)
+            updateWeaponDisplay(p, DisplayNameType.NORMAL, weaponToUpdateDisplay)
         }
     }
 
@@ -92,7 +90,7 @@ object WeaponDisplayNameController : Listener {
     @EventHandler(priority = EventPriority.HIGH) // onPlayerHeldItemChanged보다 후행돼야 함 (덮어 씌워야하기 때문)
     fun onSwap(e: WeaponSwapEvent) {
         if (e.swapDelay > 0) {
-            updateWeaponDisplay(e.player, e.newItem, DisplayNameType.SWAPPING)
+            updateWeaponDisplay(e.player, DisplayNameType.SWAPPING, e.newItem)
         }
     }
 
@@ -102,87 +100,97 @@ object WeaponDisplayNameController : Listener {
     }
 
     private fun updateHeldWeaponDisplay(p: Player, displayNameType: DisplayNameType) {
-        updateWeaponDisplay(p, p.inventory.itemInMainHand, displayNameType)
+        updateWeaponDisplay(p, displayNameType, p.inventory.itemInMainHand)
     }
-    fun updateWeaponDisplay(p: Player, item: ItemStack, displayNameType: DisplayNameType) {
+    private fun updateWeaponDisplay(p: Player, displayNameType: DisplayNameType, item: ItemStack) {
         if (!WeaponInfoExtractor.isValidCrackShotWeapon(item)) throw Exception("$p, $item, $displayNameType")
-        val weaponInfo = WeaponInfoExtractor(p, item)
-        val weapon = weaponInfo.item
-        val configName = weaponInfo.configName
-        var leftAmmo: Int? = null
-        var rightAmmo: Int? = null
-        var reloadableAmt: Int? = null
-        if (displayNameType == DisplayNameType.NORMAL) {
-            leftAmmo = weaponInfo.leftAmmoAmt
-            rightAmmo = weaponInfo.rightAmmoAmt
-
-            val invAmmoInfo = PlayerInvAmmoInfoManager.getInfo(p)
-            reloadableAmt = weaponInfo.ammoNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(weapon)!! }
-        }
-        makePrettyWeaponDisplayName(p, displayNameType, weapon, configName, leftAmmo, rightAmmo, reloadableAmt)
+        makePrettyWeaponDisplayName(p, displayNameType, item)
     }
 
 
     @JvmStatic  // 외부에서 사용할 때는 무조건 DisplayNameType.NORMAL
-    fun makePrettyWeaponDisplayName(p: Player?, item: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, reloadableAmount: Int?) {
-        makePrettyWeaponDisplayName(p, DisplayNameType.NORMAL, item, configName, leftAmmo, rightAmmo, reloadableAmount)
+    fun makePrettyWeaponDisplayName(p: Player?, item: ItemStack) {
+        makePrettyWeaponDisplayName(p, DisplayNameType.NORMAL, item)
     }
-    private fun makePrettyWeaponDisplayName(p: Player?, displayNameType: DisplayNameType, item: ItemStack, configName: String, leftAmmo: Int?, rightAmmo: Int?, reloadableAmt: Int?) {
-        val parentNode = WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item)
-        val removeUnusedTag = csDirector.getBoolean("$parentNode.Item_Information.Remove_Unused_Tag")  // 수류탄 같은 특수무기를 위함. 이게 없으면 Infinity로 나오기 때문임
-
+    // configName: String, leftAmmo: Int?, rightAmmo: Int?, reloadableAmt: Int?, hasAttachment: Boolean, selectIsLeft: Boolean?
+    private fun makePrettyWeaponDisplayName(p: Player?, displayNameType: DisplayNameType, item: ItemStack) {
+        val weaponInfo = WeaponInfoExtractor(p, item)
+        if (weaponInfo.bRemoveUnusedTag) return // 수류탄 같은 특수무기를 위함. 이게 없으면 Infinity로 나오기 때문임
         val meta = item.itemMeta
         val weaponNameBuilder = StringBuilder()
 
-        weaponNameBuilder.append(configName) // 총기 이름 넣기
-        if (!removeUnusedTag) {
-            for (i in 0 until MIDDLE_BLANK_LENGTH) {
-                weaponNameBuilder.append(" ") // 중간 공백 넣기
-            }
-            if (displayNameType == DisplayNameType.NORMAL) {
-                // 총알 무한 //
-                if (leftAmmo == Integer.MAX_VALUE) {
-                    weaponNameBuilder.append("${AMMO_ICON1}$INFINITY_DISPLAY")
-                    if (rightAmmo == Integer.MAX_VALUE) {
-                        weaponNameBuilder.append(" §f| $INFINITY_DISPLAY")
-                    }
-                }
-                // 총알 정상 //
-                else {
-                    // 왼쪽 총알 넣기
-                    if (leftAmmo == 0) {
-                        weaponNameBuilder.append("${AMMO_ICON1}§c$leftAmmo")
-                    } else {
-                        weaponNameBuilder.append("${AMMO_ICON1}§f$leftAmmo")
-                    }
+        weaponNameBuilder.append(weaponInfo.mainFixedConfigName) // 총기 이름 넣기
+        for (i in 0 until MIDDLE_BLANK_LENGTH) {
+            weaponNameBuilder.append(" ") // 중간 공백 넣기
+        }
+        // NORMAL //
+        if (displayNameType == DisplayNameType.NORMAL) {
+            if (weaponInfo.reloadEnabled) {
 
-                    // | 및 오른쪽 총알 넣기
-                    if (rightAmmo != null) {
-                        if (rightAmmo == 0) {
-                            weaponNameBuilder.append(" §f| §c$rightAmmo ")
-                        } else {
-                            weaponNameBuilder.append(" §f| §f$rightAmmo ")
+                // 왼쪽 총알 넣기
+                weaponNameBuilder.append(AMMO_ICON1)
+                weaponNameBuilder.append(run {
+                    val name = run {
+                        when (val leftAmmoAmt = weaponInfo.leftAmmoAmt) {
+                            Integer.MAX_VALUE -> INFINITY_DISPLAY
+                            0 -> "§c$leftAmmoAmt"
+                            else -> "§f$leftAmmoAmt"
                         }
                     }
+                    if (weaponInfo.hasAttachment() && weaponInfo.selectIsLeft()) insertEmphasis(name) else name
+                })
+
+                // | 와 오른쪽 총알 넣기
+                if (weaponInfo.isDualWield() || weaponInfo.hasAttachment()) {
+                    weaponNameBuilder.append("§f | ")
+                    weaponNameBuilder.append(run {
+                        val name = run {
+                            when (val rightAmmoAmt = weaponInfo.rightAmmoAmt) {
+                                Integer.MAX_VALUE -> INFINITY_DISPLAY
+                                0 -> "§c$rightAmmoAmt"
+                                else -> "§f$rightAmmoAmt"
+                            }
+                        }
+                        if (weaponInfo.hasAttachment() && !weaponInfo.selectIsLeft()) insertEmphasis(name) else name
+                    })
+                    weaponNameBuilder.append("§f ") // 공백 한개
                 }
 
-                // 슬래쉬 및 보유 총알 넣기 //
-                if (reloadableAmt != null) {
-                    if (reloadableAmt == 0) {
-                        weaponNameBuilder.append("§7/§40")
-                    } else {
-                        weaponNameBuilder.append("§7/§7$reloadableAmt")
+                // 슬래쉬 와 보유 총알 넣기
+                if (p != null) {
+                    val invAmmoInfo = PlayerInvAmmoInfoManager.getInfo(p)
+                    val reloadableAmmoAmt = weaponInfo.ammoNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(item)!! }
+                    if (reloadableAmmoAmt != null) {
+                        weaponNameBuilder.append("§7/")
+                        weaponNameBuilder.append(run {
+                            if (reloadableAmmoAmt == 0) {
+                                "§40"
+                            } else {
+                                "§7$reloadableAmmoAmt"
+                            }
+                        })
                     }
                 }
-            } else if (displayNameType == DisplayNameType.RELOADING) {
-                weaponNameBuilder.append("${AMMO_ICON1}$RELOADING_DISPLAY")
-            } else if (displayNameType == DisplayNameType.SWAPPING) {
-                weaponNameBuilder.append("${AMMO_ICON1}$SWAPPING_DISPLAY")
             }
+        }
+
+        // RELOADING //
+        else if (displayNameType == DisplayNameType.RELOADING) {
+            weaponNameBuilder.append("${AMMO_ICON1}$RELOADING_DISPLAY")
+        }
+
+        // SWAPPING //
+        else if (displayNameType == DisplayNameType.SWAPPING) {
+            weaponNameBuilder.append("${AMMO_ICON1}$SWAPPING_DISPLAY")
         }
         meta.displayName = weaponNameBuilder.toString()
 
         item.itemMeta = meta
         p?.updateInventory()
+    }
+    private fun insertEmphasis(str: String): String {
+        val stringBuffer = StringBuffer(str)
+        stringBuffer.insert(2, "§n")
+        return stringBuffer.toString()
     }
 }
