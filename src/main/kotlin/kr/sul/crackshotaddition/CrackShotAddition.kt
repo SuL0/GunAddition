@@ -3,6 +3,7 @@ package kr.sul.crackshotaddition
 import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.CSMinion
 import com.shampaggon.crackshot.CSUtility
+import kr.sul.crackshotaddition.addition.CancelWeaponDrop
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
@@ -54,6 +55,7 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponCameraRecoil, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoManager, this)
+        Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }
