@@ -22,7 +22,18 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
 
 
     // 기본적인 정보 //
-    val parentNode: String = WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item)
+    // parentNode의 run {} 안에서 parentNode(재귀) 를 사용하지 않도록 주의
+    private val nbtParentNode = WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item) // mainParentNode
+    val parentNode: String
+        get () = run {
+            // 부착물이 있으며, 부착물을 사용중인 상태일 때
+            if (hasAttachment() && csMinion.getWeaponNbtName(item).contains("▶")) {
+                csDirector.getAttachment(nbtParentNode, null)[1]
+            } else {
+                nbtParentNode
+            }
+        }
+
     val uniqueId: String
         get() = UniqueIdAPI.getUniqueID(item)
     val configName: String
@@ -65,6 +76,6 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
         return csDirector.isDualWield(p, parentNode, item) // 여기서 총알 비교 추가 ㄴㄴ. initializeLeftAmmo에서 오류남
     }
     fun hasAttachment(): Boolean {
-        return csDirector.getString("$parentNode.Item_Information.Attachments.Type") != null   // returns main or accessory
+        return csDirector.getString("$nbtParentNode.Item_Information.Attachments.Type") != null  // return main or accessory
     }
 }

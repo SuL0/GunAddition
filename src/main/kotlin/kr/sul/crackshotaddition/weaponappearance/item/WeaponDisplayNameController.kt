@@ -6,6 +6,7 @@ import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.events.PlayerInvAmmoAmtChangedEvent
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
@@ -56,8 +57,9 @@ object WeaponDisplayNameController : Listener {
     @EventHandler(priority = EventPriority.HIGH)
     fun onAttachmentToggle(e: WeaponAttachmentToggleEvent) {
         if (e.isCancelled) return
-        Bukkit.getServer().broadcastMessage("update display on attachment toggle")
-        updateWeaponDisplay(e.player, e.itemStack, DisplayNameType.NORMAL)
+        Bukkit.getScheduler().runTaskLater(plugin, {
+            updateWeaponDisplay(e.player, e.itemStack, DisplayNameType.NORMAL)
+        },1L) // WeaponAttachmentToggleEvent가 아이템 이름 바뀌기도 전에 호출되기 때문임
     }
 
     @EventHandler
