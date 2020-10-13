@@ -39,8 +39,8 @@ object WeaponSwapDelay : Listener {
         val newlyHeldWeaponInfo = WeaponInfoExtractor(p, e.newItemStack)
 
         // 쿨타임 설정
-        val configSwapDelay = CSDirector.getInstance().getInt("${newlyHeldWeaponInfo.parentNode}.Addition.Weapon_Swap_Delay")
-        Bukkit.getServer().pluginManager.callEvent(WeaponSwapEvent(p, e.newItemStack, newlyHeldWeaponInfo.parentNode, configSwapDelay))
+        val configSwapDelay = CSDirector.getInstance().getInt("${newlyHeldWeaponInfo.mainFixedParentNode}.Addition.Weapon_Swap_Delay")
+        Bukkit.getServer().pluginManager.callEvent(WeaponSwapEvent(p, e.newItemStack, configSwapDelay))
         val millisecSwapDelay = System.currentTimeMillis() + configSwapDelay * 50 // 1tick = 1ms * 50
         swapDelayOfPlayers[p.uniqueId] = millisecSwapDelay
         p.setCooldown(e.newItemStack.type, configSwapDelay)
@@ -49,7 +49,7 @@ object WeaponSwapDelay : Listener {
         Bukkit.getScheduler().runTaskLater(plugin, {
             if (CrackShotAdditionAPI.isValidCrackShotWeapon(p.inventory.itemInMainHand) &&
                     swapDelayOfPlayers.containsKey(p.uniqueId) && swapDelayOfPlayers[p.uniqueId] == millisecSwapDelay) { // 전에 넣은 딜레이 값이랑 똑같은지 확인
-                Bukkit.getServer().pluginManager.callEvent(WeaponSwapCompleteEvent(p, e.newItemStack, newlyHeldWeaponInfo.parentNode))
+                Bukkit.getServer().pluginManager.callEvent(WeaponSwapCompleteEvent(p, e.newItemStack))
             }
         }, configSwapDelay.toLong())
     }
