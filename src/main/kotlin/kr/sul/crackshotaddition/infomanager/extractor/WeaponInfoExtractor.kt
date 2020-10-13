@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 // 크랙샷인 item의 정보를 쉽게 뽑아내주는 클래스(Wrapper?)
-class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
+class WeaponInfoExtractor(private val p: Player?=null, val item: ItemStack) {
     init {
         if (!isValidCrackShotWeapon(item)) throw Exception("$p $item")
     }
@@ -22,7 +22,8 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
 
 
     // 기본적인 정보 //
-    private val mainFixedParentNode = WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item)
+    // 웬만하면 parentNode 쓰고, mainFixedParentNode는 Addition: 의 기능들, 즉 메인 악세 상관없이 적용되는 기능에만  사용
+    val mainFixedParentNode: String = WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item)
     // parentNode의 run {} 안에서 parentNode(재귀) 를 사용하지 않도록 주의
     val parentNode: String
         get () = run {
@@ -36,11 +37,13 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
 
     val uniqueId: String
         get() = UniqueIdAPI.getUniqueID(item)
+    val mainFixedConfigName: String
+        get() = csDirector.getString("$mainFixedParentNode.Item_Information.Item_Name")
     val configName: String
         get() = csDirector.getString("$parentNode.Item_Information.Item_Name")
     val nbtName: String
         get() = csMinion.getWeaponNbtName(item)
-    val removeUnusedTag: Boolean
+    val bRemoveUnusedTag: Boolean
         get() = csDirector.getBoolean("$parentNode.Item_Information.Remove_Unused_Tag")
 
 
@@ -50,15 +53,16 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
     // reloadEnabled가 false라면, 총알수는 "null"이 아닌 "Infinity"라는 것을 명심
     val leftAmmoAmt: Int
         get() = run {
-            if (isDualWield())
+            if (isDualWield() || hasAttachment())
                 csDirector.grabDualAmmo(item, parentNode)[0]
             else
                 csDirector.getAmmoBetweenBrackets(p, parentNode, item)
         }
     val rightAmmoAmt: Int?
         get() = run {
-            if (!isDualWield()) return null
-            csDirector.grabDualAmmo(item, parentNode)[1]
+            if (isDualWield() || hasAttachment())
+                return csDirector.grabDualAmmo(item, parentNode)[1]
+            return null
         }
     val reloadCapacity: Int?
         get() = run {
@@ -77,5 +81,9 @@ class WeaponInfoExtractor(private val p: Player, val item: ItemStack) {
     }
     fun hasAttachment(): Boolean {
         return csDirector.getString("$mainFixedParentNode.Item_Information.Attachments.Type") != null  // return main or accessory
+    }
+    fun selectIsLeft(): Boolean {
+        if (csMinion.getWeaponNbtName(item).contains("▶")) return false
+        return true
     }
 }
