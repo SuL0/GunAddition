@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition.weaponappearance
 
-import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import me.sul.customentity.entityweapon.event.CEWeaponHitBlockEvent
 import org.bukkit.*
 import org.bukkit.entity.Entity
@@ -21,7 +21,7 @@ object WeaponBlockBreakEffect : Listener {
 
     @EventHandler
     fun onWeaponHitBlock(e: WeaponHitBlockEvent) {
-        val bBlockbreakeffect = CSDirector.getInstance().getBoolean(e.parentNode + ".Addition.Block_Break_Effect")
+        val bBlockbreakeffect = csDirector.getBoolean(e.parentNode + ".Addition.Block_Break_Effect")
         if (bBlockbreakeffect) {
             blockBreakEffect(e.player, e.projectile)
         }

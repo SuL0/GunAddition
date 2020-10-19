@@ -2,7 +2,6 @@ package kr.sul.crackshotaddition.weapons
 
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
-import kr.sul.crackshotaddition.CrackShotAddition
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import org.bukkit.Location
 import org.bukkit.Material

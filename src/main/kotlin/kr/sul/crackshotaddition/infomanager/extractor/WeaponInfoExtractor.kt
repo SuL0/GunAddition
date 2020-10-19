@@ -29,7 +29,7 @@ class WeaponInfoExtractor(private val p: Player?=null, val item: ItemStack) {
         get () = run {
             // 부착물이 있으며, 부착물을 사용중인 상태일 때
             if (hasAttachment() && csMinion.getWeaponNbtName(item).contains("▶")) {
-                csDirector.getAttachment(mainFixedParentNode, null)[1]
+                csDirector.getAttachment(mainFixedParentNode, item)[1]
             } else {
                 mainFixedParentNode
             }

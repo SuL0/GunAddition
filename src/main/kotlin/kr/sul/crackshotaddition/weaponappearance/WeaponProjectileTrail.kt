@@ -35,7 +35,7 @@ object WeaponProjectileTrail : Listener {
         var particle = DEFAULT_PARTICLE
 
         // by 총 파티클
-//		String configProjectileTrailEffect = CSDirector.getInstance().getString(parentNode + ".Addition.Projectile_Trail");
+//		String configProjectileTrailEffect = csDirector.getString(parentNode + ".Addition.Projectile_Trail");
 //		Particle particle = (configProjectileTrailEffect == null) ? DEFAULT_PARTICLE : Particle.valueOf(configProjectileTrailEffect);
 
         // by 플레이어 파티클

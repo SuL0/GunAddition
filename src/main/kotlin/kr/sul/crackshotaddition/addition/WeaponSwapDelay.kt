@@ -1,9 +1,9 @@
 package kr.sul.crackshotaddition.addition
 
-import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponPrepareShootEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
@@ -39,7 +39,7 @@ object WeaponSwapDelay : Listener {
         val newlyHeldWeaponInfo = WeaponInfoExtractor(p, e.newItemStack)
 
         // 쿨타임 설정
-        val configSwapDelay = CSDirector.getInstance().getInt("${newlyHeldWeaponInfo.mainFixedParentNode}.Addition.Weapon_Swap_Delay")
+        val configSwapDelay = csDirector.getInt("${newlyHeldWeaponInfo.mainFixedParentNode}.Addition.Weapon_Swap_Delay")
         Bukkit.getServer().pluginManager.callEvent(WeaponSwapEvent(p, e.newItemStack, configSwapDelay))
         val millisecSwapDelay = System.currentTimeMillis() + configSwapDelay * 50 // 1tick = 1ms * 50
         swapDelayOfPlayers[p.uniqueId] = millisecSwapDelay

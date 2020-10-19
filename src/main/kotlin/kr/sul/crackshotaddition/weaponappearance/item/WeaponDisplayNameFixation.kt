@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition.weaponappearance.item
 
-import com.shampaggon.crackshot.CSDirector
 import de.tr7zw.nbtapi.NBTItem
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitRunnable
@@ -24,6 +24,6 @@ object WeaponDisplayNameFixation {
                     }
                 }
             }
-        }.runTaskTimer(CSDirector.getInstance(), 20L, 20L)
+        }.runTaskTimer(csDirector, 20L, 20L)
     }
 }

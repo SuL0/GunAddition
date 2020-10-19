@@ -7,6 +7,8 @@ import kr.sul.crackshotaddition.addition.CancelWeaponDrop
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
+import kr.sul.crackshotaddition.resourcepackdurability.lefthand.LeftHandResourcePackDurability
+import kr.sul.crackshotaddition.resourcepackdurability.weaponitem.WeaponItemResourcePackDurability
 import kr.sul.crackshotaddition.weaponappearance.WeaponBlockBreakEffect
 import kr.sul.crackshotaddition.weaponappearance.WeaponCameraRecoil
 import kr.sul.crackshotaddition.weaponappearance.WeaponMuzzleFlash
@@ -56,6 +58,8 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoManager, this)
         Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
+        Bukkit.getServer().pluginManager.registerEvents(LeftHandResourcePackDurability, this)
+        Bukkit.getServer().pluginManager.registerEvents(WeaponItemResourcePackDurability, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }

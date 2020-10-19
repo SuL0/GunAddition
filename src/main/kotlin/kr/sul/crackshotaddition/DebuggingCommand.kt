@@ -37,6 +37,7 @@ object DebuggingCommand : CommandExecutor {
                 sendM(sender, "")
                 sendM(sender, "ItemStack.displayName: ${weaponInfo.item.itemMeta.displayName}")
                 sendM(sender, "ItemStack.nbtName: ${weaponInfo.nbtName}")
+                sendM(sender, "ItemStack.durability: ${weaponInfo.item.durability}")
                 sendM(sender, "ParentNode: ${weaponInfo.parentNode}")
                 sendM(sender, "ConfigName: ${weaponInfo.configName}")
                 sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")

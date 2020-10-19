@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition.weaponappearance
 
-import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponShootEvent
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import net.minecraft.server.v1_12_R1.PacketPlayOutPosition
 import net.minecraft.server.v1_12_R1.PacketPlayOutPosition.EnumPlayerTeleportFlags
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer
@@ -15,10 +15,10 @@ object WeaponCameraRecoil : Listener {
 
     @EventHandler
     fun onWeaponShoot(e: WeaponShootEvent) {
-        val bCamerarecoil = CSDirector.getInstance().getBoolean("${e.parentNode}.Addition.Camera_Recoil.Enable")
+        val bCamerarecoil = csDirector.getBoolean("${e.parentNode}.Addition.Camera_Recoil.Enable")
         if (bCamerarecoil) {
-            val yawValue = CSDirector.getInstance().getDouble("${e.parentNode}.Addition.Camera_Recoil.Yaw")
-            val pitchValue = CSDirector.getInstance().getDouble("${e.parentNode}.Addition.Camera_Recoil.Pitch")
+            val yawValue = csDirector.getDouble("${e.parentNode}.Addition.Camera_Recoil.Yaw")
+            val pitchValue = csDirector.getDouble("${e.parentNode}.Addition.Camera_Recoil.Pitch")
             if (yawValue != 0.0 || pitchValue != 0.0) cameraRecoil(e.player, yawValue.toFloat(), pitchValue.toFloat())
         }
     }

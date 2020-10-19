@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition.weaponappearance
 
-import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.events.WeaponShootEvent
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -19,19 +19,19 @@ object WeaponMuzzleFlash : Listener {
 
     @EventHandler
     fun onShoot(e: WeaponShootEvent) {
-        val bMuzzleflash = CSDirector.getInstance().getBoolean(e.parentNode + ".Addition.Muzzle_Flash.Enable")
+        val bMuzzleflash = csDirector.getBoolean(e.parentNode + ".Addition.Muzzle_Flash.Enable")
         if (bMuzzleflash) {
-            val multiplyToRightSideVec = CSDirector.getInstance().getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToRightSideVec")
-            val sumToY = CSDirector.getInstance().getDouble(e.parentNode + ".Addition.Muzzle_Flash.SumToY")
-            val multiplyToForwardSideVec = CSDirector.getInstance().getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToForwardSideVec")
-            spawnMuzzleFlashParticle(e.player, RIGHT, multiplyToRightSideVec, sumToY, multiplyToForwardSideVec)
+            val multiplyToRightSideUnitVec = csDirector.getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToRightSideUnitVec")
+            val sumToY = csDirector.getDouble(e.parentNode + ".Addition.Muzzle_Flash.SumToY")
+            val multiplyToForwardSideUnitVec = csDirector.getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToForwardSideUnitVec")
+            spawnMuzzleFlashParticle(e.player, RIGHT, multiplyToRightSideUnitVec, sumToY, multiplyToForwardSideUnitVec)
         }
     }
 
-    private fun spawnMuzzleFlashParticle(p: Player, rightOrLeft: Int, multiplyToRightSideVec: Double, sumToY: Double, multiplyToForwardSideVec: Double) {
+    private fun spawnMuzzleFlashParticle(p: Player, rightOrLeft: Int, multiplyToRightSideUnitVec: Double, sumToY: Double, multiplyToForwardSideUnitVec: Double) {
         val playerYaw = (p.location.yaw + 90.0f + rightOrLeft) * Math.PI / 180.0 // toRadian
-        val toRightSideVec = Vector(cos(playerYaw) * multiplyToRightSideVec, sumToY, sin(playerYaw) * multiplyToRightSideVec)
-        val toForwardSideVec = p.location.direction.normalize().multiply(multiplyToForwardSideVec)
+        val toRightSideVec = Vector(cos(playerYaw) * multiplyToRightSideUnitVec, sumToY, sin(playerYaw) * multiplyToRightSideUnitVec)
+        val toForwardSideVec = p.location.direction.normalize().multiply(multiplyToForwardSideUnitVec)
 
         // 벡터 보정
         val value: Double
