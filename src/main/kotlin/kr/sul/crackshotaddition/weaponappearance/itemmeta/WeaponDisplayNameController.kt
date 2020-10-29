@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.weaponappearance.item
+package kr.sul.crackshotaddition.weaponappearance.itemmeta
 
 import com.shampaggon.crackshot.events.WeaponAttachmentToggleEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
@@ -10,8 +10,10 @@ import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
 import kr.sul.crackshotaddition.infomanager.ammo.Ammo
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
+import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
+import kr.sul.servercore.extensionfunction.UpdateInventorySlot
+import kr.sul.servercore.extensionfunction.UpdateInventorySlot.updateInventorySlot
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.Bukkit
@@ -22,11 +24,12 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
+
 object WeaponDisplayNameController : Listener {
     enum class DisplayNameType {
         NORMAL, RELOADING, SWAPPING
     }
-    private const val AMMO_ICON1 = "§f锄 " // §f 없으면 색 이상해짐
+    private const val AMMO_ICON1 = "§f訢 " // §f 없으면 색 이상해짐
     private const val MIDDLE_BLANK_LENGTH = 5
 
     private const val INFINITY_DISPLAY = "§dInfinity"
@@ -57,7 +60,7 @@ object WeaponDisplayNameController : Listener {
         if (e.isCancelled) return
         Bukkit.getScheduler().runTaskLater(plugin, {
             updateWeaponDisplay(e.player, DisplayNameType.NORMAL, e.itemStack)
-        },1L) // WeaponAttachmentToggleEvent가 아이템 이름 바뀌기도 전에 호출되기 때문임
+        }, 1L) // WeaponAttachmentToggleEvent가 아이템 이름 바뀌기도 전에 호출되기 때문임
     }
 
     @EventHandler
@@ -186,8 +189,10 @@ object WeaponDisplayNameController : Listener {
         meta.displayName = weaponNameBuilder.toString()
 
         item.itemMeta = meta
-        p?.updateInventory()
+        p?.updateInventorySlot(UpdateInventorySlot.HandType.MAIN_HAND)
     }
+
+
     private fun insertEmphasis(str: String): String {
         val stringBuffer = StringBuffer(str)
         stringBuffer.insert(2, "§n")
