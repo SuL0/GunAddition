@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.weaponappearance.item
+package kr.sul.crackshotaddition.weaponappearance.itemmeta
 
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent

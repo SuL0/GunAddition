@@ -7,7 +7,7 @@ import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.events.WeaponSwapEvent
-import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
+import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.Bukkit

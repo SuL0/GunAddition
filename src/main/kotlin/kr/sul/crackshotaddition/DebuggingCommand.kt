@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition
 
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
+import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Chest
@@ -50,17 +50,23 @@ object DebuggingCommand : CommandExecutor {
             }
             "ammoinfo" -> {
                 val playerInvAmmoInfo = PlayerInvAmmoInfoManager.getInfo(sender)
-                Bukkit.getServer().broadcastMessage("")
-                Bukkit.getServer().broadcastMessage("<AmmoInfo>")
+                sendM(sender, "")
+                sendM(sender, "<AmmoInfo>")
                 for ((key, value) in playerInvAmmoInfo.allOfPossessedAmmoAmt) {
-                    Bukkit.getServer().broadcastMessage("$key : $value")
-                    Bukkit.getServer().broadcastMessage(" §7- Usage: ${key.whereToUse}")
+                    sendM(sender, "$key : $value")
+                    sendM(sender, " §7- Usage: ${key.whereToUse}")
                 }
             }
             "nbtname" -> {
                 val item = sender.inventory.itemInMainHand
                 val weaponInfo = WeaponInfoExtractor(sender, item)
-                Bukkit.getServer().broadcastMessage("NBTName: ${weaponInfo.nbtName}")
+                sendM(sender, "NBTName: ${weaponInfo.nbtName}")
+            }
+            "dur" -> {
+                val offItem = sender.inventory.itemInOffHand
+                val heldItem = sender.inventory.itemInMainHand
+                sendM(sender, "")
+                sendM(sender, "${offItem.durability} / ${heldItem.durability}")
             }
         }
         return true

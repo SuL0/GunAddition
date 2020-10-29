@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.infomanager.extractor
+package kr.sul.crackshotaddition.infomanager.weapon
 
 import com.shampaggon.crackshot.WeaponNbtParentNodeManager
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector

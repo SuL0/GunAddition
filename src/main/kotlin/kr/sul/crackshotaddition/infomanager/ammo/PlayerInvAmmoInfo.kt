@@ -1,7 +1,7 @@
 package kr.sul.crackshotaddition.infomanager.ammo
 
 import com.shampaggon.crackshot.CSMinion
-import kr.sul.crackshotaddition.infomanager.extractor.WeaponInfoExtractor
+import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 

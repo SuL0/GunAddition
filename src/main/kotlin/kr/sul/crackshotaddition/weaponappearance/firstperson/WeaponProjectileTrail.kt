@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.weaponappearance
+package kr.sul.crackshotaddition.weaponappearance.firstperson
 
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin

@@ -7,15 +7,16 @@ import kr.sul.crackshotaddition.addition.CancelWeaponDrop
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.resourcepackdurability.lefthand.LeftHandResourcePackDurability
-import kr.sul.crackshotaddition.resourcepackdurability.weaponitem.WeaponItemResourcePackDurability
-import kr.sul.crackshotaddition.weaponappearance.WeaponBlockBreakEffect
-import kr.sul.crackshotaddition.weaponappearance.WeaponCameraRecoil
-import kr.sul.crackshotaddition.weaponappearance.WeaponMuzzleFlash
-import kr.sul.crackshotaddition.weaponappearance.WeaponProjectileTrail
-import kr.sul.crackshotaddition.weaponappearance.item.WeaponDisplayNameController
-import kr.sul.crackshotaddition.weaponappearance.item.WeaponDisplayNameFixation
-import kr.sul.crackshotaddition.weaponappearance.item.WeaponItemFlutterFixation
+import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponBlockBreakEffect
+import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponCameraRecoil
+import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponMuzzleFlash
+import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponProjectileTrail
+import kr.sul.crackshotaddition.weaponappearance.item.WhenToChangeItemDurability
+import kr.sul.crackshotaddition.weaponappearance.item.`object`.LeftHand
+import kr.sul.crackshotaddition.weaponappearance.item.`object`.LeftHandManager
+import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponDisplayNameController
+import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponDisplayNameFixation
+import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponItemFlutterFixation
 import kr.sul.crackshotaddition.weapons.FlameThrower
 import kr.sul.servercore.util.ObjectInitializer
 import org.bukkit.Bukkit
@@ -58,8 +59,9 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoManager, this)
         Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
-        Bukkit.getServer().pluginManager.registerEvents(LeftHandResourcePackDurability, this)
-        Bukkit.getServer().pluginManager.registerEvents(WeaponItemResourcePackDurability, this)
+        Bukkit.getServer().pluginManager.registerEvents(WhenToChangeItemDurability, this)
+        Bukkit.getServer().pluginManager.registerEvents(LeftHand, this)
+        Bukkit.getServer().pluginManager.registerEvents(LeftHandManager, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }

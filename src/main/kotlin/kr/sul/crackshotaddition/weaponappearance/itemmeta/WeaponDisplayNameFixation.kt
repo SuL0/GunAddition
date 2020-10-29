@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.weaponappearance.item
+package kr.sul.crackshotaddition.weaponappearance.itemmeta
 
 import de.tr7zw.nbtapi.NBTItem
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
