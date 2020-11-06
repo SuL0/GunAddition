@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.weaponappearance.item.`object`
+package kr.sul.crackshotaddition.weaponappearance.item
 
 import de.tr7zw.nbtapi.NBTItem
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
@@ -38,7 +38,8 @@ object LeftHandManager: Listener {
     // 왼손 슬롯 벤 //
     @EventHandler(priority = EventPriority.LOW)
     fun onInventoryClick(e: InventoryClickEvent) {
-        if (e.clickedInventory.type == InventoryType.PLAYER && e.slot == 40) {
+        if (e.clickedInventory != null && e.clickedInventory.type == InventoryType.PLAYER
+                && e.slot == 40) {
             e.isCancelled = true
         }
     }

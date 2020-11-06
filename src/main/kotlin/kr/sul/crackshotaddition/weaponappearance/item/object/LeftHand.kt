@@ -5,6 +5,7 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
+import kr.sul.crackshotaddition.weaponappearance.item.LeftHandManager
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -38,13 +39,13 @@ object LeftHand: Object, Listener {
     @EventHandler
     fun onHeldItemIsChangedToNormalItem(e: PlayerHeldItemIsChangedToAnotherEvent) {
         if (!e.isChangedToCrackShotWeapon() && LeftHandManager.isHandItem(e.player.inventory.itemInOffHand)) {
-            e.player.inventory.setItemInOffHand(null)
+            e.player.inventory.itemInOffHand = null
         }
     }
     // 아이템 들 때 손 생성(Normal State)
     override fun onHeldItemIsChangedToCrackShotWeapon(e: PlayerHeldItemIsChangedToAnotherEvent) {
         val configExtractor = ConfigExtractor(WeaponInfoExtractor(e.player, e.newItemStack).parentNode)
-        e.player.inventory.setItemInOffHand(configExtractor.leftHandItem)  // TODO: 다른 아이템이 있을 때는? - 낙하산
+        e.player.inventory.itemInOffHand = configExtractor.leftHandItem  // TODO: 다른 아이템이 있을 때는? - 낙하산
     }
 
     // 줌 //

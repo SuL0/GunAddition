@@ -11,9 +11,9 @@ import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponBlockBreakEff
 import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponCameraRecoil
 import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponMuzzleFlash
 import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponProjectileTrail
+import kr.sul.crackshotaddition.weaponappearance.item.LeftHandManager
 import kr.sul.crackshotaddition.weaponappearance.item.WhenToChangeItemDurability
 import kr.sul.crackshotaddition.weaponappearance.item.`object`.LeftHand
-import kr.sul.crackshotaddition.weaponappearance.item.`object`.LeftHandManager
 import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponDisplayNameController
 import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponDisplayNameFixation
 import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponItemFlutterFixation
