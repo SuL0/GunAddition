@@ -15,14 +15,13 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
-import java.util.*
-import java.util.stream.Collectors
 import kotlin.math.cos
 import kotlin.math.sin
 
 object WeaponProjectileTrail : Listener {
-    const val DISTORTION_DISTANCE = 60
-    const val SHIFTVECTOR_LENGTH = 0.2f
+    const val DISTORTION_PERIOD1 = 60
+    const val DISTORTION_PERIOD2 = 60
+    const val FILL_PARTICLE_GAP_PER_LENGTH = 4
     private val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
 
     @EventHandler
@@ -50,42 +49,52 @@ object WeaponProjectileTrail : Listener {
         object : BukkitRunnable() {
             val playerYaw = (shooter.location.yaw + 90.0f + 90) * Math.PI / 180.0
             val toRightSideVec: Vector = Vector(cos(playerYaw) * 0.3, -0.2, sin(playerYaw) * 0.3)
-            var previousLoc: Location? = null
-            var cnt = DISTORTION_DISTANCE
-            var skipFirstLoc = true
+            var previousProjLoc: Location? = null
+            var cnt = DISTORTION_PERIOD1
 
             override fun run() {
                 if (!projectile.isValid) {
                     cancel(); return
                 }
-                var loc = projectile.location
-                if (!skipFirstLoc) {
-                    val nearbyPlayers: MutableList<Player> = ArrayList()
-                    if (shooter is Player) nearbyPlayers.add(shooter)
-                    nearbyPlayers.addAll(Bukkit.getServer().onlinePlayers.stream()
-                            .filter { loopP: Player -> loopP != shooter && loopP.world == shooter.world && loopP.location.distance(shooter.location) <= 100 }
-                            .collect(Collectors.toList()))
-                    
-                    loc = loc.clone().add(toRightSideVec.multiply(Math.max(cnt--, 0) / DISTORTION_DISTANCE)) // 총알 궤적 위치 왜곡   // loc에 바로 더하면 projectile에 더해져서 clone해야 함
-                    val particleLoc = loc.clone()
-                    val shiftVector = projectile.velocity.clone().multiply(-1).multiply(SHIFTVECTOR_LENGTH)
-                    var i = 0
-                    while (i < 1 / SHIFTVECTOR_LENGTH) {
-                        loc.world.spawnParticle(particle, nearbyPlayers, if (shooter is Player) shooter else null, particleLoc.x, particleLoc.y, particleLoc.z, 1, 0.0, 0.0, 0.0, 0.0, null, true) // extra가 속도
-                        particleLoc.add(shiftVector)
-                        i++
+
+                var projLoc = projectile.location.clone()   // clone안하고, loc에 .add(Location)을 하게되면 projectile에 직접적으로 수정이 가해지게 되는 문제 (add(Location) 은 아래의 총알 왜곡에서 사용됨)
+                if (previousProjLoc != null) {  // 첫 번째 총알은 건너뛰기
+                    val nearbyPlayers = if (shooter is Player) arrayListOf(shooter) else arrayListOf()
+                    nearbyPlayers.addAll(Bukkit.getServer().onlinePlayers
+                            .filter { it != shooter && it.world == shooter.world && it.location.distance(shooter.location) <= 100 })
+
+                    // 총알 왜곡
+                    projLoc = projLoc.add(toRightSideVec.multiply(Math.max(cnt--, 0) / DISTORTION_PERIOD1)) // 총알 궤적 위치 왜곡
+                    val projVector = previousProjLoc!!.toVector().subtract(projLoc.toVector())  // 왜곡된 벡터 (!= projectile.velocity)
+
+
+                    // 총알 파티클 //
+                    val locListToSpawnParticle = arrayListOf(projLoc)
+                    // 1틱 사이의 공간에 촘촘히 파티클 생성
+                    if (projVector.length() > FILL_PARTICLE_GAP_PER_LENGTH*2) {
+                        val clonedLocForCalc = projLoc.clone()
+
+                        val division = projVector.length().toInt() / FILL_PARTICLE_GAP_PER_LENGTH
+                        val shiftVector = projVector.clone().multiply(-1).multiply(1/division)
+                        for (i in 0 until (division-1)) {
+                            clonedLocForCalc.add(shiftVector)
+                            locListToSpawnParticle.add(clonedLocForCalc.clone())
+                        }
+                    }
+                    locListToSpawnParticle.forEach {
+                        it.world.spawnParticle(particle, nearbyPlayers, if (shooter is Player) shooter else null,
+                                it.x, it.y, it.z, 1, 0.0, 0.0, 0.0, 0.0, null, true) // extra가 속도
                     }
 
+
                     // 청크에 projectile이 막혔을 시 projectile 삭제
-                    if (loc.distance(previousLoc) <= 0.1) {
+                    if (projLoc.distance(previousProjLoc) <= 0.1) {
                         projectile.remove()
                         cancel()
                         return
                     }
-                } else {
-                    skipFirstLoc = false
                 }
-                previousLoc = loc
+                previousProjLoc = projLoc
             }
         }.runTaskTimer(plugin, 0L, 1L)
     }
