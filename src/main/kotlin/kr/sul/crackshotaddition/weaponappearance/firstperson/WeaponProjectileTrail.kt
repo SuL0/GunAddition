@@ -19,8 +19,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 object WeaponProjectileTrail : Listener {
-    const val DISTORTION_PERIOD1 = 60
-    const val DISTORTION_PERIOD2 = 60
+    const val DISTORTION_DISTANCE_1 = 40
+    const val DISTORTION_DISTANCE_2 = 80
     const val FILL_PARTICLE_GAP_PER_LENGTH = 1
     private val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
 
@@ -44,24 +44,32 @@ object WeaponProjectileTrail : Listener {
         projectileTrail(e.player, e.projectile, particle)
     }
 
-    private fun projectileTrail(shooter: Entity, projectile: Entity, particle: Particle?) {
-        hideEntity(projectile)
+    private fun projectileTrail(shooter: Entity, proj: Entity, particle: Particle?) {
+        hideEntity(proj)
         object : BukkitRunnable() {
             val playerYaw = (shooter.location.yaw + 90.0f + 90) * Math.PI / 180.0
-            val toRightSideVec: Vector = Vector(cos(playerYaw) * 0.3, -0.2, sin(playerYaw) * 0.3)
+            val toRightSideVec = Vector(cos(playerYaw) * 0.3, -0.2, sin(playerYaw) * 0.3)
+            // 삼각형 세 개를 그린다고 생각
+            val toRightSideVec_Sections = arrayListOf<Vector>().run {
+                add(toRightSideVec.clone().multiply(2/3.0))  // 0: 왜곡 가장 앞 부분의 최대 벡터(여기에 * n(<=1) 을 하기 때문)   *  Sec2 + Sec1 + Sec0
+                add(toRightSideVec.clone().multiply(0.8/3.0))  // 1: 왜곡 가장 뒷 부분의 최대 벡터    * Sec2 + Sec1
+                add(toRightSideVec.clone().multiply(0.2/3.0))  // 2: 왜곡 끝나고 완전 직선이면, 궤도가 전혀 안보여서 어색해서 약간 오른쪽으로 왜곡시켜줌
+                this
+            }
+
+            val firstProjLoc = proj.location.clone()
             var previousProjLoc: Location? = null
-            var cnt = DISTORTION_PERIOD1
 
             override fun run() {
-                if (!projectile.isValid) {
+                if (!proj.isValid) {
                     cancel(); return
                 }
 
-                var projLoc = projectile.location.clone()   // clone안하고, loc에 .add(Location)을 하게되면 projectile에 직접적으로 수정이 가해지게 되는 문제 (add(Location) 은 아래의 총알 왜곡에서 사용됨)
+                var projLoc = proj.location.clone()   // clone안하고, loc에 .add(Location)을 하게되면 projectile에 직접적으로 수정이 가해지게 되는 문제 (add(Location) 은 아래의 총알 왜곡에서 사용됨)
                 if (previousProjLoc != null) {  // 첫 번째 총알은 건너뛰기
                     // 청크에 projectile이 막혔을 시 projectile 삭제
                     if (projLoc.distance(previousProjLoc) <= 0.1) {
-                        projectile.remove()
+                        proj.remove()
                         cancel(); return
                     }
 
@@ -69,13 +77,14 @@ object WeaponProjectileTrail : Listener {
                     nearbyPlayers.addAll(Bukkit.getServer().onlinePlayers
                             .filter { it != shooter && it.world == shooter.world && it.location.distance(shooter.location) <= 100 })
 
-                    // 총알 왜곡
-                    projLoc = projLoc.add(toRightSideVec.multiply(Math.max(cnt--, 0) / DISTORTION_PERIOD1)) // 총알 궤적 위치 왜곡
-                    val projVector = previousProjLoc!!.toVector().subtract(projLoc.toVector())  // 왜곡된 벡터 (!= projectile.velocity)
+
+                    // 총알 위치 왜곡
+                    projLoc = applyDistortion(proj, firstProjLoc, toRightSideVec_Sections)
+                    val projVector = projLoc.toVector().subtract(previousProjLoc!!.toVector())  // 왜곡된 벡터 (!= projectile.velocity)
 
 
                     // 총알 파티클 //
-                    val locListToSpawnParticle = arrayListOf(projLoc)
+                    var locListToSpawnParticle = arrayListOf(projLoc)
                     // 1틱 사이의 공간에 촘촘히 파티클 생성
                     if (projVector.length() > FILL_PARTICLE_GAP_PER_LENGTH*2) {
                         val clonedLocForCalc = projLoc.clone()
@@ -87,12 +96,17 @@ object WeaponProjectileTrail : Listener {
                             locListToSpawnParticle.add(clonedLocForCalc.clone())
                         }
                     }
+                    // 첫번째 Particle Line이라면, 파티클 중 플레이어 화면과 너무 가까운 것들은 제거
+                    if (firstProjLoc.distance(previousProjLoc) <= 2) {
+                        locListToSpawnParticle = locListToSpawnParticle.filter { it.distance(firstProjLoc) > 2 } as ArrayList<Location>
+                    }
+                    // 파티클 소환
                     locListToSpawnParticle.forEach {
                         it.world.spawnParticle(Particle.DRIP_LAVA, nearbyPlayers, if (shooter is Player) shooter else null,
                                 it.x, it.y, it.z, 1, 0.0, 0.0, 0.0, 0.0, null, true) // extra가 속도
                     }
                 }
-                previousProjLoc = projLoc
+                previousProjLoc = applyDistortion(proj, firstProjLoc, toRightSideVec_Sections)  // 왜곡된 이전 위치
             }
         }.runTaskTimer(plugin, 0L, 1L)
     }
@@ -101,6 +115,23 @@ object WeaponProjectileTrail : Listener {
         val packetPlayOutEntityDestroy = PacketPlayOutEntityDestroy(entity.entityId)
         for (player in entity.world.players) {
             (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutEntityDestroy)
+        }
+    }
+
+    // 총알 위치 왜곡 (삼각형 세 개를 그린다고 생각)
+    private fun applyDistortion(proj: Entity, firstProjLoc: Location, toRightSideVec_Sections: List<Vector>): Location {
+        return when (val disFromFirst = firstProjLoc.distance(proj.location).toInt()) {
+            in 0..DISTORTION_DISTANCE_1 -> {
+                val vec = toRightSideVec_Sections[0].clone().multiply((DISTORTION_DISTANCE_1-disFromFirst)/ DISTORTION_DISTANCE_1) // dis가 올라갈수록 0에 가까워짐
+                proj.location.clone().add(toRightSideVec_Sections[2]).add(toRightSideVec_Sections[1]).add(vec)
+            }
+            in DISTORTION_DISTANCE_1..DISTORTION_DISTANCE_2 -> {
+                val vec = toRightSideVec_Sections[1].clone().multiply((DISTORTION_DISTANCE_2-(disFromFirst-DISTORTION_DISTANCE_1))/ DISTORTION_DISTANCE_2)
+                proj.location.clone().add(toRightSideVec_Sections[2]).add(vec)
+            }
+            else -> {
+                proj.location.clone().add(toRightSideVec_Sections[2])
+            }
         }
     }
 }
