@@ -21,7 +21,7 @@ import kotlin.math.sin
 object WeaponProjectileTrail : Listener {
     const val DISTORTION_PERIOD1 = 60
     const val DISTORTION_PERIOD2 = 60
-    const val FILL_PARTICLE_GAP_PER_LENGTH = 4
+    const val FILL_PARTICLE_GAP_PER_LENGTH = 1
     private val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
 
     @EventHandler
@@ -59,6 +59,12 @@ object WeaponProjectileTrail : Listener {
 
                 var projLoc = projectile.location.clone()   // clone안하고, loc에 .add(Location)을 하게되면 projectile에 직접적으로 수정이 가해지게 되는 문제 (add(Location) 은 아래의 총알 왜곡에서 사용됨)
                 if (previousProjLoc != null) {  // 첫 번째 총알은 건너뛰기
+                    // 청크에 projectile이 막혔을 시 projectile 삭제
+                    if (projLoc.distance(previousProjLoc) <= 0.1) {
+                        projectile.remove()
+                        cancel(); return
+                    }
+
                     val nearbyPlayers = if (shooter is Player) arrayListOf(shooter) else arrayListOf()
                     nearbyPlayers.addAll(Bukkit.getServer().onlinePlayers
                             .filter { it != shooter && it.world == shooter.world && it.location.distance(shooter.location) <= 100 })
@@ -75,23 +81,15 @@ object WeaponProjectileTrail : Listener {
                         val clonedLocForCalc = projLoc.clone()
 
                         val division = projVector.length().toInt() / FILL_PARTICLE_GAP_PER_LENGTH
-                        val shiftVector = projVector.clone().multiply(-1).multiply(1/division)
+                        val shiftVector = projVector.clone().multiply(-1).multiply(1.0/division)
                         for (i in 0 until (division-1)) {
                             clonedLocForCalc.add(shiftVector)
                             locListToSpawnParticle.add(clonedLocForCalc.clone())
                         }
                     }
                     locListToSpawnParticle.forEach {
-                        it.world.spawnParticle(particle, nearbyPlayers, if (shooter is Player) shooter else null,
+                        it.world.spawnParticle(Particle.DRIP_LAVA, nearbyPlayers, if (shooter is Player) shooter else null,
                                 it.x, it.y, it.z, 1, 0.0, 0.0, 0.0, 0.0, null, true) // extra가 속도
-                    }
-
-
-                    // 청크에 projectile이 막혔을 시 projectile 삭제
-                    if (projLoc.distance(previousProjLoc) <= 0.1) {
-                        projectile.remove()
-                        cancel()
-                        return
                     }
                 }
                 previousProjLoc = projLoc
