@@ -11,6 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 
 object LeftHandManager: Listener {
@@ -43,6 +44,11 @@ object LeftHandManager: Listener {
             e.isCancelled = true
         }
     }
+    @EventHandler(priority = EventPriority.LOW)
+    fun onPlayerSwapHandItem(e: PlayerSwapHandItemsEvent) {
+        e.isCancelled = true
+    }
+
 
     @EventHandler
     fun onQuit(e: PlayerQuitEvent) {
