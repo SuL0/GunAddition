@@ -5,14 +5,13 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.crackshotaddition.weaponappearance.item.`object`.LeftHand
-import kr.sul.crackshotaddition.weaponappearance.item.`object`.WeaponItem
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 
 object WhenToChangeItemDurability: Listener {
-    private val objectSet = setOf(WeaponItem, LeftHand)
+    private val objectSet = setOf(LeftHand)
 
     // 스왑 //
     @EventHandler
