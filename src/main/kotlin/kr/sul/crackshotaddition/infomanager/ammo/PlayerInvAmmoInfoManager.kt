@@ -1,6 +1,6 @@
 package kr.sul.crackshotaddition.infomanager.ammo
 
-import kr.sul.crackshotaddition.events.PlayerInvAmmoAmtChangedEvent
+import kr.sul.crackshotaddition.event.PlayerInvAmmoAmtChangedEvent
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
 import org.bukkit.Bukkit
 import org.bukkit.Material

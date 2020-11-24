@@ -16,7 +16,7 @@ object WeaponSwapSound : Listener {
         if (e.newItemStack.type != Material.AIR) {
             val sound = getSwapSound(e.newItemStack)
             if (previousSwapSound.containsKey(p.uniqueId)) {
-                p.stopSound(previousSwapSound[p.uniqueId])
+                previousSwapSound[p.uniqueId]?.let { p.stopSound(it) }
             }
             p.playSound(p.location, sound, 1f, 1f)
             previousSwapSound[p.uniqueId] = sound

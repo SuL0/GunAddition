@@ -10,6 +10,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
+
 object DebuggingCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (sender !is Player) return false
@@ -48,6 +49,11 @@ object DebuggingCommand : CommandExecutor {
                 sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammoNeeded?.itemInfo}")
                 sendM(sender, "TakeAsMagazine: ${weaponInfo.takeAsMagazine}")
             }
+            "nbtname" -> {
+                val item = sender.inventory.itemInMainHand
+                val weaponInfo = WeaponInfoExtractor(sender, item)
+                sendM(sender, "NBTName: ${weaponInfo.nbtName}")
+            }
             "ammoinfo" -> {
                 val playerInvAmmoInfo = PlayerInvAmmoInfoManager.getInfo(sender)
                 sendM(sender, "")
@@ -57,16 +63,17 @@ object DebuggingCommand : CommandExecutor {
                     sendM(sender, " §7- Usage: ${key.whereToUse}")
                 }
             }
-            "nbtname" -> {
-                val item = sender.inventory.itemInMainHand
-                val weaponInfo = WeaponInfoExtractor(sender, item)
-                sendM(sender, "NBTName: ${weaponInfo.nbtName}")
-            }
             "dur" -> {
                 val offItem = sender.inventory.itemInOffHand
                 val heldItem = sender.inventory.itemInMainHand
                 sendM(sender, "")
                 sendM(sender, "${offItem.durability} / ${heldItem.durability}")
+            }
+
+
+            "uid" -> {
+                val weaponInfo = WeaponInfoExtractor(sender, sender.inventory.itemInMainHand)
+                sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")
             }
         }
         return true

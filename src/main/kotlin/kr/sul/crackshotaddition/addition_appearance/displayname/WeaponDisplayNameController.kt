@@ -1,17 +1,17 @@
-package kr.sul.crackshotaddition.weaponappearance.itemmeta
+package kr.sul.crackshotaddition.addition_appearance.displayname
 
 import com.shampaggon.crackshot.events.WeaponAttachmentToggleEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
-import kr.sul.crackshotaddition.events.PlayerInvAmmoAmtChangedEvent
-import kr.sul.crackshotaddition.events.WeaponSwapCompleteEvent
-import kr.sul.crackshotaddition.events.WeaponSwapEvent
+import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
+import kr.sul.crackshotaddition.event.PlayerInvAmmoAmtChangedEvent
+import kr.sul.crackshotaddition.event.WeaponSwapCompleteEvent
+import kr.sul.crackshotaddition.event.WeaponSwapEvent
 import kr.sul.crackshotaddition.infomanager.ammo.Ammo
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
-import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.extensionfunction.UpdateInventorySlot
 import kr.sul.servercore.extensionfunction.UpdateInventorySlot.updateInventorySlot
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent

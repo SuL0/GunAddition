@@ -1,8 +1,8 @@
-package kr.sul.crackshotaddition.weaponappearance.firstperson
+package kr.sul.crackshotaddition.addition_appearance
 
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
-import kr.sul.crackshotaddition.events.WeaponProjectileTrailEvent
+import kr.sul.crackshotaddition.event.WeaponProjectileTrailEvent
 import me.sul.customentity.entityweapon.event.CEWeaponShootEvent
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
 import org.bukkit.Bukkit
@@ -19,9 +19,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 object WeaponProjectileTrail : Listener {
-    const val DISTORTION_DISTANCE_1 = 40
-    const val DISTORTION_DISTANCE_2 = 80
-    const val FILL_PARTICLE_GAP_PER_LENGTH = 1
+    private const val DISTORTION_DISTANCE_1 = 40
+    private const val DISTORTION_DISTANCE_2 = 80
+    private const val FILL_PARTICLE_GAP_PER_LENGTH = 1
     private val DEFAULT_PARTICLE = Particle.SWEEP_ATTACK // SUSPENDED, WATER_BUBBLE 리팩입히면 괜찮을 듯
 
     @EventHandler
@@ -86,7 +86,7 @@ object WeaponProjectileTrail : Listener {
                     // 총알 파티클 //
                     var locListToSpawnParticle = arrayListOf(projLoc)
                     // 1틱 사이의 공간에 촘촘히 파티클 생성
-                    if (projVector.length() > FILL_PARTICLE_GAP_PER_LENGTH*2) {
+                    if (projVector.length() > FILL_PARTICLE_GAP_PER_LENGTH *2) {
                         val clonedLocForCalc = projLoc.clone()
 
                         val division = projVector.length().toInt() / FILL_PARTICLE_GAP_PER_LENGTH
@@ -122,11 +122,11 @@ object WeaponProjectileTrail : Listener {
     private fun applyDistortion(proj: Entity, firstProjLoc: Location, toRightSideVec_Sections: List<Vector>): Location {
         return when (val disFromFirst = firstProjLoc.distance(proj.location).toInt()) {
             in 0..DISTORTION_DISTANCE_1 -> {
-                val vec = toRightSideVec_Sections[0].clone().multiply((DISTORTION_DISTANCE_1-disFromFirst)/ DISTORTION_DISTANCE_1) // dis가 올라갈수록 0에 가까워짐
+                val vec = toRightSideVec_Sections[0].clone().multiply((DISTORTION_DISTANCE_1 -disFromFirst)/ DISTORTION_DISTANCE_1) // dis가 올라갈수록 0에 가까워짐
                 proj.location.clone().add(toRightSideVec_Sections[2]).add(toRightSideVec_Sections[1]).add(vec)
             }
             in DISTORTION_DISTANCE_1..DISTORTION_DISTANCE_2 -> {
-                val vec = toRightSideVec_Sections[1].clone().multiply((DISTORTION_DISTANCE_2-(disFromFirst-DISTORTION_DISTANCE_1))/ DISTORTION_DISTANCE_2)
+                val vec = toRightSideVec_Sections[1].clone().multiply((DISTORTION_DISTANCE_2 -(disFromFirst- DISTORTION_DISTANCE_1))/ DISTORTION_DISTANCE_2)
                 proj.location.clone().add(toRightSideVec_Sections[2]).add(vec)
             }
             else -> {

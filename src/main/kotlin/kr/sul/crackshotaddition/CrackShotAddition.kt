@@ -6,18 +6,11 @@ import com.shampaggon.crackshot.CSUtility
 import kr.sul.crackshotaddition.addition.CancelWeaponDrop
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
+import kr.sul.crackshotaddition.addition_appearance.*
+import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameController
+import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameFixation
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
-import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponBlockBreakEffect
-import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponCameraRecoil
-import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponMuzzleFlash
-import kr.sul.crackshotaddition.weaponappearance.firstperson.WeaponProjectileTrail
-import kr.sul.crackshotaddition.weaponappearance.item.LeftHandManager
-import kr.sul.crackshotaddition.weaponappearance.item.WhenToChangeItemDurability
-import kr.sul.crackshotaddition.weaponappearance.item.`object`.LeftHand
-import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponDisplayNameController
-import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponDisplayNameFixation
-import kr.sul.crackshotaddition.weaponappearance.itemmeta.WeaponItemFlutterFixation
-import kr.sul.crackshotaddition.weapons.FlameThrower
+import kr.sul.crackshotaddition.weapon.FlameThrower
 import kr.sul.servercore.util.ObjectInitializer
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
@@ -25,9 +18,6 @@ import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.JavaPluginLoader
 import java.io.File
-
-
-
 
 class CrackShotAddition : JavaPlugin {
     constructor() : super() {}
@@ -50,7 +40,6 @@ class CrackShotAddition : JavaPlugin {
     private fun registerClasses() {
         Bukkit.getServer().pluginManager.registerEvents(FlameThrower, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponDisplayNameController, this)
-        Bukkit.getServer().pluginManager.registerEvents(WeaponItemFlutterFixation, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponMuzzleFlash, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapSound, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponBlockBreakEffect, this)
@@ -59,9 +48,8 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoManager, this)
         Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
-        Bukkit.getServer().pluginManager.registerEvents(WhenToChangeItemDurability, this)
-        Bukkit.getServer().pluginManager.registerEvents(LeftHand, this)
-        Bukkit.getServer().pluginManager.registerEvents(LeftHandManager, this)
+        Bukkit.getServer().pluginManager.registerEvents(GunModelingInOffHandMgr, this)
+        Bukkit.getServer().pluginManager.registerEvents(GunModelingMgr, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }

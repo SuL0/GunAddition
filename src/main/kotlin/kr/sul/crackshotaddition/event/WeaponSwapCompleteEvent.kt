@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.events
+package kr.sul.crackshotaddition.event
 
 import org.bukkit.entity.Player
 import org.bukkit.event.Event

@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.weaponappearance.firstperson
+package kr.sul.crackshotaddition.addition_appearance
 
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector

@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.weapons
+package kr.sul.crackshotaddition.weapon
 
 import com.shampaggon.crackshot.events.WeaponHitBlockEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent

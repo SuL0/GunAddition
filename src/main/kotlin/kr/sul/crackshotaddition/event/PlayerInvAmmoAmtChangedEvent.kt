@@ -1,4 +1,4 @@
-package kr.sul.crackshotaddition.events
+package kr.sul.crackshotaddition.event
 
 import kr.sul.crackshotaddition.infomanager.ammo.Ammo
 import org.bukkit.entity.Player
