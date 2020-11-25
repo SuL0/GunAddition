@@ -9,6 +9,8 @@ import kr.sul.crackshotaddition.addition.WeaponSwapSound
 import kr.sul.crackshotaddition.addition_appearance.*
 import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameController
 import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameFixation
+import kr.sul.crackshotaddition.addition_appearance.itemmgr.GunInMainHandFor1P
+import kr.sul.crackshotaddition.addition_appearance.itemmgr.GunInOffHandFor3P
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
 import kr.sul.crackshotaddition.weapon.FlameThrower
 import kr.sul.servercore.util.ObjectInitializer
@@ -48,9 +50,9 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
         Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoManager, this)
         Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
-        Bukkit.getServer().pluginManager.registerEvents(GunModelingInOffHandMgr, this)
-        Bukkit.getServer().pluginManager.registerEvents(GunModelingMgr, this)
+        Bukkit.getServer().pluginManager.registerEvents(GunInMainHandFor1P, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponItemFlutterFixation, this)
+        Bukkit.getServer().pluginManager.registerEvents(GunInOffHandFor3P, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }
