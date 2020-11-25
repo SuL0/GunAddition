@@ -5,10 +5,10 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
-import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.crackshotaddition.event.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.event.WeaponSwapEvent
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
+import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
