@@ -50,6 +50,7 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
         Bukkit.getServer().pluginManager.registerEvents(GunModelingInOffHandMgr, this)
         Bukkit.getServer().pluginManager.registerEvents(GunModelingMgr, this)
+        Bukkit.getServer().pluginManager.registerEvents(WeaponItemFlutterFixation, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }
