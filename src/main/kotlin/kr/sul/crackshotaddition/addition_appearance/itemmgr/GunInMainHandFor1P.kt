@@ -45,7 +45,7 @@ object GunInMainHandFor1P: Listener {
         if (e.isChangedToCrackShotWeapon()) {
             val parentNode = WeaponInfoExtractor(e.player, e.newItemStack).parentNode
             val configExtractor = ConfigExtractor(parentNode)
-            e.player.inventory.itemInMainHand.durability = configExtractor.normalStateDurability
+            e.newItemStack.durability = configExtractor.normalStateDurability
         }
     }
 
@@ -64,6 +64,8 @@ object GunInMainHandFor1P: Listener {
         // 1틱 뒤 반동 되돌리기
         Bukkit.getScheduler().runTaskLater(plugin, {
             val oneTickLaterMainItemParentNode = WeaponInfoExtractor(e.player, e.player.inventory.itemInMainHand).parentNode
+            Bukkit.getServer().broadcastMessage("parentNode: ${e.parentNode}")
+            Bukkit.getServer().broadcastMessage("LaterMainItemParentNode: ${oneTickLaterMainItemParentNode}")
             if (e.parentNode == oneTickLaterMainItemParentNode) {
                 if (CSDirector.isZooming(e.player)) {
                     e.player.inventory.itemInMainHand.durability = configExtractor.zoomInStateDurability
@@ -71,7 +73,7 @@ object GunInMainHandFor1P: Listener {
                     e.player.inventory.itemInMainHand.durability = configExtractor.normalStateDurability
                 }
             }
-        }, 1L)
+        }, 20L)
     }
 
 
