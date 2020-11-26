@@ -30,11 +30,11 @@ object WeaponDisplayNameController : Listener {
         NORMAL, RELOADING, SWAPPING
     }
     private const val AMMO_ICON1 = "§f訢 " // §f 없으면 색 이상해짐
-    private const val MIDDLE_BLANK_LENGTH = 5
+    private const val MIDDLE_BLANK_LENGTH = 3
 
-    private const val INFINITY_DISPLAY = "§dInfinity"
-    private const val RELOADING_DISPLAY = "§cRELOADING.."
-    private const val SWAPPING_DISPLAY = "§cSWAPPING.."
+    private const val INFINITY_DISPLAY = "§d무한"
+    private const val RELOADING_DISPLAY = "§c장전중.."
+    private const val SWAPPING_DISPLAY = "§c교체중.."
 
     // NORMAL //
     @EventHandler(priority = EventPriority.NORMAL) // onSwap보다 선행돼야 함 (Swap에게 덮어 씌워져야하기 때문)
