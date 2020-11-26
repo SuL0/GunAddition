@@ -101,10 +101,10 @@ object WeaponProjectileTrail : Listener {
                         locListToSpawnParticle = locListToSpawnParticle.filter { it.distance(firstProjLoc) > 2 } as ArrayList<Location>
                     }
                     // 파티클 소환
-                    locListToSpawnParticle.forEach {
-                        it.world.spawnParticle(Particle.DRIP_LAVA, nearbyPlayers, if (shooter is Player) shooter else null,
-                                it.x, it.y, it.z, 1, 0.0, 0.0, 0.0, 0.0, null, true) // extra가 속도
-                    }
+//                    locListToSpawnParticle.forEach {
+//                        it.world.spawnParticle(Particle.DRIP_LAVA, nearbyPlayers, if (shooter is Player) shooter else null,
+//                                it.x, it.y, it.z, 1, 0.0, 0.0, 0.0, 0.0, null, true) // extra가 속도
+//                    }
                 }
                 previousProjLoc = applyDistortion(proj, firstProjLoc, toRightSideVec_Sections)  // 왜곡된 이전 위치
             }
