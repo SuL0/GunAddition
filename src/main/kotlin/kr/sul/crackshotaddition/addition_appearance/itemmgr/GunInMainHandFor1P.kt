@@ -8,6 +8,8 @@ import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
+import kr.sul.servercore.extensionfunction.UpdateInventorySlot
+import kr.sul.servercore.extensionfunction.UpdateInventorySlot.updateInventorySlot
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -61,19 +63,21 @@ object GunInMainHandFor1P: Listener {
         } else {
             e.player.inventory.itemInMainHand.durability = configExtractor.shootWhileInNormalStateDurability
         }
+        e.player.updateInventorySlot(UpdateInventorySlot.HandType.MAIN_HAND)
         // 1틱 뒤 반동 되돌리기
         Bukkit.getScheduler().runTaskLater(plugin, {
             val oneTickLaterMainItemParentNode = WeaponInfoExtractor(e.player, e.player.inventory.itemInMainHand).parentNode
-            Bukkit.getServer().broadcastMessage("parentNode: ${e.parentNode}")
-            Bukkit.getServer().broadcastMessage("LaterMainItemParentNode: ${oneTickLaterMainItemParentNode}")
-            if (e.parentNode == oneTickLaterMainItemParentNode) {
+            if (e.parentNode == oneTickLaterMainItemParentNode &&
+                    e.player.inventory.itemInMainHand.durability == configExtractor.shootWhileInZoomInStateDurability ||
+                    e.player.inventory.itemInMainHand.durability == configExtractor.shootWhileInNormalStateDurability ) {
                 if (CSDirector.isZooming(e.player)) {
                     e.player.inventory.itemInMainHand.durability = configExtractor.zoomInStateDurability
                 } else {
                     e.player.inventory.itemInMainHand.durability = configExtractor.normalStateDurability
                 }
+                e.player.updateInventorySlot(UpdateInventorySlot.HandType.MAIN_HAND)
             }
-        }, 20L)
+        }, 1L)
     }
 
 
