@@ -39,7 +39,7 @@ object WeaponSwapDelay : Listener {
         val newlyHeldWeaponInfo = WeaponInfoExtractor(p, e.newItemStack)
 
         // 쿨타임 설정
-        val configSwapDelay = csDirector.getInt("${newlyHeldWeaponInfo.mainFixedParentNode}.Addition.Weapon_Swap_Delay")
+        val configSwapDelay = csDirector.getInt("${newlyHeldWeaponInfo.parentNode}.Addition.Weapon_Swap_Delay")
         Bukkit.getServer().pluginManager.callEvent(WeaponSwapEvent(p, e.newItemStack, configSwapDelay))
         val millisecSwapDelay = System.currentTimeMillis() + configSwapDelay * 50 // 1tick = 1ms * 50
         swapDelayOfPlayers[p.uniqueId] = millisecSwapDelay

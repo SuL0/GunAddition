@@ -46,6 +46,7 @@ object GunInMainHandFor1P: Listener {
         // 총 아이템 들 때 NormalState Durability로 설정
         if (e.isChangedToCrackShotWeapon()) {
             val parentNode = WeaponInfoExtractor(e.player, e.newItemStack).parentNode
+            if (!isConfigEnabled(parentNode)) return
             val configExtractor = ConfigExtractor(parentNode)
             e.newItemStack.durability = configExtractor.normalStateDurability
         }
