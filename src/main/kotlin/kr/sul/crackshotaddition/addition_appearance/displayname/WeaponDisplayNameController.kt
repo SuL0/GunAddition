@@ -16,6 +16,7 @@ import kr.sul.servercore.extensionfunction.UpdateInventorySlot
 import kr.sul.servercore.extensionfunction.UpdateInventorySlot.updateInventorySlot
 import kr.sul.servercore.inventoryevent.InventoryItemChangedEvent
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
+import kr.sul.servercore.util.ItemBuilder.nameIB
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -119,7 +120,6 @@ object WeaponDisplayNameController : Listener {
     private fun makePrettyWeaponDisplayName(p: Player?, displayNameType: DisplayNameType, item: ItemStack) {
         val weaponInfo = WeaponInfoExtractor(p, item)
         if (weaponInfo.bRemoveUnusedTag) return // 수류탄 같은 특수무기를 위함. 이게 없으면 Infinity로 나오기 때문임
-        val meta = item.itemMeta
         val weaponNameBuilder = StringBuilder()
 
         weaponNameBuilder.append(weaponInfo.mainFixedConfigName) // 총기 이름 넣기
@@ -186,9 +186,7 @@ object WeaponDisplayNameController : Listener {
         else if (displayNameType == DisplayNameType.SWAPPING) {
             weaponNameBuilder.append("${AMMO_ICON1}$SWAPPING_DISPLAY")
         }
-        meta.displayName = weaponNameBuilder.toString()
-
-        item.itemMeta = meta
+        item.nameIB(weaponNameBuilder.toString())
         p?.updateInventorySlot(UpdateInventorySlot.HandType.MAIN_HAND)
     }
 

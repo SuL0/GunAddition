@@ -4,6 +4,7 @@ import kr.sul.crackshotaddition.CrackShotAddition
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.servercore.inventoryevent.PlayerHeldItemIsChangedToAnotherEvent
 import kr.sul.servercore.nbtapi.NbtItem
+import kr.sul.servercore.util.ItemBuilder.nameIB
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -31,7 +32,7 @@ object GunInOffHandFor3P : Listener {
     }
     private fun makeGunModelingForOffHand(parentNode: String): ItemStack {
         val item = CrackShotAddition.csMinion.parseItemStack(CrackShotAddition.csDirector.getString("$parentNode.$gunModelingNode.Off_Hand_Item"))
-        item.itemMeta.displayName = ""
+        item.nameIB("§f")
         val nbti = NbtItem(item)
         nbti.tag.setBoolean(NBT_KEY, true)
         nbti.applyToOriginal()
