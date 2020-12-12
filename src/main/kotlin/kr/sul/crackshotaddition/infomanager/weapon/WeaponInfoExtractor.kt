@@ -3,7 +3,7 @@ package kr.sul.crackshotaddition.infomanager.weapon
 import com.shampaggon.crackshot.WeaponNbtParentNodeManager
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csMinion
-import kr.sul.crackshotaddition.infomanager.ammo.Ammo
+import kr.sul.crackshotaddition.infomanager.ammo.AmmoType
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.util.UniqueIdAPI
 import org.bukkit.entity.Player
@@ -69,8 +69,8 @@ class WeaponInfoExtractor(private val p: Player?=null, val item: ItemStack) {
             if (!reloadEnabled) return null;
             csDirector.getReloadAmount(p, parentNode, item)
         }
-    val ammoNeeded: Ammo?
-        get() = run { if (!reloadEnabled) return null;  Ammo.getAmmoNeeded(parentNode) }
+    val ammoTypeNeeded: AmmoType?
+        get() = run { if (!reloadEnabled) return null;  AmmoType.getAmmoNeeded(parentNode) }
     val takeAsMagazine: Boolean?
         get() = run { if (!reloadEnabled) return null;  csDirector.getBoolean("$parentNode.Reload.Take_Ammo_As_Magazine") } // default가 false
 

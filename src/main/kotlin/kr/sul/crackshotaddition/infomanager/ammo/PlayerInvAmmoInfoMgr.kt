@@ -11,7 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
-object PlayerInvAmmoInfoManager : Listener {
+object PlayerInvAmmoInfoMgr : Listener {
     private val playersAmmoInfoMap = hashMapOf<Player, PlayerInvAmmoInfo>()
 
     fun getInfo(p: Player): PlayerInvAmmoInfo {
@@ -25,22 +25,22 @@ object PlayerInvAmmoInfoManager : Listener {
         val p = e.player
         val playerInvAmmoInfo = getInfo(p)
 
-        var amtChangedAmmo: Ammo? = null
-        if (Ammo.of(e.newItemStack) != null && Ammo.isAmmoItem(e.newItemStack)) {
-            val ammo = Ammo.of(e.newItemStack)!!
+        var amtChangedAmmoType: AmmoType? = null
+        if (AmmoType.of(e.newItemStack) != null && AmmoType.isAmmoItem(e.newItemStack)) {
+            val ammo = AmmoType.of(e.newItemStack)!!
 
             val isAmmoChanged = playerInvAmmoInfo.update(p, ammo)  // 총알 보유 개수 업데이트
             if (isAmmoChanged) {
-                amtChangedAmmo = ammo
+                amtChangedAmmoType = ammo
             }
         }
         else if (e.newItemStack.type == Material.AIR) {
-            amtChangedAmmo = playerInvAmmoInfo.updateAll(p)  // 총알 보유 개수 모두 업데이트
+            amtChangedAmmoType = playerInvAmmoInfo.updateAll(p)  // 총알 보유 개수 모두 업데이트
         }
 
         // 총알 보유 개수가 바꼇다면, 이벤트 호출
-        if (amtChangedAmmo != null) {
-            val possessedAmmoAmtUpdatedEvent = PlayerInvAmmoAmtChangedEvent(p, amtChangedAmmo, playerInvAmmoInfo.getPossessedAmmoAmt(amtChangedAmmo))
+        if (amtChangedAmmoType != null) {
+            val possessedAmmoAmtUpdatedEvent = PlayerInvAmmoAmtChangedEvent(p, amtChangedAmmoType, playerInvAmmoInfo.getPossessedAmmoAmt(amtChangedAmmoType))
             Bukkit.getPluginManager().callEvent(possessedAmmoAmtUpdatedEvent)
         }
     }

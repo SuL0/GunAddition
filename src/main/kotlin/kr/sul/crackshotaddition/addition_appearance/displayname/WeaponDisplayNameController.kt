@@ -8,8 +8,8 @@ import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.event.PlayerInvAmmoAmtChangedEvent
 import kr.sul.crackshotaddition.event.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.event.WeaponSwapEvent
-import kr.sul.crackshotaddition.infomanager.ammo.Ammo
-import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoManager
+import kr.sul.crackshotaddition.infomanager.ammo.AmmoType
+import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoMgr
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.extensionfunction.UpdateInventorySlot
@@ -76,7 +76,7 @@ object WeaponDisplayNameController : Listener {
         for (weaponToUpdateDisplay in p.inventory.storageContents
                         .filterNotNull()
                         .filter { CrackShotAdditionAPI.isValidCrackShotWeapon(it) }
-                        .filter { Ammo.getAmmoNeeded(p, it) == e.updatedAmmo }
+                        .filter { AmmoType.getAmmoNeeded(p, it) == e.updatedAmmoType }
                         .filter { !it.itemMeta.displayName.contains(RELOADING_DISPLAY) && !it.itemMeta.displayName.contains(SWAPPING_DISPLAY) }) {
             updateWeaponDisplay(p, DisplayNameType.NORMAL, weaponToUpdateDisplay)
         }
@@ -161,8 +161,8 @@ object WeaponDisplayNameController : Listener {
 
                 // 슬래쉬 와 보유 총알 넣기
                 if (p != null) {
-                    val invAmmoInfo = PlayerInvAmmoInfoManager.getInfo(p)
-                    val reloadableAmmoAmt = weaponInfo.ammoNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(item)!! }
+                    val invAmmoInfo = PlayerInvAmmoInfoMgr.getInfo(p)
+                    val reloadableAmmoAmt = weaponInfo.ammoTypeNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(item)!! }
                     if (reloadableAmmoAmt != null) {
                         weaponNameBuilder.append("§7/")
                         weaponNameBuilder.append(run {
