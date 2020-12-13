@@ -7,6 +7,7 @@ import kr.sul.crackshotaddition.addition.CancelWeaponDrop
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
 import kr.sul.crackshotaddition.addition_appearance.*
+import kr.sul.crackshotaddition.addition_appearance.camera_recoil.WeaponCameraRecoil
 import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameController
 import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameFixation
 import kr.sul.crackshotaddition.addition_appearance.itemmgr.GunInMainHandFor1P
@@ -27,10 +28,10 @@ class CrackShotAddition : JavaPlugin {
 
 
     companion object {
-        lateinit var plugin: Plugin private set
-        val csDirector = Bukkit.getPluginManager().getPlugin("CrackShot") as CSDirector
-        val csUtility = CSUtility()
-        val csMinion: CSMinion = CSMinion.getInstance()
+        internal lateinit var plugin: Plugin private set
+        internal val csDirector = Bukkit.getPluginManager().getPlugin("CrackShot") as CSDirector
+        internal val csUtility = CSUtility()
+        internal val csMinion: CSMinion = CSMinion.getInstance()
     }
 
     override fun onEnable() {
