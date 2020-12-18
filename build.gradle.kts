@@ -39,14 +39,21 @@ spigot {
     }
 }
 
-
 tasks {
     compileJava.get().options.encoding = "UTF-8"
     compileKotlin.get().kotlinOptions.jvmTarget = "1.8"
     compileTestKotlin.get().kotlinOptions.jvmTarget = "1.8"
 
+
+    val copyPlugin = register<Copy>("copyPlugin") {
+        from(files("$pluginStorage/${project.name}_S.jar"))
+        into(file("C:/Users/PHR/Desktop/SERVER2/plugins"))
+    }
+
     jar {
         archiveFileName.set("${project.name}_S.jar")
         destinationDirectory.set(file(pluginStorage))
+
+        finalizedBy(copyPlugin)
     }
 }
