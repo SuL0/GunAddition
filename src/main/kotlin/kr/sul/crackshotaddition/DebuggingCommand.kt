@@ -1,7 +1,6 @@
 package kr.sul.crackshotaddition
 
 import de.tr7zw.nbtapi.NBTItem
-import kr.sul.crackshotaddition.addition_appearance.WeaponCameraRecoil
 import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoMgr
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.servercore.nbtapi.NbtItem
@@ -19,6 +18,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.concurrent.Executors
 
 
 object DebuggingCommand : CommandExecutor {
@@ -111,45 +111,30 @@ object DebuggingCommand : CommandExecutor {
                     }
                 }
 
-//                speedTest("setNBT(NBTAPI)") {
-//                    for (i in 1..repeat) {
-//                        val nbtItem = NBTItem(item)
-//                        nbtItem.setString("$i", "blabla")
-////                        nbtItem.applyNBT(item)
-//                        item.itemMeta = nbtItem.item.itemMeta
-//                    }
-//                }
-//                speedTest("setNBT(NMS-overrideItem)") {
-//                    for (i in 1..repeat) {
-//                        val nmsItem = CraftItemStack.asNMSCopy(item)  // 이건 코스트 낮음
-//                        val tag = if (nmsItem.hasTag()) nmsItem.tag!! else NBTTagCompound()
-//                        tag.setString("$i", "blabla")
-//                        nmsItem.tag = tag
-////                        val modifiedItem = CraftItemStack.asCraftMirror(nmsItem)
-//                        val modifiedItem = CraftItemStack.asBukkitCopy(nmsItem) // 여기서 시간 오래걸림
-////                        item.itemMeta = modifiedItem.itemMeta
-//                        item = modifiedItem
-//                    }
-//                }
-//                speedTest("setNBT(NMS-modifyItemMeta)") {
-//                    for (i in 1..repeat) {
-//                        val nmsItem = CraftItemStack.asNMSCopy(item)  // 이건 코스트 낮음
-//                        val tag = if (nmsItem.hasTag()) nmsItem.tag!! else NBTTagCompound()
-//                        tag.setString("$i", "blabla")
-//                        nmsItem.tag = tag
-////                        val modifiedItem = CraftItemStack.asCraftMirror(nmsItem)
-//                        val modifiedItem = CraftItemStack.asBukkitCopy(nmsItem) // 여기서 시간 오래걸림
-//                        item.itemMeta = modifiedItem.itemMeta
-////                        item = modifiedItem
-//                    }
-//                }
+                Bukkit.broadcastMessage("write test---")
+                speedTest("setNBT(NBTAPI)") {
+                    for (i in 1..repeat) {
+                        val nbtItem = NBTItem(item)
+                        nbtItem.setString("tt", "blabla")
+                        item.itemMeta = nbtItem.item.itemMeta
+                    }
+                }
+                speedTest("setNBT(NMS)") {
+                    for (i in 1..repeat) {
+                        val nbti = NbtItem(item)
+                        nbti.tag.setString("tt", "blabla")
+                        nbti.applyToOriginal()
+                    }
+                }
+
+
+                Bukkit.broadcastMessage("test2--")
                 speedTest("getNBT(NBTAPI)") {
                     for (i in 1..repeat) {
                         val testNbti = NBTItem(item)
                         val dummy = testNbti.getInteger("int")
                     }
                 }
-                Bukkit.broadcastMessage("test2--")
                 speedTest("justGetTag") {
                     for (i in 1..repeat) {
                         val nmsItem = CraftItemStack.asNMSCopy(item)
@@ -183,20 +168,26 @@ object DebuggingCommand : CommandExecutor {
                         val dummy = UniqueIdAPI.getUniqueID(item)
                     }
                 }
-                speedTest("carveUid") {
+            }
+            "threadspeed" -> {
+                val repeat = args[1].toInt()
+                Bukkit.broadcastMessage("--- $repeat 회 수행 ---")
+                speedTest("일반적이게 thread 생성") {
                     for (i in 1..repeat) {
-                        UniqueIdAPI.carveUniqueID(item)
+                        Thread() {
+                            println("thread-1")
+                        }.start()
+                    }
+                }
+                speedTest("스레드 풀 이용aaa") {
+                    val executorService = Executors.newFixedThreadPool(10)
+                    for (i in 1..repeat) {
+                        executorService.submit { println("thread-2"); Thread.currentThread().join() }
                     }
                 }
             }
-            "recoil" -> {
-                val thread = Thread() {
-                    for (i in 1..1000) {
-                        WeaponCameraRecoil.cameraRecoil(sender, 0f, -0.1f)
-                        Thread.sleep(1)
-                    }
-                }
-                thread.start()
+            "msg" -> {
+                sender.sendMessage("hi-1")
             }
         }
         return true

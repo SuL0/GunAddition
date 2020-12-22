@@ -24,7 +24,7 @@ dependencies {
     compileOnly(files("$pluginStorage/CrackShot_S.jar"))
     compileOnly(files("$pluginStorage/CustomEntity_S.jar"))
     compileOnly(files("$pluginStorage/ServerCore_S.jar"))
-    compileOnly(files("$pluginStorage/Dependencies/item-nbt-api-plugin-2.5.0.jar"))
+    compileOnly(files("$pluginStorage/Dependencies/item-nbt-api-plugin-2.6.0.jar"))
 }
 
 spigot {

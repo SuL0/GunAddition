@@ -2,7 +2,6 @@ package kr.sul.crackshotaddition
 
 import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.CSMinion
-import com.shampaggon.crackshot.CSUtility
 import kr.sul.crackshotaddition.addition.CancelWeaponDrop
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
@@ -30,7 +29,6 @@ class CrackShotAddition : JavaPlugin {
     companion object {
         internal lateinit var plugin: Plugin private set
         internal val csDirector = Bukkit.getPluginManager().getPlugin("CrackShot") as CSDirector
-        internal val csUtility = CSUtility()
         internal val csMinion: CSMinion = CSMinion.getInstance()
     }
 

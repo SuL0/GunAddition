@@ -2,8 +2,7 @@ package kr.sul.crackshotaddition.util
 
 import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.CSMinion
-import com.shampaggon.crackshot.CSUtility
-import com.shampaggon.crackshot.WeaponNbtParentNodeManager
+import com.shampaggon.crackshot.WeaponNbtParentNodeMgr
 import kr.sul.crackshotaddition.CrackShotAddition
 import kr.sul.servercore.util.UniqueIdAPI
 import org.bukkit.Material
@@ -14,12 +13,11 @@ import org.bukkit.inventory.ItemStack
 // TODO: ItemStack? 를 ItemStack으로 바꿀까?
 object CrackShotAdditionAPI {
     val csDirector: CSDirector get() = CrackShotAddition.csDirector
-    val csUtility: CSUtility get() = CrackShotAddition.csUtility
     val csMinion: CSMinion get() = CrackShotAddition.csMinion
 
     fun isValidCrackShotWeapon(item: ItemStack): Boolean {
         return item.type != Material.AIR
-                && WeaponNbtParentNodeManager.getWeaponParentNodeFromNbt(item) != null && UniqueIdAPI.hasUniqueID(item)
+                && WeaponNbtParentNodeMgr.getWeaponParentNodeFromNbt(item) != null && UniqueIdAPI.hasUniqueID(item)
     }
 
     // 이걸 유닛 테스트 해보면 될 것 같음
