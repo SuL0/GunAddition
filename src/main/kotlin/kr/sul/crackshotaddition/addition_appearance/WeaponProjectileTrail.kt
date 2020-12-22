@@ -2,7 +2,6 @@ package kr.sul.crackshotaddition.addition_appearance
 
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
-import kr.sul.crackshotaddition.event.WeaponProjectileTrailEvent
 import me.sul.customentity.entityweapon.event.CEWeaponShootEvent
 import net.minecraft.server.v1_12_R1.PacketPlayOutEntityDestroy
 import org.bukkit.Bukkit
@@ -38,10 +37,10 @@ object WeaponProjectileTrail : Listener {
 //		Particle particle = (configProjectileTrailEffect == null) ? DEFAULT_PARTICLE : Particle.valueOf(configProjectileTrailEffect);
 
         // by 플레이어 파티클
-        val weaponProjectileTrailEvent = WeaponProjectileTrailEvent(e.player, e.parentNode, particle)
-        Bukkit.getServer().pluginManager.callEvent(weaponProjectileTrailEvent)
-        particle = weaponProjectileTrailEvent.particle
-        projectileTrail(e.player, e.projectile, particle)
+//        val weaponProjectileTrailEvent = WeaponProjectileTrailEvent(e.player, e.parentNode, particle)
+//        Bukkit.getServer().pluginManager.callEvent(weaponProjectileTrailEvent)
+//        particle = weaponProjectileTrailEvent.particle
+//        projectileTrail(e.player, e.projectile, particle)
     }
 
     private fun projectileTrail(shooter: Entity, proj: Entity, particle: Particle?) {
