@@ -4,12 +4,11 @@ import com.shampaggon.crackshot.events.WeaponAttachmentToggleEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
+import com.shampaggon.crackshot.magazine.MagazineInInv
+import com.shampaggon.crackshot.magazine.MagazineItem
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
-import kr.sul.crackshotaddition.event.PlayerInvAmmoAmtChangedEvent
 import kr.sul.crackshotaddition.event.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.event.WeaponSwapEvent
-import kr.sul.crackshotaddition.infomanager.ammo.AmmoType
-import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoMgr
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import kr.sul.servercore.extensionfunction.UpdateInventorySlot
@@ -70,16 +69,36 @@ object WeaponDisplayNameController : Listener {
         updateWeaponDisplay(e.player, DisplayNameType.NORMAL, e.newItemStack)
     }
 
-    @EventHandler
-    fun onPlayerInvAmmoAmtChanged(e: PlayerInvAmmoAmtChangedEvent) {
+    /* 보유한 Ammo 값 업데이트 */
+    // TODO: 총알 변동들을 0.5초마다 합산해서 업데이트 하도록 수정 (성능 보완하기 위함)
+    // TODO: "ONLY 디스플레이용" 으로 만약 5'56 이란 총알 수를 get했다면, 1틱동안 player meta에 캐시해놓음.
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun onItemChanged(e: InventoryItemChangedEvent) {
         val p = e.player
-        // e.updatedAmmo를 사용하는 총기들 선별 후 Display 업데이트
-        for (weaponToUpdateDisplay in p.inventory.storageContents
-                        .filterNotNull()
-                        .filter { CrackShotAdditionAPI.isValidCrackShotWeapon(it) }
-                        .filter { AmmoType.getAmmoNeeded(p, it) == e.updatedAmmoType }
-                        .filter { !it.itemMeta.displayName.contains(RELOADING_DISPLAY) && !it.itemMeta.displayName.contains(SWAPPING_DISPLAY) }) {
-            updateWeaponDisplay(p, DisplayNameType.NORMAL, weaponToUpdateDisplay)
+        var isFullUpdate: Boolean? = null
+        // 대상 총알을 사용하는 총만 선별 후 Display 업데이트
+        if (MagazineItem.isMagazine(e.newItemStack)) {
+            isFullUpdate = false
+        }
+        // 모든 총들 Display 업데이트
+        else if (e.newItemStack.type == Material.AIR) {
+            isFullUpdate = true
+        }
+
+        // e.newItemStack == 총알 or AIR
+        if (isFullUpdate != null) {
+            for (weaponInInv in p.inventory.storageContents.filterNotNull().filter { CrackShotAdditionAPI.isValidCrackShotWeapon(it) }) {
+                val weaponInfo = WeaponInfoExtractor(p, weaponInInv)
+
+                if (!weaponInInv.itemMeta.displayName.contains(RELOADING_DISPLAY) && !weaponInInv.itemMeta.displayName.contains(SWAPPING_DISPLAY)) {
+                    if (!isFullUpdate) {
+                        if (weaponInfo.ammoEnabled && weaponInfo.ammoUse != MagazineItem(e.newItemStack, p).parentNode) {
+                            continue
+                        }
+                    }
+                    updateWeaponDisplay(p, DisplayNameType.NORMAL, weaponInInv)
+                }
+            }
         }
     }
 
@@ -161,9 +180,9 @@ object WeaponDisplayNameController : Listener {
 
                 // 슬래쉬 와 보유 총알 넣기
                 if (p != null) {
-                    val invAmmoInfo = PlayerInvAmmoInfoMgr.getInfo(p)
-                    val reloadableAmmoAmt = weaponInfo.ammoTypeNeeded?.let { invAmmoInfo.getReloadableAmountPerWeapon(item)!! }
-                    if (reloadableAmmoAmt != null) {
+                    val ammoUse = weaponInfo.ammoUse
+                    if (weaponInfo.ammoEnabled && ammoUse != null) {
+                        val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse)
                         weaponNameBuilder.append("§7/")
                         weaponNameBuilder.append(run {
                             if (reloadableAmmoAmt == 0) {
@@ -172,6 +191,11 @@ object WeaponDisplayNameController : Listener {
                                 "§7$reloadableAmmoAmt"
                             }
                         })
+                    }
+                    // 무한 넣기
+                    else {
+                        weaponNameBuilder.append("§7/")
+                        weaponNameBuilder.append(INFINITY_DISPLAY)
                     }
                 }
             }

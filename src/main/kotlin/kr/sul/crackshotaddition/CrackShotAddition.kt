@@ -11,7 +11,6 @@ import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNam
 import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameFixation
 import kr.sul.crackshotaddition.addition_appearance.itemmgr.GunInMainHandFor1P
 import kr.sul.crackshotaddition.addition_appearance.itemmgr.GunInOffHandFor3P
-import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoMgr
 import kr.sul.crackshotaddition.weapon.FlameThrower
 import kr.sul.servercore.util.ObjectInitializer
 import org.bukkit.Bukkit
@@ -47,7 +46,6 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponProjectileTrail, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponCameraRecoil, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
-        Bukkit.getServer().pluginManager.registerEvents(PlayerInvAmmoInfoMgr, this)
         Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
         Bukkit.getServer().pluginManager.registerEvents(GunInMainHandFor1P, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponItemFlutterFixation, this)
