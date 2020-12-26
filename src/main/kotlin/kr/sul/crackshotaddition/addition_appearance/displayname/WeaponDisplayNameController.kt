@@ -72,7 +72,7 @@ object WeaponDisplayNameController : Listener {
     /* 보유한 Ammo 값 업데이트 */
     // TODO: 총알 변동들을 0.5초마다 합산해서 업데이트 하도록 수정 (성능 보완하기 위함)
     // TODO: "ONLY 디스플레이용" 으로 만약 5'56 이란 총알 수를 get했다면, 1틱동안 player meta에 캐시해놓음.
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOW)
     fun onItemChanged(e: InventoryItemChangedEvent) {
         val p = e.player
         var isFullUpdate: Boolean? = null
@@ -182,7 +182,7 @@ object WeaponDisplayNameController : Listener {
                 if (p != null) {
                     val ammoUse = weaponInfo.ammoUse
                     if (weaponInfo.ammoEnabled && ammoUse != null) {
-                        val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse)
+                        val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse, -1, true)
                         weaponNameBuilder.append("§7/")
                         weaponNameBuilder.append(run {
                             if (reloadableAmmoAmt == 0) {
