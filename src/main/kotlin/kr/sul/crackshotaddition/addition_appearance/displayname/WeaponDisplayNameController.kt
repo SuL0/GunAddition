@@ -70,8 +70,10 @@ object WeaponDisplayNameController : Listener {
     }
 
     /* 보유한 Ammo 값 업데이트 */
-    // TODO: 총알 변동들을 0.5초마다 합산해서 업데이트 하도록 수정 (성능 보완하기 위함)
-    // TODO: "ONLY 디스플레이용" 으로 만약 5'56 이란 총알 수를 get했다면, 1틱동안 player meta에 캐시해놓음.
+    // < 기존 방식이랑 다르게, 총알 장전했음에도 총알 수가 차감되지 않는 버그가 발생하는 이유 >
+    // 기존에는 onItemChanged에서 e.newItemStack이 Ammo라면 무조건 possessedAmmo[p]에서 -1을 시켜주고, updateWeaponDisplay를 진행했음.
+    // 하지만 지금 방식은 onItemChanged에서 인벤에서의 Ammo 수를 세서, updateWeaponDisplay를 진행하는데 이는 문제가 있음.
+    // onItemChanged 이벤트가 실행될 때는 Inv에서 실제로 아이템이 빠져나간 때가 아니기 때문임
     @EventHandler(priority = EventPriority.LOW)
     fun onItemChanged(e: InventoryItemChangedEvent) {
         val p = e.player
@@ -90,13 +92,15 @@ object WeaponDisplayNameController : Listener {
             for (weaponInInv in p.inventory.storageContents.filterNotNull().filter { CrackShotAdditionAPI.isValidCrackShotWeapon(it) }) {
                 val weaponInfo = WeaponInfoExtractor(p, weaponInInv)
 
-                if (!weaponInInv.itemMeta.displayName.contains(RELOADING_DISPLAY) && !weaponInInv.itemMeta.displayName.contains(SWAPPING_DISPLAY)) {
-                    if (!isFullUpdate) {
-                        if (weaponInfo.ammoEnabled && weaponInfo.ammoUse != MagazineItem(e.newItemStack, p).parentNode) {
-                            continue
-                        }
+                if (weaponInfo.ammoEnabled && !weaponInInv.itemMeta.displayName.contains(RELOADING_DISPLAY) && !weaponInInv.itemMeta.displayName.contains(SWAPPING_DISPLAY)) {
+                    // isFullUpdate가 아니면 총기가 이벤트 대상인 총알을 사용하는지 확인
+                    if (!isFullUpdate &&
+                            weaponInfo.ammoUse != MagazineItem(e.newItemStack, p).ammoStoredParentName) {
+                        continue
                     }
-                    updateWeaponDisplay(p, DisplayNameType.NORMAL, weaponInInv)
+                    Bukkit.getScheduler().runTask(plugin) {
+                        updateWeaponDisplay(p, DisplayNameType.NORMAL, weaponInInv)
+                    }
                 }
             }
         }
@@ -182,7 +186,7 @@ object WeaponDisplayNameController : Listener {
                 if (p != null) {
                     val ammoUse = weaponInfo.ammoUse
                     if (weaponInfo.ammoEnabled && ammoUse != null) {
-                        val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse, -1, true)
+                        val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse, -1, false)
                         weaponNameBuilder.append("§7/")
                         weaponNameBuilder.append(run {
                             if (reloadableAmmoAmt == 0) {
