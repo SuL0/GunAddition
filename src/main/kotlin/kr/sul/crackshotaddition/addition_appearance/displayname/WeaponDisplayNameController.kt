@@ -6,6 +6,7 @@ import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponShootEvent
 import com.shampaggon.crackshot.magazine.MagazineInInv
 import com.shampaggon.crackshot.magazine.MagazineItem
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.event.WeaponSwapCompleteEvent
 import kr.sul.crackshotaddition.event.WeaponSwapEvent
@@ -152,34 +153,72 @@ object WeaponDisplayNameController : Listener {
         // NORMAL //
         if (displayNameType == DisplayNameType.NORMAL) {
             if (weaponInfo.reloadEnabled) {
+                // DualWield처럼 보이게끔 Fake
+                // L -> R
+                val leftSideAmmoAmt = weaponInfo.leftSideAmmoAmt / 2
+                val rightSideAmmoAmt = weaponInfo.leftSideAmmoAmt / 2 + weaponInfo.leftSideAmmoAmt % 2
 
-                // 왼쪽 총알 넣기
-                weaponNameBuilder.append(AMMO_ICON1)
-                weaponNameBuilder.append(run {
-                    val name = run {
-                        when (val leftAmmoAmt = weaponInfo.leftAmmoAmt) {
+                if (csDirector.getBoolean(weaponInfo.parentNode + ".Shooting.Dual_Wield")) {
+                    // 왼쪽 총알 넣기
+                    weaponNameBuilder.append(AMMO_ICON1)
+                    weaponNameBuilder.append(run {
+                        when (leftSideAmmoAmt) {
                             Integer.MAX_VALUE -> INFINITY_DISPLAY
-                            0 -> "§c$leftAmmoAmt"
-                            else -> "§f$leftAmmoAmt"
+                            0 -> "§c$leftSideAmmoAmt"
+                            else -> "§f$leftSideAmmoAmt"
                         }
-                    }
-                    if (weaponInfo.hasAttachment() && weaponInfo.selectIsLeft()) insertEmphasis(name) else name
-                })
+                    })
 
-                // | 와 오른쪽 총알 넣기
-                if (weaponInfo.isDualWield() || weaponInfo.hasAttachment()) {
+                    // | 와 오른쪽 총알 넣기
                     weaponNameBuilder.append("§f | ")
                     weaponNameBuilder.append(run {
-                        val name = run {
-                            when (val rightAmmoAmt = weaponInfo.rightAmmoAmt) {
-                                Integer.MAX_VALUE -> INFINITY_DISPLAY
-                                0 -> "§c$rightAmmoAmt"
-                                else -> "§f$rightAmmoAmt"
-                            }
+                        when (rightSideAmmoAmt) {
+                            Integer.MAX_VALUE -> INFINITY_DISPLAY
+                            0 -> "§c$rightSideAmmoAmt"
+                            else -> "§f$rightSideAmmoAmt"
                         }
-                        if (weaponInfo.hasAttachment() && !weaponInfo.selectIsLeft()) insertEmphasis(name) else name
                     })
                     weaponNameBuilder.append("§f ") // 공백 한개
+                }
+
+                // 일반적인 Case (양식 수정하면 위쪽 DualWield(예외) 에 대한 양식도 수정해야 함)
+                else {
+                    // 왼쪽 총알 넣기
+                    weaponNameBuilder.append(AMMO_ICON1)
+                    weaponNameBuilder.append(run {
+                        val name = run {
+                            when (val leftSideAmmoAmt = weaponInfo.leftSideAmmoAmt) {
+                                Integer.MAX_VALUE -> INFINITY_DISPLAY
+                                0 -> "§c$leftSideAmmoAmt"
+                                else -> "§f$leftSideAmmoAmt"
+                            }
+                        }
+                        if (weaponInfo.hasAttachment() && weaponInfo.selectedIsLeft()) {
+                            insertEmphasis(name)
+                        } else {
+                            name
+                        }
+                    })
+
+                    // | 와 오른쪽 총알 넣기
+                    if (weaponInfo.hasAttachment()) {
+                        weaponNameBuilder.append("§f | ")
+                        weaponNameBuilder.append(run {
+                            val name = run {
+                                when (val rightSideAmmoAmt = weaponInfo.rightSideAmmoAmt) {
+                                    Integer.MAX_VALUE -> INFINITY_DISPLAY
+                                    0 -> "§c$rightSideAmmoAmt"
+                                    else -> "§f$rightSideAmmoAmt"
+                                }
+                            }
+                            if (weaponInfo.hasAttachment() && !weaponInfo.selectedIsLeft()) {
+                                insertEmphasis(name)
+                            } else {
+                                name
+                            }
+                        })
+                        weaponNameBuilder.append("§f ") // 공백 한개
+                    }
                 }
 
                 // 슬래쉬 와 보유 총알 넣기

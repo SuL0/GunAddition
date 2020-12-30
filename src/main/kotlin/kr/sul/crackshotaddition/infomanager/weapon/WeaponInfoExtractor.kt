@@ -50,16 +50,16 @@ class WeaponInfoExtractor(private val p: Player?=null, val item: ItemStack) {
     val reloadEnabled: Boolean
         get() = csDirector.getBoolean("$parentNode.Reload.Enable")  // default가 false
     // reloadEnabled가 false라면, 총알수는 "null"이 아닌 "Infinity"라는 것을 명심
-    val leftAmmoAmt: Int
+    val leftSideAmmoAmt: Int
         get() = run {
-            if (isDualWield() || hasAttachment())
+            if (hasAttachment())
                 csDirector.grabDualAmmo(item, parentNode)[0]
             else
                 csDirector.getAmmoBetweenBrackets(p, parentNode, item)
         }
-    val rightAmmoAmt: Int?
+    val rightSideAmmoAmt: Int?
         get() = run {
-            if (isDualWield() || hasAttachment())
+            if (hasAttachment())
                 return csDirector.grabDualAmmo(item, parentNode)[1]
             return null
         }
@@ -77,13 +77,10 @@ class WeaponInfoExtractor(private val p: Player?=null, val item: ItemStack) {
         get() = csMinion.getAmmoUsedForGun(parentNode)
 
     // 기타 //
-    fun isDualWield(): Boolean {
-        return csDirector.isDualWield(p, parentNode, item) // 여기서 총알 비교 추가 ㄴㄴ. initializeLeftAmmo에서 오류남
-    }
     fun hasAttachment(): Boolean {
         return csDirector.getString("$mainFixedParentNode.Item_Information.Attachments.Type") != null  // return main or accessory
     }
-    fun selectIsLeft(): Boolean {
+    fun selectedIsLeft(): Boolean {
         if (csMinion.getWeaponNbtName(item).contains("▶")) return false
         return true
     }
