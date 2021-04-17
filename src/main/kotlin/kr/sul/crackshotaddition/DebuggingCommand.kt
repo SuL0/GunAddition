@@ -1,7 +1,8 @@
 package kr.sul.crackshotaddition
 
+import com.shampaggon.crackshot.magazine.MagazineInInv
 import de.tr7zw.nbtapi.NBTItem
-import kr.sul.crackshotaddition.infomanager.ammo.PlayerInvAmmoInfoMgr
+import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
 import kr.sul.servercore.nbtapi.NbtItem
 import kr.sul.servercore.util.ItemBuilder.loreIB
@@ -10,6 +11,7 @@ import kr.sul.servercore.util.UniqueIdAPI
 import net.minecraft.server.v1_12_R1.NBTTagCompound
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Chest
 import org.bukkit.command.Command
@@ -17,11 +19,14 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
+import org.bukkit.metadata.FixedMetadataValue
 import java.util.concurrent.Executors
 
 
 object DebuggingCommand : CommandExecutor {
+    var location : Location? = null
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (sender !is Player) return false
         if (args.isEmpty()) return false
@@ -53,25 +58,14 @@ object DebuggingCommand : CommandExecutor {
                 sendM(sender, "ConfigName: ${weaponInfo.configName}")
                 sendM(sender, "UniqueId: ${weaponInfo.uniqueId}")
                 sendM(sender, "ReloadEnabled: ${weaponInfo.reloadEnabled}")
-                sendM(sender, "LeftAmmoAmount: ${weaponInfo.leftAmmoAmt}")
-                sendM(sender, "RightAmmoAmount: ${weaponInfo.rightAmmoAmt}")
+                sendM(sender, "LeftAmmoAmount: ${weaponInfo.leftSideAmmoAmt}")
+                sendM(sender, "RightAmmoAmount: ${weaponInfo.rightSideAmmoAmt}")
                 sendM(sender, "ReloadAmmoAmount: ${weaponInfo.reloadCapacity}")
-                sendM(sender, "AmmoItemMaterial: ${weaponInfo.ammoTypeNeeded?.itemInfo}")
-                sendM(sender, "TakeAsMagazine: ${weaponInfo.takeAsMagazine}")
             }
             "nbtname" -> {
                 val item = sender.inventory.itemInMainHand
                 val weaponInfo = WeaponInfoExtractor(sender, item)
                 sendM(sender, "NBTName: ${weaponInfo.nbtName}")
-            }
-            "ammoinfo" -> {
-                val playerInvAmmoInfo = PlayerInvAmmoInfoMgr.getInfo(sender)
-                sendM(sender, "")
-                sendM(sender, "<AmmoInfo>")
-                for ((key, value) in playerInvAmmoInfo.allOfPossessedAmmoAmt) {
-                    sendM(sender, "$key : $value")
-                    sendM(sender, " §7- Usage: ${key.whereToUse}")
-                }
             }
             "dur" -> {
                 val offItem = sender.inventory.itemInOffHand
@@ -83,7 +77,7 @@ object DebuggingCommand : CommandExecutor {
             // csa nbtspeed <테스트 회수>
             "nbtspeed" -> {
                 val item = ItemStack(Material.DIAMOND_AXE).nameIB("NbtSpeed 테스트용")
-                        .loreIB("탄알 수 <10>", "§숨§겨§진§문§자§숨§겨§진§문§자§숨§겨§진§문§자")
+                        .loreIB(listOf("탄알 수 <10>", "§숨§겨§진§문§자§숨§겨§진§문§자§숨§겨§진§문§자"))
                 val tempNbti = NbtItem(item)
                 tempNbti.tag.setInt("int", 9)
                 tempNbti.tag.setString("str", "ss")
@@ -154,6 +148,49 @@ object DebuggingCommand : CommandExecutor {
                     }
                 }
             }
+
+            // MetaData vs HashMap  -> 100,000 [avg 120 : 40]
+            "metaspeed" -> {
+                val repeat = args[1].toInt()
+                Bukkit.broadcastMessage("--- $repeat 회 수행 ---")
+                // meta
+                speedTest("meta-write") {
+                    for (i in 1..repeat) {
+                        sender.setMetadata("$i", FixedMetadataValue(plugin, i))
+                    }
+                }
+                speedTest("meta-read") {
+                    for (i in 1..repeat) {
+                        val dummy = sender.getMetadata("$i")[0].asInt()
+                    }
+                }
+                val map = hashMapOf<String, Int>()
+
+                // map
+                speedTest("map-write") {
+                    for (i in 1..repeat) {
+                        map["$i"] = i
+                    }
+                }
+                speedTest("map-read") {
+                    for (i in 1..repeat) {
+                        val dummy = map["$  i"]
+                    }
+                }
+
+                // TEMP: MagazineInInv
+                speedTest("Magazine Read") {
+                    for (i in 1..repeat) {
+                        val dummy = MagazineInInv.getAmmoAmt(sender, "5'56")
+                    }
+                }
+
+                speedTest("Magazine Read-UseCache") {
+                    for (i in 1..repeat) {
+                        val dummy = MagazineInInv.getAmmoAmt(sender, "5'56", -1, true)
+                    }
+                }
+            }
             "uidspeed" -> {
                 val item = sender.inventory.itemInMainHand
                 val repeat = args[1].toInt()
@@ -186,8 +223,28 @@ object DebuggingCommand : CommandExecutor {
                     }
                 }
             }
-            "msg" -> {
-                sender.sendMessage("hi-1")
+            "crafting" -> {
+                sender.openWorkbench(null, true)
+                if (sender.openInventory.topInventory.type == InventoryType.WORKBENCH) {
+                    sender.openInventory.topInventory.setItem(2, ItemStack(Material.DIAMOND))
+                    sender.openInventory.topInventory.setItem(5, ItemStack(Material.DIAMOND))
+                    sender.openInventory.topInventory.setItem(8, ItemStack(Material.STICK))
+                }
+            }
+
+            "wrapcost" -> {
+                val repeat = args[1].toInt()
+                val gun = sender.inventory.itemInMainHand
+                speedTest("use wrapper class") {
+                    for (i in 1..repeat) {
+                        val uniqueId = WeaponInfoExtractor(sender, gun).configName
+                    }
+                }
+                speedTest("not use wrapper class") {
+                    for (i in 1..repeat) {
+                        val uniqueId = UniqueIdAPI.getUniqueID(gun)
+                    }
+                }
             }
         }
         return true
