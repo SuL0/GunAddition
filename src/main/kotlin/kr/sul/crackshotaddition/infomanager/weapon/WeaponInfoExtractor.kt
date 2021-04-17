@@ -21,7 +21,7 @@ class WeaponInfoExtractor(private val p: Player?=null, val item: ItemStack) {
 
 
     // 기본적인 정보 //
-    // 웬만하면 parentNode 쓰고, mainFixedParentNode는 Addition: 의 기능들, 즉 메인 악세 상관없이 적용되는 기능에만  사용
+    // 웬만하면 parentNode 쓰고, mainFixedParentNode는 Addition: 의 기능들, 즉 메인 악세 상관없이 적용되는 기능에만 사용
     val mainFixedParentNode: String = WeaponNbtParentNodeMgr.getWeaponParentNodeFromNbt(item)!!
     // parentNode의 run {} 안에서 parentNode(재귀) 를 사용하지 않도록 주의
     val parentNode: String

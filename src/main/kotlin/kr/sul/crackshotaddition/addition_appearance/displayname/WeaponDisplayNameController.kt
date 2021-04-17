@@ -33,6 +33,7 @@ object WeaponDisplayNameController : Listener {
     private const val AMMO_ICON1 = "§f訢 " // §f 없으면 색 이상해짐
     private const val MIDDLE_BLANK_LENGTH = 3
 
+    private const val AMMO_NOT_ASSIGNED_DISPLAY = "§4X"  // Ammo는 Enabled 인데, Ammo_Use가 지정되지 않은 경우
     private const val INFINITY_DISPLAY = "§d무한"
     private const val RELOADING_DISPLAY = "§c장전중.."
     private const val SWAPPING_DISPLAY = "§c교체중.."
@@ -70,7 +71,7 @@ object WeaponDisplayNameController : Listener {
         updateWeaponDisplay(e.player, DisplayNameType.NORMAL, e.newItemStack)
     }
 
-    /* 보유한 Ammo 값 업데이트 */
+    /* 보유한 Ammo 값 업데이트 (30 / -> 180 <-)*/
     // < 기존 방식이랑 다르게, 총알 장전했음에도 총알 수가 차감되지 않는 버그가 발생하는 이유 >
     // 기존에는 onItemChanged에서 e.newItemStack이 Ammo라면 무조건 possessedAmmo[p]에서 -1을 시켜주고, updateWeaponDisplay를 진행했음.
     // 하지만 지금 방식은 onItemChanged에서 인벤에서의 Ammo 수를 세서, updateWeaponDisplay를 진행하는데 이는 문제가 있음.
@@ -79,11 +80,11 @@ object WeaponDisplayNameController : Listener {
     fun onItemChanged(e: InventoryItemChangedEvent) {
         val p = e.player
         var isFullUpdate: Boolean? = null
-        // 대상 총알을 사용하는 총만 선별 후 Display 업데이트
+        // isFullUpdate = false: 대상 총알을 사용하는 총만 선별 후 Display 업데이트
         if (MagazineItem.isMagazine(e.newItemStack)) {
             isFullUpdate = false
         }
-        // 모든 총들 Display 업데이트
+        // isFullUpdate = true: 모든 총들 Display 업데이트
         else if (e.newItemStack.type == Material.AIR) {
             isFullUpdate = true
         }
@@ -93,12 +94,15 @@ object WeaponDisplayNameController : Listener {
             for (weaponInInv in p.inventory.storageContents.filterNotNull().filter { CrackShotAdditionAPI.isValidCrackShotWeapon(it) }) {
                 val weaponInfo = WeaponInfoExtractor(p, weaponInInv)
 
-                if (weaponInfo.ammoEnabled && !weaponInInv.itemMeta.displayName.contains(RELOADING_DISPLAY) && !weaponInInv.itemMeta.displayName.contains(SWAPPING_DISPLAY)) {
-                    // isFullUpdate가 아니면 총기가 이벤트 대상인 총알을 사용하는지 확인
+                if (weaponInfo.ammoEnabled && weaponInfo.ammoUse != null
+                            && !weaponInInv.itemMeta.displayName.contains(RELOADING_DISPLAY)
+                            && !weaponInInv.itemMeta.displayName.contains(SWAPPING_DISPLAY)) {
+                    // isFullUpdate가 false이면, 이벤트 대상이 되는 총알을 쓰는 총만 DisplayName 업데이트
                     if (!isFullUpdate &&
                             weaponInfo.ammoUse != MagazineItem(e.newItemStack, p).ammoStoredParentName) {
                         continue
                     }
+                    // ?: 현재 시점에서 아이템이 이미 빠졌지 않나?
                     Bukkit.getScheduler().runTask(plugin) {
                         updateWeaponDisplay(p, DisplayNameType.NORMAL, weaponInInv)
                     }
@@ -223,10 +227,10 @@ object WeaponDisplayNameController : Listener {
 
                 // 슬래쉬 와 보유 총알 넣기
                 if (p != null) {
+                    weaponNameBuilder.append("§7/")
                     val ammoUse = weaponInfo.ammoUse
                     if (weaponInfo.ammoEnabled && ammoUse != null) {
                         val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse, -1, false)
-                        weaponNameBuilder.append("§7/")
                         weaponNameBuilder.append(run {
                             if (reloadableAmmoAmt == 0) {
                                 "§40"
@@ -236,11 +240,19 @@ object WeaponDisplayNameController : Listener {
                         })
                     }
                     // 무한 넣기
-                    else {
-                        weaponNameBuilder.append("§7/")
+                    else if (!weaponInfo.ammoEnabled) {
                         weaponNameBuilder.append(INFINITY_DISPLAY)
                     }
+                    // Ammo는 Enabled 인데, Ammo_Use가 지정되지 않은 경우 (탄창 한 번 비우면 장전 불가)
+                    else {
+                        weaponNameBuilder.append(AMMO_NOT_ASSIGNED_DISPLAY)
+                    }
                 }
+            }
+
+            // Reload가 false 인 경우(총알 개념 X) -> 무한
+            else {
+                weaponNameBuilder.append(INFINITY_DISPLAY)
             }
         }
 
@@ -258,6 +270,7 @@ object WeaponDisplayNameController : Listener {
     }
 
 
+    // 총기 부착물이 있을 때, 현재 선택된 것이 왼쪽인지 오른쪽인지 알려주는 용도
     private fun insertEmphasis(str: String): String {
         val stringBuffer = StringBuffer(str)
         stringBuffer.insert(2, "§n")
