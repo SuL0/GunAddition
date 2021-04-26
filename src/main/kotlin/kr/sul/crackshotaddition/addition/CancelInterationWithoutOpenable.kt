@@ -4,6 +4,7 @@ import kr.sul.crackshotaddition.util.CrackShotAdditionAPI
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.material.Openable
@@ -24,8 +25,9 @@ object CancelInterationWithoutOpenable: Listener {
     @EventHandler(priority = EventPriority.LOW)
     fun onInteractBlockWithGun(e: PlayerInteractEvent) {
         if (e.isCancelled) return
-        if (CrackShotAdditionAPI.isValidCrackShotWeapon(e.player.inventory.itemInMainHand)) {
-            // Openable(e.g. Door, Trapdoor..) 이 아니면 Interact 모두 취소 (e.g. 땅갈기, 징징이 말걸기)
+        if (e.action == Action.RIGHT_CLICK_BLOCK
+                    && CrackShotAdditionAPI.isValidCrackShotWeapon(e.player.inventory.itemInMainHand)) {
+            // Openable(e.g. Door, Trapdoor..) 이 아니면 Interact 모두 취소 (e.g. 땅갈기)
             if (e.clickedBlock?.state?.data !is Openable) {
                 e.isCancelled = true
             }
