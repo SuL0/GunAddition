@@ -1,17 +1,6 @@
 package kr.sul.crackshotaddition.addition
 
-import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
-import kr.sul.crackshotaddition.util.CrackShotAdditionAPI.csDirector
-import kr.sul.crackshotaddition.util.CrackShotAdditionAPI.isValidCrackShotWeapon
-import org.bukkit.Bukkit
-import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.metadata.FixedMetadataValue
-
+/*
 object CancelWeaponDrop: Listener {
     @EventHandler
     fun onInventoryClick(e: InventoryClickEvent) {
@@ -33,4 +22,4 @@ object CancelWeaponDrop: Listener {
             e.isCancelled = true
         }
     }
-}
+}*/
