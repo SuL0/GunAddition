@@ -2,6 +2,7 @@ package kr.sul.crackshotaddition
 
 import com.shampaggon.crackshot.CSDirector
 import com.shampaggon.crackshot.CSMinion
+import kr.sul.crackshotaddition.addition.CancelInterationWithoutOpenable
 import kr.sul.crackshotaddition.addition.CancelWeaponDrop
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
@@ -51,6 +52,7 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponItemFlutterFixation, this)
         Bukkit.getServer().pluginManager.registerEvents(GunInOffHandFor3P, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponCartridgeCase, this)
+        Bukkit.getServer().pluginManager.registerEvents(CancelInterationWithoutOpenable, this)
         ObjectInitializer.forceInit(WeaponDisplayNameFixation::class.java)
     }
 }
