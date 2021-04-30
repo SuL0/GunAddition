@@ -178,16 +178,10 @@ object DebuggingCommand : CommandExecutor {
                     }
                 }
 
-                // TEMP: MagazineInInv
+                // MagazineInInv
                 speedTest("Magazine Read") {
                     for (i in 1..repeat) {
                         val dummy = MagazineInInv.getAmmoAmt(sender, "5'56")
-                    }
-                }
-
-                speedTest("Magazine Read-UseCache") {
-                    for (i in 1..repeat) {
-                        val dummy = MagazineInInv.getAmmoAmt(sender, "5'56", -1, true)
                     }
                 }
             }
@@ -232,6 +226,7 @@ object DebuggingCommand : CommandExecutor {
                 }
             }
 
+            // 3배 차이
             "wrapcost" -> {
                 val repeat = args[1].toInt()
                 val gun = sender.inventory.itemInMainHand
@@ -256,6 +251,7 @@ object DebuggingCommand : CommandExecutor {
 
     private fun speedTest(taskName: String, runnable: Runnable) {
         val time = System.currentTimeMillis()
+        val nanoTime = System.nanoTime()
         runnable.run()
         var modifiedTaskName = taskName
         if (taskName.length < 15) {
@@ -263,6 +259,6 @@ object DebuggingCommand : CommandExecutor {
                 modifiedTaskName += " "
             }
         }
-        Bukkit.broadcastMessage("§7$modifiedTaskName §f: ${System.currentTimeMillis() - time}ms [${(System.currentTimeMillis() - time) / 1000}s]")
+        Bukkit.broadcastMessage("§7$modifiedTaskName §f: ${System.currentTimeMillis() - time}ms [${(System.currentTimeMillis() - time) / 1000}s]  §e${(System.nanoTime() - nanoTime)/1000}us")  // us : 마이크로초
     }
 }
