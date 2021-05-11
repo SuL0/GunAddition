@@ -1,10 +1,10 @@
 package kr.sul.crackshotaddition.addition_appearance.itemmgr
 
 import com.shampaggon.crackshot.CSDirector
+import com.shampaggon.crackshot.events.WeaponPreShootEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import com.shampaggon.crackshot.events.WeaponScopeEvent
-import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import kr.sul.crackshotaddition.infomanager.weapon.WeaponInfoExtractor
@@ -52,8 +52,8 @@ object GunInMainHandFor1P: Listener {
         }
     }
 
-    @EventHandler
-    fun onShoot(e: WeaponShootEvent) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onGunFire(e: WeaponPreShootEvent) {
         if (!isConfigEnabled(e.parentNode)) return
         if (WeaponInfoExtractor(e.player, e.player.inventory.itemInMainHand).parentNode != e.parentNode) throw Exception("$e - event의 대상이 되는 아이템이 예상(heldItem)과 다름")
         val configExtractor = ConfigExtractor(e.parentNode)

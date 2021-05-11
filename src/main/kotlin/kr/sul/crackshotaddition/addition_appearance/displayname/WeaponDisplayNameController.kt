@@ -1,9 +1,9 @@
 package kr.sul.crackshotaddition.addition_appearance.displayname
 
 import com.shampaggon.crackshot.events.WeaponAttachmentToggleEvent
+import com.shampaggon.crackshot.events.WeaponPreShootEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
-import com.shampaggon.crackshot.events.WeaponShootEvent
 import com.shampaggon.crackshot.magazine.MagazineInInv
 import com.shampaggon.crackshot.magazine.MagazineItem
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
@@ -46,8 +46,8 @@ object WeaponDisplayNameController : Listener {
         }
     }
 
-    @EventHandler
-    fun onShoot(e: WeaponShootEvent) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onGunFire(e: WeaponPreShootEvent) {
         if (e.player.inventory.itemInMainHand.type == Material.AIR) return // 소모성 아이템을 사용했을 때
         updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
     }
@@ -230,7 +230,7 @@ object WeaponDisplayNameController : Listener {
                     weaponNameBuilder.append("§7/")
                     val ammoUse = weaponInfo.ammoUse
                     if (weaponInfo.ammoEnabled && ammoUse != null) {
-                        val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse, -1, false)
+                        val reloadableAmmoAmt = MagazineInInv.getAmmoAmt(p, ammoUse, -1)
                         weaponNameBuilder.append(run {
                             if (reloadableAmmoAmt == 0) {
                                 "§40"

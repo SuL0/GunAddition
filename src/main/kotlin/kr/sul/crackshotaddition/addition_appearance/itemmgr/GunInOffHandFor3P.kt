@@ -16,6 +16,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
 
+// LeftHand 아이템을 뺄 수 있는 버그가 있었음. 나중에 쓰게되면 확인 후 고치기
+// TODO: GunItem_Modeling_Addition에서 Off_Hand_Item을 선택사항으로 변경
 object GunInOffHandFor3P : Listener {
     private const val gunModelingNode = "Item_Information.GunItem_Modeling_Addition"
     private fun isConfigEnabled(parentNode: String): Boolean { return CrackShotAddition.csDirector.getBoolean("$parentNode.$gunModelingNode.Enable") }

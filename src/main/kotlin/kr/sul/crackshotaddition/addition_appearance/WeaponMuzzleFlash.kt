@@ -1,10 +1,11 @@
 package kr.sul.crackshotaddition.addition_appearance
 
-import com.shampaggon.crackshot.events.WeaponShootEvent
+import com.shampaggon.crackshot.events.WeaponPreShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.csDirector
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.util.Vector
 import kotlin.math.abs
@@ -17,8 +18,8 @@ object WeaponMuzzleFlash : Listener {
     private const val RIGHT = 90
     private const val LEFT = -90
 
-    @EventHandler
-    fun onShoot(e: WeaponShootEvent) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun onGunFire(e: WeaponPreShootEvent) {
         val bMuzzleflash = csDirector.getBoolean(e.parentNode + ".Addition.Muzzle_Flash.Enable")
         if (bMuzzleflash) {
             val multiplyToRightSideUnitVec = csDirector.getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToRightSideUnitVec")
