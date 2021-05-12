@@ -52,8 +52,10 @@ object GunInMainHandFor1P: Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGH)
     fun onGunFire(e: WeaponPreShootEvent) {
+        if (e.isCancelled) return
+
         if (!isConfigEnabled(e.parentNode)) return
         if (WeaponInfoExtractor(e.player, e.player.inventory.itemInMainHand).parentNode != e.parentNode) throw Exception("$e - event의 대상이 되는 아이템이 예상(heldItem)과 다름")
         val configExtractor = ConfigExtractor(e.parentNode)

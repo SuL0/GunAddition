@@ -1,7 +1,6 @@
 package kr.sul.crackshotaddition.addition_appearance
 
 import com.shampaggon.crackshot.events.WeaponPreShootEvent
-import com.shampaggon.crackshot.events.WeaponShootEvent
 import kr.sul.crackshotaddition.CrackShotAddition.Companion.plugin
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -20,8 +19,10 @@ object WeaponCartridgeCase : Listener {
     private const val RIGHT = 90
     private const val LEFT = -90
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGH)
     fun onGunFire(e: WeaponPreShootEvent) {
+        if (e.isCancelled) return
+
         val p = e.player
         val playerYaw = (p.location.yaw + 90.0f + RIGHT) * Math.PI / 180.0 // toRadian
         val toRightSideVec = Vector(cos(playerYaw) * 0.3, -0.55, sin(playerYaw) * 0.3)

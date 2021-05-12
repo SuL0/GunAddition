@@ -18,8 +18,10 @@ object WeaponMuzzleFlash : Listener {
     private const val RIGHT = 90
     private const val LEFT = -90
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGH)
     fun onGunFire(e: WeaponPreShootEvent) {
+        if (e.isCancelled) return
+
         val bMuzzleflash = csDirector.getBoolean(e.parentNode + ".Addition.Muzzle_Flash.Enable")
         if (bMuzzleflash) {
             val multiplyToRightSideUnitVec = csDirector.getDouble(e.parentNode + ".Addition.Muzzle_Flash.MultiplyToRightSideUnitVec")

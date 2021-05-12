@@ -46,8 +46,10 @@ object WeaponDisplayNameController : Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGH)
     fun onGunFire(e: WeaponPreShootEvent) {
+        if (e.isCancelled) return
+
         if (e.player.inventory.itemInMainHand.type == Material.AIR) return // 소모성 아이템을 사용했을 때
         updateHeldWeaponDisplay(e.player, DisplayNameType.NORMAL)
     }
