@@ -14,7 +14,7 @@ class RecoilPlayer(private val p: Player) {
 //        val yaw = CrackShotAddition.csDirector.getDouble("$parentNode.Addition.Camera_Recoil.Yaw").toFloat()  // 가로
 //        val pitch = CrackShotAddition.csDirector.getDouble("$parentNode.Addition.Camera_Recoil.Pitch").toFloat()  // 세로. Pitch에 있는 P의 작대기를 이용해서 암기 ㄱ
         val yaw = 0F
-        val pitch = -15F
+        val pitch = -1.5F
 
         if (yaw != 0F || pitch != 0F) {
             if (random.nextFloat() <= 0.2) {  // 반동이 향하는 방향 바꾸기
@@ -30,48 +30,101 @@ class RecoilPlayer(private val p: Player) {
             }
 
 
-            var leftCnt = 4
-            Timer().schedule(object: TimerTask() {   // TODO: 샷건, 스나같은 단발총으로 일단 테스트
-                override fun run() {
-                    val pitchToApply = when (leftCnt) {
-                        1 -> pitch*0.4F
-                        2 -> pitch*0.35F
-                        3 -> pitch*0.15F
-                        4 -> pitch*0.1F
-                        else -> throw Exception("$leftCnt")
-                    }
-                    if (--leftCnt > 0) {
+            if (parentNode == "WWW") {
+                p.sendMessage("원래 의도")
+                var leftCnt = 4
+                Timer().schedule(object: TimerTask() {   // TODO: 샷건, 스나같은 단발총으로 일단 테스트
+                    override fun run() {
+                        if (leftCnt <= 0) {
+                            cancel()  // 스케줄러 취소
+                            recoveryRecoil(parentNode)  // 반동 회복으로
+                        }
+
+                        val pitchToApply = when (leftCnt) {
+                            4 -> pitch*0.4F
+                            3 -> pitch*0.35F
+                            2 -> pitch*0.15F
+                            1 -> pitch*0.1F
+                            else -> throw Exception("$leftCnt")
+                        }
                         cameraRecoil(p, yaw, pitchToApply)  // TODO: 원활한 테스트를 위해, yaw는 일단 배제
-                    } else {
-                        cancel()  // 스케줄러 취소
-                        recoveryRecoil()  // 반동 회복으로
+
+                        leftCnt--
                     }
-                }
-            }, 1L, PERIOD)
+                }, 1L, PERIOD)
+            }
+
+
+            else {
+                p.sendMessage("기존 컨펌")
+                var leftCnt = 4
+                Timer().schedule(object: TimerTask() {   // TODO: 샷건, 스나같은 단발총으로 일단 테스트
+                    override fun run() {
+                        if (leftCnt <= 0) {
+                            cancel()  // 스케줄러 취소
+                            recoveryRecoil(parentNode)  // 반동 회복으로
+                        }
+
+                        val pitchToApply = when (leftCnt) {
+                            1 -> pitch*0.4F
+                            2 -> pitch*0.35F
+                            3 -> pitch*0.15F
+                            4 -> pitch*0.1F
+                            else -> throw Exception("$leftCnt")
+                        }
+                        cameraRecoil(p, yaw, pitchToApply)  // TODO: 원활한 테스트를 위해, yaw는 일단 배제
+
+                        leftCnt--
+                    }
+                }, 1L, PERIOD)
+            }
         }
     }
 
-    private fun recoveryRecoil() {
+    private fun recoveryRecoil(parentNode: String) {
         if (pitchDistanceBetweenInitial != 0F) {
             val pitch = pitchDistanceBetweenInitial * -1F
             pitchDistanceBetweenInitial = 0F
-            var leftCnt = 10
-            Timer().schedule(object: TimerTask() {
-                override fun run() {
-                    val pitchToApply = run {
-                        if (leftCnt > 4) {
-                            pitch*0.04F
+
+            if (parentNode == "WWW") {
+                var leftCnt = 10
+                Timer().schedule(object: TimerTask() {
+                    override fun run() {
+                        val pitchToApply = run {
+                            if (leftCnt > 4) {
+                                pitch*0.04F
+                            } else {
+                                pitch*0.02F
+                            }
+                        }
+                        if (--leftCnt > 0) {
+                            cameraRecoil(p, 0F, pitchToApply)  // TODO: 원활한 테스트를 위해, yaw는 일단 배제
                         } else {
-                            pitch*0.02F
+                            cancel()  // 스케줄러 취소
                         }
                     }
-                    if (--leftCnt > 0) {
-                        cameraRecoil(p, 0F, pitchToApply)  // TODO: 원활한 테스트를 위해, yaw는 일단 배제
-                    } else {
-                        cancel()  // 스케줄러 취소
+                }, PERIOD*3, PERIOD*2)
+            }
+
+            else {
+                var leftCnt = 10
+                Timer().schedule(object: TimerTask() {
+                    override fun run() {
+                        val pitchToApply = run {
+                            if (leftCnt > 4) {
+                                pitch*0.04F
+                            } else {
+                                pitch*0.02F
+                            }
+                        }
+                        if (--leftCnt > 0) {
+                            cameraRecoil(p, 0F, pitchToApply)  // TODO: 원활한 테스트를 위해, yaw는 일단 배제
+                        } else {
+                            cancel()  // 스케줄러 취소
+                        }
                     }
-                }
-            }, PERIOD*5, PERIOD*2)
+                }, PERIOD*5, PERIOD*2)
+            }
         }
     }
 
