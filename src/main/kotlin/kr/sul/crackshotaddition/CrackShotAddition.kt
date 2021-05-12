@@ -7,7 +7,7 @@ import kr.sul.crackshotaddition.addition.SpeedOnScope
 import kr.sul.crackshotaddition.addition.WeaponSwapDelay
 import kr.sul.crackshotaddition.addition.WeaponSwapSound
 import kr.sul.crackshotaddition.addition_appearance.*
-import kr.sul.crackshotaddition.addition_appearance.camera_recoil.WeaponCameraRecoil
+import kr.sul.crackshotaddition.addition_appearance.camera_recoil.RecoilListener
 import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameController
 import kr.sul.crackshotaddition.addition_appearance.displayname.WeaponDisplayNameFixation
 import kr.sul.crackshotaddition.addition_appearance.itemmgr.GunInMainHandFor1P
@@ -45,8 +45,8 @@ class CrackShotAddition : JavaPlugin {
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapSound, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponBlockBreakEffect, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponProjectileTrail, this)
-        Bukkit.getServer().pluginManager.registerEvents(WeaponCameraRecoil, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponSwapDelay, this)
+        Bukkit.getServer().pluginManager.registerEvents(RecoilListener, this)
 //        Bukkit.getServer().pluginManager.registerEvents(CancelWeaponDrop, this)
         Bukkit.getServer().pluginManager.registerEvents(GunInMainHandFor1P, this)
         Bukkit.getServer().pluginManager.registerEvents(WeaponItemFlutterFixation, this)
